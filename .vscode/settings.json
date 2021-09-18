@@ -1,0 +1,28 @@
+{
+  // ESLint: https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint
+  // Stylelint: https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint
+
+  // ESLint handles HTML and JS/TS
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "html",
+  ],
+
+  // Disable built-in linting for CSS
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+
+  // Lint CSS with stylelint
+  "stylelint.enable": true,
+
+  // LF line endings
+  "files.eol": "\n",
+
+  // Lint on save
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.fixAll.stylelint": true
+  }
+}
