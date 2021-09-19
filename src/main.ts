@@ -1,12 +1,16 @@
 import './style.css';
 import * as PIXI from 'pixi.js';
+import { IPoint } from 'pixi.js';
 
-import { Actor } from './Actors';
+import { IActorBase, spawnActor } from './Actors';
 import { initCamera } from './Camera';
+import { TILE_SIZE } from './constants';
+import { initGraphics } from './Graphics';
 import {
   ICell,
   generateField,
   updateTiles,
+  getRandomTile,
 } from './Tiling';
 
 const outerApp = document.querySelector<HTMLDivElement>('.app-wrapper')!;
@@ -22,36 +26,12 @@ const app = new PIXI.Application();
 // Create a canvas element
 document.body.appendChild(app.view);
 
-// TODO Look into later
-// const TextureCache = PIXI.utils.TextureCache
-
-// Enable zIndex
-PIXI.settings.SORTABLE_CHILDREN = true;
-
-const texturePlayer = PIXI.Texture.from('images/player1.png');
-const textureTile = PIXI.Texture.from('images/tile.png');
-
-texturePlayer.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-textureTile.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-
-const spritePlayer = new PIXI.Sprite(texturePlayer);
-const spriteTile = new PIXI.Sprite(textureTile);
-
-spritePlayer.width = 64;
-spritePlayer.height = 64;
-
-spriteTile.width = 64;
-spriteTile.height = 64;
-
-let gameState: (delta: number) => void;
-
-function gameLoop(delta: number): void {
-  gameState(delta);
-}
-
-function play(): void {
-  // player.x += delta / 3;
-}
+const {
+  texturePlayer,
+  textureSkeleton,
+  textureTile,
+  textureWall,
+} = initGraphics();
 
 // Camera setup
 const camera = initCamera();
@@ -64,62 +44,90 @@ const world = new PIXI.Container();
 camera.addChild(world);
 
 // Player setup
-const player = {
+const playerStats = {
   name: 'Player',
-  sprite: world.addChild(spritePlayer),
-  position: {
-    x: 0, y: 0,
-  },
-  speed: 1,
+  speed: 2,
   sightRange: 4,
-} as Actor;
+} as IActorBase;
 
-player.sprite.zIndex = 1;
+const player = spawnActor(
+  playerStats,
+  texturePlayer,
+  world,
+  {
+    x: 0, y: 0,
+  } as IPoint,
+);
 
 // Board setup
 let playField = generateField(10);
 
-function onCellClick(cell: ICell) {
+function movePlayerToCell(cell: ICell) {
   player.position = cell.position;
   player.sprite.position = cell.sprite.position;
 
   updateTiles(player, playField);
 }
 
+function spawnEnemies() {
+  const enemiesCount = 3;
+
+  const skeletonStats = {
+    name: 'Skeleton',
+    speed: 1,
+    sightRange: 3,
+  };
+
+  const enemies = Array.from(Array(enemiesCount)).map(() => {
+    let selectedTile = null;
+
+    do {
+      selectedTile = getRandomTile(playField);
+    } while (!selectedTile.ground);
+
+    return spawnActor(
+      skeletonStats,
+      textureSkeleton,
+      world,
+      selectedTile.position,
+    );
+  });
+}
+
 function setup() {
   playField.forEach((cellRow, x) => {
     cellRow.forEach((cell, y) => {
+      let newTileSprite;
+
       if (cell.ground) {
-        const newTileSprite = new PIXI.Sprite(textureTile);
-
-        newTileSprite.width = 64;
-        newTileSprite.height = 64;
-
-        const newTile = world.addChild(newTileSprite);
-
-        newTile.x = x * 66;
-        newTile.y = y * 66;
-
-        newTile.interactive = false;
-        newTile.visible = false;
-        playField[x][y].sprite = newTile;
-
-        newTile.on('mousedown', (event) => {
-          event.stopPropagation();
-          onCellClick(playField[x][y]);
-        });
+        newTileSprite = new PIXI.Sprite(textureTile);
+      } else {
+        newTileSprite = new PIXI.Sprite(textureWall);
       }
+
+      newTileSprite.width = TILE_SIZE;
+      newTileSprite.height = TILE_SIZE;
+
+      const newTile = world.addChild(newTileSprite);
+
+      newTile.x = x * TILE_SIZE;
+      newTile.y = y * TILE_SIZE;
+
+      newTile.interactive = false;
+      newTile.visible = false;
+      playField[x][y].sprite = newTile;
+
+      newTile.on('mousedown', (event) => {
+        event.stopPropagation();
+        movePlayerToCell(playField[x][y]);
+      });
     });
   });
 
+  spawnEnemies();
+
   playField = updateTiles(player, playField);
-  // world.addChild(spriteTile);
-
-  // Set the game state
-  gameState = play;
-
-  // Start the game loop
-  app.ticker.add((delta) => gameLoop(delta));
 }
 
-app.loader.load(setup);
+// app.loader.load(setup);
+setup();
