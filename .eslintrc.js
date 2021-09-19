@@ -20,6 +20,8 @@ module.exports = {
 
     'no-trailing-spaces': 'error',
 
+    'no-param-reassign': ['error', { 'props': false }],
+
     // Max 120 symbols per line
     'max-len': ['warn', {
       code: 120,

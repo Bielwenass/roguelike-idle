@@ -1,8 +1,13 @@
 import './style.css';
 import * as PIXI from 'pixi.js';
 
+import { Actor } from './Actors';
 import { initCamera } from './Camera';
-import { generateField } from './Tiling';
+import {
+  ICell,
+  generateField,
+  updateTiles,
+} from './Tiling';
 
 const outerApp = document.querySelector<HTMLDivElement>('.app-wrapper')!;
 
@@ -23,17 +28,17 @@ document.body.appendChild(app.view);
 // Enable zIndex
 PIXI.settings.SORTABLE_CHILDREN = true;
 
-const texture = PIXI.Texture.from('images/player1.png');
-const textureTile = PIXI.Texture.from('images/dungeon_tile.png');
+const texturePlayer = PIXI.Texture.from('images/player1.png');
+const textureTile = PIXI.Texture.from('images/tile.png');
 
-texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+texturePlayer.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
 textureTile.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
 
-const sprite = new PIXI.Sprite(texture);
+const spritePlayer = new PIXI.Sprite(texturePlayer);
 const spriteTile = new PIXI.Sprite(textureTile);
 
-sprite.width = 64;
-sprite.height = 64;
+spritePlayer.width = 64;
+spritePlayer.height = 64;
 
 spriteTile.width = 64;
 spriteTile.height = 64;
@@ -59,19 +64,29 @@ const world = new PIXI.Container();
 camera.addChild(world);
 
 // Player setup
-const player = world.addChild(sprite);
+const player = {
+  name: 'Player',
+  sprite: world.addChild(spritePlayer),
+  position: {
+    x: 0, y: 0,
+  },
+  speed: 1,
+  sightRange: 4,
+} as Actor;
 
-player.zIndex = 1;
+player.sprite.zIndex = 1;
 
-function onCellClick(this: PIXI.Sprite, event: Event) {
-  event.stopPropagation();
-  player.position = this.position;
+// Board setup
+let playField = generateField(10);
+
+function onCellClick(cell: ICell) {
+  player.position = cell.position;
+  player.sprite.position = cell.sprite.position;
+
+  updateTiles(player, playField);
 }
 
 function setup() {
-  // Board setup
-  const playField = generateField(10);
-
   playField.forEach((cellRow, x) => {
     cellRow.forEach((cell, y) => {
       if (cell.ground) {
@@ -82,16 +97,23 @@ function setup() {
 
         const newTile = world.addChild(newTileSprite);
 
-        newTile.x = x * 68;
-        newTile.y = y * 68;
+        newTile.x = x * 66;
+        newTile.y = y * 66;
 
-        newTile.interactive = true;
-        newTile.on('mousedown', onCellClick);
+        newTile.interactive = false;
+        newTile.visible = false;
         playField[x][y].sprite = newTile;
+
+        newTile.on('mousedown', (event) => {
+          event.stopPropagation();
+          onCellClick(playField[x][y]);
+        });
       }
     });
   });
-  world.addChild(spriteTile);
+
+  playField = updateTiles(player, playField);
+  // world.addChild(spriteTile);
 
   // Set the game state
   gameState = play;
