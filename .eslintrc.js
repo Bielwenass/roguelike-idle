@@ -150,6 +150,9 @@ module.exports = {
     // https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-extraneous-dependencies.md
     'import/no-extraneous-dependencies': 'off',
 
+    // https://github.com/import-js/eslint-plugin-import/blob/v2.24.2/docs/rules/prefer-default-export.md
+    'import/prefer-default-export': 'off',
+
     // Newline conditions for objects
     // https://eslint.org/docs/rules/object-curly-newline
     'object-curly-newline': ['error', {

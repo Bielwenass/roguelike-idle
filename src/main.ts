@@ -1,17 +1,20 @@
 import './style.css';
 import * as PIXI from 'pixi.js';
-import { IPoint } from 'pixi.js';
 
-import { IActorBase, spawnActor } from './Actors';
-import { initCamera } from './Camera';
-import { TILE_SIZE } from './constants';
-import { initGraphics } from './Graphics';
+import { spawnActor } from './components/Actors';
+import { initCamera } from './components/Camera';
+import { enterCombat } from './components/Combat';
+import { initGraphics } from './components/Graphics';
+import { state } from './components/State';
 import {
-  ICell,
   generateField,
+  Cell,
   updateTiles,
   getRandomTile,
-} from './Tiling';
+} from './components/Tiling';
+import { TILE_SIZE } from './constants';
+import { creaturePresets } from './data/creaturePresets';
+import { CreatureType } from './data/enums/CreatureType';
 
 const outerApp = document.querySelector<HTMLDivElement>('.app-wrapper')!;
 
@@ -33,52 +36,50 @@ const {
   textureWall,
 } = initGraphics();
 
-// Camera setup
-const camera = initCamera();
+state.root = app.stage;
 
-app.stage.addChild(camera);
+// Camera setup
+state.camera = initCamera();
+state.root.addChild(state.camera);
 
 // World setup
-const world = new PIXI.Container();
-
-camera.addChild(world);
+state.world = new PIXI.Container();
 
 // Player setup
-const playerStats = {
-  name: 'Player',
-  speed: 2,
-  sightRange: 4,
-} as IActorBase;
+state.player.texture = texturePlayer;
 
-const player = spawnActor(
-  playerStats,
+state.player = spawnActor(
+  state.player,
+  state.world,
   texturePlayer,
-  world,
-  {
-    x: 0, y: 0,
-  } as IPoint,
 );
+
+state.camera.addChild(state.world);
+
+state.player.sprite.zIndex = 3;
 
 // Board setup
 let playField = generateField(10);
 
-function movePlayerToCell(cell: ICell) {
-  player.position = cell.position;
-  player.sprite.position = cell.sprite.position;
+function movePlayerToCell(cell: Cell) {
+  state.player.position = cell.position;
+  state.player.sprite.position = cell.sprite.position;
 
-  updateTiles(player, playField);
+  state.enemies.forEach(async (enemy) => {
+    if (enemy.position === state.player.position) {
+      const combatResult = await enterCombat(enemy);
+
+      console.log(combatResult);
+    }
+  });
+
+  updateTiles(state.player, playField);
 }
 
 function spawnEnemies() {
   const enemiesCount = 3;
 
-  const skeletonStats = {
-    name: 'Skeleton',
-    speed: 1,
-    sightRange: 3,
-  };
-
-  const enemies = Array.from(Array(enemiesCount)).map(() => {
+  state.enemies = Array.from(Array(enemiesCount)).map(() => {
     let selectedTile = null;
 
     do {
@@ -86,9 +87,9 @@ function spawnEnemies() {
     } while (!selectedTile.ground);
 
     return spawnActor(
-      skeletonStats,
+      creaturePresets[CreatureType.Skeleton],
+      state.world,
       textureSkeleton,
-      world,
       selectedTile.position,
     );
   });
@@ -108,7 +109,7 @@ function setup() {
       newTileSprite.width = TILE_SIZE;
       newTileSprite.height = TILE_SIZE;
 
-      const newTile = world.addChild(newTileSprite);
+      const newTile = state.world.addChild(newTileSprite);
 
       newTile.x = x * TILE_SIZE;
       newTile.y = y * TILE_SIZE;
@@ -126,8 +127,7 @@ function setup() {
 
   spawnEnemies();
 
-  playField = updateTiles(player, playField);
+  playField = updateTiles(state.player, playField);
 }
 
-// app.loader.load(setup);
 setup();

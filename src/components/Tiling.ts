@@ -1,21 +1,21 @@
-import { IPoint } from '@pixi/math';
+import { Point } from '@pixi/math';
 import { Sprite } from '@pixi/sprite';
 
-import { IActor } from './Actors';
+import { Actor } from '../types/Actor';
 
-import getDistance from './utils/getDistance';
+import getDistance from '../utils/getDistance';
 
-export interface ICell {
+export interface Cell {
   ground: boolean,
   sprite: Sprite,
-  position: IPoint,
+  position: Point,
 }
 
-export function generateField(size: number): ICell[][] {
-  const resultArr = [] as ICell[][];
+export function generateField(size: number): Cell[][] {
+  const resultArr = [] as Cell[][];
 
   for (let i = 0; i < size; i += 1) {
-    resultArr[i] = [] as ICell[];
+    resultArr[i] = [] as Cell[];
 
     for (let k = 0; k < size; k += 1) {
       resultArr[i][k] = {
@@ -23,19 +23,20 @@ export function generateField(size: number): ICell[][] {
         position: {
           x: i, y: k,
         },
-      } as ICell;
+      } as Cell;
     }
   }
 
   return resultArr;
 }
 
-export function updateTiles(player: IActor, playBoard: ICell[][]): ICell[][] {
+export function updateTiles(player: Actor, playBoard: Cell[][]): Cell[][] {
   return playBoard.map((e) => e.map((cell) => {
     const dist = getDistance(player.position, cell.position);
 
     if (dist <= player.sightRange) {
       cell.sprite.visible = true;
+      // cell.sprite.alpha = 0.5;
 
       if (dist <= player.speed && cell.ground) {
         cell.sprite.tint = 0xffff88;
@@ -52,7 +53,7 @@ export function updateTiles(player: IActor, playBoard: ICell[][]): ICell[][] {
   }));
 }
 
-export function getRandomTile(playBoard: ICell[][]): ICell {
+export function getRandomTile(playBoard: Cell[][]): Cell {
   const x = Math.floor(Math.random() * playBoard.length);
   const y = Math.floor(Math.random() * playBoard[x].length);
 

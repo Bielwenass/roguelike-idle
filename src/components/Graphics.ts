@@ -24,5 +24,3 @@ export function initGraphics() {
     textureWall,
   };
 }
-
-export default initGraphics;
