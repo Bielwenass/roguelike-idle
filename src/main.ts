@@ -65,11 +65,13 @@ function movePlayerToCell(cell: Cell) {
   state.player.position = cell.position;
   state.player.sprite.position = cell.sprite.position;
 
-  state.enemies.forEach(async (enemy) => {
+  state.enemies.forEach(async (enemy, enemyIdx) => {
     if (enemy.position === state.player.position) {
       const combatResult = await enterCombat(enemy);
 
-      console.log(combatResult);
+      if (combatResult.isWin) {
+        state.enemies.splice(enemyIdx, 1);
+      }
     }
   });
 

@@ -1,5 +1,7 @@
 import * as PIXI from 'pixi.js';
 
+import { HpBar } from '../types/HpBar';
+
 export function initGraphics() {
   // TODO Look into later
   // const TextureCache = PIXI.utils.TextureCache
@@ -23,4 +25,27 @@ export function initGraphics() {
     textureTile,
     textureWall,
   };
+}
+
+export function createHpBar() {
+  const hpBar = new PIXI.Graphics() as HpBar;
+  const hpBarFill = new PIXI.Graphics();
+
+  hpBar.beginFill(0x111111);
+  hpBar.lineStyle({
+    width: 1,
+    color: 0x333333,
+    alignment: 1,
+  });
+  hpBar.drawRect(0, -6, 16, 1);
+
+  hpBarFill.beginFill(0xaa0000);
+  const fillRect = hpBarFill.drawRect(0, -6, 16, 1);
+
+  hpBar.addChild(hpBarFill);
+  hpBar.set = (percent: number) => {
+    fillRect.width = Math.max(percent * 16, 0);
+  };
+
+  return hpBar;
 }

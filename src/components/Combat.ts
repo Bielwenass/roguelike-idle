@@ -14,6 +14,12 @@ function makeMove(self: Actor, opponent: Actor): { self: Actor, opponent: Actor 
   return combatActionEffects[chosenAction](self, opponent);
 }
 
+function updateHpBars(actors: Actor[]) {
+  actors.forEach((actor) => {
+    actor.hpBar.set(actor.currentHealth / actor.maxHealth);
+  });
+}
+
 async function combatLoop(isPlayer: boolean) {
   const attackDelay = isPlayer ? state.player.attackDelay : state.combat.enemy.attackDelay;
 
@@ -40,6 +46,8 @@ async function combatLoop(isPlayer: boolean) {
       state.player = isPlayer ? self : opponent;
       state.combat.enemy = isPlayer ? opponent : self;
 
+      updateHpBars([self, opponent]);
+
       resolve(combatLoop(isPlayer));
     }, attackDelay);
   });
@@ -62,7 +70,10 @@ export async function enterCombat(enemy: Actor): Promise<CombatResult> {
   const combat = new Container() as CombatContainer;
 
   combat.enemy = enemy;
-  combat.initiative = 'player';
+
+  // Show hp bars
+  state.player.hpBar.visible = true;
+  enemy.hpBar.visible = true;
 
   combat.addChild(state.player.sprite);
   combat.addChild(enemy.sprite);
@@ -78,6 +89,9 @@ export async function enterCombat(enemy: Actor): Promise<CombatResult> {
 
   const combatResult = await combatProcess();
 
+  state.player.hpBar.visible = false;
+  enemy.hpBar.visible = false;
+
   if (combatResult.isWin) {
     state.combat.destroy();
 
@@ -89,7 +103,3 @@ export async function enterCombat(enemy: Actor): Promise<CombatResult> {
 
   return combatResult;
 }
-
-export default {
-  enterCombat,
-};

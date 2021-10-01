@@ -5,6 +5,7 @@ import { Sprite } from '@pixi/sprite';
 import { creaturePresets } from '../data/creaturePresets';
 import { CreatureType } from '../data/enums/CreatureType';
 import { strategies } from '../data/strategies';
+import { createHpBar } from './Graphics';
 
 import { Actor } from '../types/Actor';
 import { CombatContainer } from '../types/CombatContainer';
@@ -28,6 +29,7 @@ export const state: State = {
     ...creaturePresets[CreatureType.Player],
     currentHealth: creaturePresets[CreatureType.Player].maxHealth,
     sprite: new Sprite(),
+    hpBar: createHpBar(),
     position: new Point(0, 0),
     strategy: strategies.dummy,
   },

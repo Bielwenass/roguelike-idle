@@ -17,10 +17,9 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-
     'no-trailing-spaces': 'error',
-
     'no-param-reassign': ['error', { 'props': false }],
+    'linebreak-style': 'off',
 
     // Max 120 symbols per line
     'max-len': ['warn', {

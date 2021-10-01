@@ -7,6 +7,7 @@ import {
 
 import { TILE_SIZE } from '../constants';
 import { strategies } from '../data/strategies';
+import { createHpBar } from './Graphics';
 
 import { Actor, ActorBase } from '../types/Actor';
 
@@ -25,9 +26,15 @@ export function spawnActor(
   actorSprite.x = position.x * TILE_SIZE;
   actorSprite.y = position.y * TILE_SIZE;
 
+  const hpBar = createHpBar();
+
+  hpBar.visible = false;
+  actorSprite.addChild(hpBar);
+
   return {
     ...actorBase,
     position,
+    hpBar,
     currentHealth: actorBase.maxHealth,
     sprite: actorSprite,
     strategy: strategies.dummy,
