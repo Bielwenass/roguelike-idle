@@ -1,6 +1,7 @@
 import { Container, Point } from 'pixi.js';
 
 import { combatActionEffects } from '../data/combatActionEffects';
+import { ActorType } from '../data/enums/ActorType';
 import { moveEntity } from './Entities';
 import { state } from './State';
 
@@ -20,47 +21,38 @@ function updateHpBars(actors: Actor[]) {
   });
 }
 
-async function combatLoop(isPlayer: boolean) {
-  const attackDelay = isPlayer ? state.player.attackDelay : state.combat.enemy.attackDelay;
-
-  return new Promise<boolean>((resolve) => {
+async function combatLoop(self: Actor, opponent: Actor, delay: number) {
+  return new Promise<Actor>((resolve) => {
     setTimeout(() => {
-      let self = isPlayer ? state.player : state.combat.enemy;
-      let opponent = isPlayer ? state.combat.enemy : state.player;
-
-      if (opponent.currentHealth <= 0) {
-        resolve(isPlayer);
-
-        return;
-      } if (self.currentHealth <= 0) {
-        resolve(!isPlayer);
-
-        return;
+      if (self.currentHealth <= 0) {
+        return resolve(opponent);
+      } if (opponent.currentHealth <= 0) {
+        return resolve(self);
       }
 
-      ({
-        self,
-        opponent,
-      } = makeMove(self, opponent));
+      const moveOutcome = makeMove(self, opponent);
 
-      state.player = isPlayer ? self : opponent;
-      state.combat.enemy = isPlayer ? opponent : self;
-
+      moveOutcome.self.lastActionTime = Date.now();
       updateHpBars([self, opponent]);
 
-      resolve(combatLoop(isPlayer));
-    }, attackDelay);
+      const attackDelaySelf = moveOutcome.self.lastActionTime + moveOutcome.self.attackDelay - Date.now();
+      const attackDelayOpponent = moveOutcome.opponent.lastActionTime + moveOutcome.opponent.attackDelay - Date.now();
+
+      if (attackDelaySelf < attackDelayOpponent) {
+        return resolve(combatLoop(moveOutcome.self, moveOutcome.opponent, attackDelaySelf));
+      }
+
+      return resolve(combatLoop(moveOutcome.opponent, moveOutcome.self, attackDelayOpponent));
+    }, delay);
   });
 }
 
-async function combatProcess(): Promise<CombatResult> {
-  const playerLoop = combatLoop(true);
-  const enemyLoop = combatLoop(false);
+async function combatProcess(player: Actor, enemy: Actor): Promise<Actor> {
+  if (player.attackDelay <= enemy.attackDelay) {
+    return combatLoop(player, enemy, player.attackDelay);
+  }
 
-  return Promise.race([playerLoop, enemyLoop]).then((isWin) => ({
-    isWin,
-    rewards: [],
-  }));
+  return combatLoop(enemy, player, enemy.attackDelay);
 }
 
 export async function enterCombat(enemy: Actor): Promise<CombatResult> {
@@ -84,20 +76,25 @@ export async function enterCombat(enemy: Actor): Promise<CombatResult> {
   state.combat = combat;
   state.root.addChild(state.combat);
 
-  const combatResult = await combatProcess();
+  const winner = await combatProcess(state.player, state.combat.enemy);
 
   // Hide hp bars
   state.player.hpBar.visible = false;
   enemy.hpBar.visible = false;
 
-  if (combatResult.isWin) {
-    state.combat.destroy();
+  state.combat.destroy();
+  state.world.visible = true;
 
-    state.world.visible = true;
+  const isWin = winner.type === ActorType.Player;
 
+  if (isWin) {
     state.world.addChild(state.player.sprite);
+    state.player = winner;
     moveEntity(state.player, playerWorldPosition);
   }
 
-  return combatResult;
+  return {
+    isWin,
+    rewards: [],
+  };
 }
