@@ -4,7 +4,11 @@ import * as PIXI from 'pixi.js';
 import { spawnActor } from './components/Actors';
 import { initCamera } from './components/Camera';
 import { combatCheck } from './components/Combat';
-import { moveEntity, spawnEntity } from './components/Entities';
+import {
+  moveEntity,
+  spawnEntity,
+  updateEntities,
+} from './components/Entities';
 import { initGraphics } from './components/Graphics';
 import { state } from './components/State';
 import {
@@ -18,6 +22,7 @@ import { creaturePresets } from './data/creaturePresets';
 import { CreatureType } from './data/enums/CreatureType';
 import { TileType } from './data/enums/TileType';
 
+import { Actor } from './types/Actor';
 import { WorldContainer } from './types/WorldContainer';
 
 const outerApp = document.querySelector<HTMLDivElement>('.app-wrapper')!;
@@ -57,6 +62,7 @@ state.player = spawnActor(
   state.world,
   texturePlayer,
 );
+state.player.sprite.visible = true;
 
 state.camera.addChild(state.world);
 
@@ -69,7 +75,9 @@ async function movePlayerToCell(cell: Cell) {
   moveEntity(state.player, cell.position);
   await combatCheck();
 
-  updateTiles(state.player, playBoard);
+  playBoard = updateTiles(state.player, playBoard);
+  state.world.entities = updateEntities(state.world.entities, state.player);
+  state.world.enemies = updateEntities(state.world.enemies, state.player) as Actor[];
 }
 
 function spawnEnemies() {
@@ -85,16 +93,20 @@ function spawnEnemies() {
       selectedTile.position,
     );
   });
+
+  state.world.enemies = updateEntities(state.world.enemies, state.player) as Actor[];
 }
 
 function spawnEntities() {
+  state.world.entities = [];
+
   playBoard.forEach((cellRow) => {
     cellRow.forEach((cell) => {
       if (cell.type === TileType.Exit) {
-        spawnEntity(state.world, textureExit, cell.position);
+        state.world.entities.push(spawnEntity(state.world, textureExit, cell.position));
       }
       if (cell.type === TileType.Chest) {
-        spawnEntity(state.world, textureChest, cell.position);
+        state.world.entities.push(spawnEntity(state.world, textureChest, cell.position));
       }
     });
   });

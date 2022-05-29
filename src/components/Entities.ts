@@ -7,7 +7,10 @@ import {
 
 import { TILE_SIZE } from '../constants';
 
+import { Actor } from '../types/Actor';
 import { Entity } from '../types/Entity';
+
+import getDistance from '../utils/getDistance';
 
 export function spawnEntity(
   parent: Container,
@@ -24,10 +27,22 @@ export function spawnEntity(
   sprite.x = position.x * TILE_SIZE;
   sprite.y = position.y * TILE_SIZE;
 
+  sprite.visible = false;
+
   return {
     position,
     sprite,
   };
+}
+
+export function updateEntities(entities: Entity[], player: Actor) {
+  return entities.map((e) => {
+    const dist = getDistance(e.position, player.position);
+
+    e.sprite.visible = dist <= player.sightRange;
+
+    return e;
+  });
 }
 
 export function moveEntity(entity: Entity, point: Point): void {

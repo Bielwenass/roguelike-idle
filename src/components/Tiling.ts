@@ -12,6 +12,7 @@ export interface Cell {
   type: TileType,
   sprite: Sprite,
   position: Point,
+  seen: boolean,
 }
 
 export function getRandomTile(playBoard: Cell[][]): Cell {
@@ -40,7 +41,9 @@ export function generateField(size: number): Cell[][] {
     for (let k = 0; k < size; k += 1) {
       resultBoard[i][k] = {
         ground: Math.random() > 0.35,
+        type: TileType.Default,
         position: new Point(i, k),
+        seen: false,
       } as Cell;
     }
   }
@@ -58,8 +61,9 @@ export function updateTiles(player: Actor, playBoard: Cell[][]): Cell[][] {
     const dist = getDistance(player.position, cell.position);
 
     if (dist <= player.sightRange) {
+      cell.seen = true;
       cell.sprite.visible = true;
-      // cell.sprite.alpha = 0.5;
+      cell.sprite.alpha = 1;
 
       if (dist <= player.speed && cell.ground) {
         cell.sprite.tint = 0xffff88;
@@ -68,6 +72,8 @@ export function updateTiles(player: Actor, playBoard: Cell[][]): Cell[][] {
         cell.sprite.tint = 0xffffff;
         cell.sprite.interactive = false;
       }
+    } else if (cell.seen) {
+      cell.sprite.alpha = 0.5;
     } else {
       cell.sprite.visible = false;
     }
