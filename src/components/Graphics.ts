@@ -13,17 +13,23 @@ export function initGraphics() {
   const textureSkeleton = PIXI.Texture.from('images/skeleton.png');
   const textureTile = PIXI.Texture.from('images/tile_dungeon.png');
   const textureWall = PIXI.Texture.from('images/bricks.png');
+  const textureExit = PIXI.Texture.from('images/hatch.png');
+  const textureChest = PIXI.Texture.from('images/chest.png');
 
   texturePlayer.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
   textureSkeleton.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
   textureTile.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
   textureWall.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+  textureExit.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+  textureChest.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
 
   return {
     texturePlayer,
     textureSkeleton,
     textureTile,
     textureWall,
+    textureExit,
+    textureChest,
   };
 }
 

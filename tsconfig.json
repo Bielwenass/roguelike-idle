@@ -13,5 +13,8 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true
   },
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
   "include": ["./src"]
 }

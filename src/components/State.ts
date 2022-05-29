@@ -9,21 +9,21 @@ import { createHpBar } from './Graphics';
 
 import { Actor } from '../types/Actor';
 import { CombatContainer } from '../types/CombatContainer';
+import { WorldContainer } from '../types/WorldContainer';
 
 export interface State {
   root: Container,
   camera: Container,
-  world: Container,
+  world: WorldContainer,
   combat: CombatContainer,
   player: Actor,
-  enemies: Actor[],
 }
 
 // Initial state
 export const state: State = {
   root: new Container(),
   camera: new Container(),
-  world: new Container(),
+  world: new Container() as WorldContainer,
   combat: new Container() as CombatContainer,
   player: {
     ...creaturePresets[CreatureType.Player],
@@ -33,5 +33,4 @@ export const state: State = {
     position: new Point(0, 0),
     strategy: strategies.dummy,
   },
-  enemies: [],
 };

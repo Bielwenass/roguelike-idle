@@ -1,10 +1,7 @@
-import {
-  Texture,
-  Sprite,
-  Point,
-} from 'pixi.js';
+import { Texture } from 'pixi.js';
 
 import { CombatAction } from '../data/enums/CombatAction';
+import { Entity } from './Entity';
 import { HpBar } from './HpBar';
 
 export type Strategy = (self: Actor, opponent: Actor) => CombatAction;
@@ -19,10 +16,8 @@ export interface ActorBase {
   attackDelay: number,
 }
 
-export interface Actor extends ActorBase {
+export interface Actor extends ActorBase, Entity {
   currentHealth: number,
-  sprite: Sprite,
   hpBar: HpBar,
-  position: Point,
   strategy: Strategy
 }

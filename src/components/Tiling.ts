@@ -1,33 +1,56 @@
 import { Point } from '@pixi/math';
 import { Sprite } from '@pixi/sprite';
 
+import { TileType } from '../data/enums/TileType';
+
 import { Actor } from '../types/Actor';
 
 import getDistance from '../utils/getDistance';
 
 export interface Cell {
   ground: boolean,
+  type: TileType,
   sprite: Sprite,
   position: Point,
 }
 
+export function getRandomTile(playBoard: Cell[][]): Cell {
+  const x = Math.floor(Math.random() * playBoard.length);
+  const y = Math.floor(Math.random() * playBoard[x].length);
+
+  return playBoard[x][y];
+}
+
+export function getRandomGroundTile(playBoard: Cell[][]): Cell {
+  let selectedTile = null;
+
+  do {
+    selectedTile = getRandomTile(playBoard);
+  } while (!selectedTile.ground);
+
+  return selectedTile;
+}
+
 export function generateField(size: number): Cell[][] {
-  const resultArr = [] as Cell[][];
+  const resultBoard = [] as Cell[][];
 
   for (let i = 0; i < size; i += 1) {
-    resultArr[i] = [] as Cell[];
+    resultBoard[i] = [] as Cell[];
 
     for (let k = 0; k < size; k += 1) {
-      resultArr[i][k] = {
+      resultBoard[i][k] = {
         ground: Math.random() > 0.35,
-        position: {
-          x: i, y: k,
-        },
+        position: new Point(i, k),
       } as Cell;
     }
   }
 
-  return resultArr;
+  // Select the exit tile
+  const exitTile = getRandomGroundTile(resultBoard);
+
+  exitTile.type = TileType.Exit;
+
+  return resultBoard;
 }
 
 export function updateTiles(player: Actor, playBoard: Cell[][]): Cell[][] {
@@ -51,11 +74,4 @@ export function updateTiles(player: Actor, playBoard: Cell[][]): Cell[][] {
 
     return cell;
   }));
-}
-
-export function getRandomTile(playBoard: Cell[][]): Cell {
-  const x = Math.floor(Math.random() * playBoard.length);
-  const y = Math.floor(Math.random() * playBoard[x].length);
-
-  return playBoard[x][y];
 }

@@ -4,17 +4,21 @@ import * as PIXI from 'pixi.js';
 import { spawnActor } from './components/Actors';
 import { initCamera } from './components/Camera';
 import { enterCombat } from './components/Combat';
+import { moveEntity, spawnEntity } from './components/Entities';
 import { initGraphics } from './components/Graphics';
 import { state } from './components/State';
 import {
   generateField,
   Cell,
   updateTiles,
-  getRandomTile,
+  getRandomGroundTile,
 } from './components/Tiling';
 import { TILE_SIZE } from './constants';
 import { creaturePresets } from './data/creaturePresets';
 import { CreatureType } from './data/enums/CreatureType';
+import { TileType } from './data/enums/TileType';
+
+import { WorldContainer } from './types/WorldContainer';
 
 const outerApp = document.querySelector<HTMLDivElement>('.app-wrapper')!;
 
@@ -34,6 +38,8 @@ const {
   textureSkeleton,
   textureTile,
   textureWall,
+  textureExit,
+  textureChest,
 } = initGraphics();
 
 state.root = app.stage;
@@ -43,11 +49,9 @@ state.camera = initCamera();
 state.root.addChild(state.camera);
 
 // World setup
-state.world = new PIXI.Container();
+state.world = new PIXI.Container() as WorldContainer;
 
 // Player setup
-state.player.texture = texturePlayer;
-
 state.player = spawnActor(
   state.player,
   state.world,
@@ -59,34 +63,29 @@ state.camera.addChild(state.world);
 state.player.sprite.zIndex = 3;
 
 // Board setup
-let playField = generateField(10);
+let playBoard = generateField(10);
 
-function movePlayerToCell(cell: Cell) {
-  state.player.position = cell.position;
-  state.player.sprite.position = cell.sprite.position;
+async function movePlayerToCell(cell: Cell) {
+  moveEntity(state.player, cell.position);
 
-  state.enemies.forEach(async (enemy, enemyIdx) => {
+  state.world.enemies.forEach(async (enemy, enemyIdx) => {
     if (enemy.position === state.player.position) {
       const combatResult = await enterCombat(enemy);
 
       if (combatResult.isWin) {
-        state.enemies.splice(enemyIdx, 1);
+        state.world.enemies.splice(enemyIdx, 1);
       }
     }
   });
 
-  updateTiles(state.player, playField);
+  updateTiles(state.player, playBoard);
 }
 
 function spawnEnemies() {
-  const enemiesCount = 3;
+  const enemiesCount = 4;
 
-  state.enemies = Array.from(Array(enemiesCount)).map(() => {
-    let selectedTile = null;
-
-    do {
-      selectedTile = getRandomTile(playField);
-    } while (!selectedTile.ground);
+  state.world.enemies = Array.from(Array(enemiesCount)).map(() => {
+    const selectedTile = getRandomGroundTile(playBoard);
 
     return spawnActor(
       creaturePresets[CreatureType.Skeleton],
@@ -97,8 +96,21 @@ function spawnEnemies() {
   });
 }
 
+function spawnEntities() {
+  playBoard.forEach((cellRow) => {
+    cellRow.forEach((cell) => {
+      if (cell.type === TileType.Exit) {
+        spawnEntity(state.world, textureExit, cell.position);
+      }
+      if (cell.type === TileType.Chest) {
+        spawnEntity(state.world, textureChest, cell.position);
+      }
+    });
+  });
+}
+
 function setup() {
-  playField.forEach((cellRow, x) => {
+  playBoard.forEach((cellRow, x) => {
     cellRow.forEach((cell, y) => {
       let newTileSprite;
 
@@ -118,18 +130,19 @@ function setup() {
 
       newTile.interactive = false;
       newTile.visible = false;
-      playField[x][y].sprite = newTile;
+      cell.sprite = newTile;
 
       newTile.on('mousedown', (event) => {
         event.stopPropagation();
-        movePlayerToCell(playField[x][y]);
+        movePlayerToCell(cell);
       });
     });
   });
 
   spawnEnemies();
+  spawnEntities();
 
-  playField = updateTiles(state.player, playField);
+  playBoard = updateTiles(state.player, playBoard);
 }
 
 setup();

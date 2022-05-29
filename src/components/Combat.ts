@@ -1,7 +1,7 @@
-import { Container } from 'pixi.js';
+import { Container, Point } from 'pixi.js';
 
-import { TILE_SIZE } from '../constants';
 import { combatActionEffects } from '../data/combatActionEffects';
+import { moveEntity } from './Entities';
 import { state } from './State';
 
 import { Actor } from '../types/Actor';
@@ -65,8 +65,8 @@ async function combatProcess(): Promise<CombatResult> {
 
 export async function enterCombat(enemy: Actor): Promise<CombatResult> {
   state.world.visible = false;
+  const playerWorldPosition = state.player.position.clone();
 
-  const playerWorldPosition = state.player.sprite.position.clone();
   const combat = new Container() as CombatContainer;
 
   combat.enemy = enemy;
@@ -75,20 +75,18 @@ export async function enterCombat(enemy: Actor): Promise<CombatResult> {
   state.player.hpBar.visible = true;
   enemy.hpBar.visible = true;
 
+  // Move actors to their combat positions
   combat.addChild(state.player.sprite);
   combat.addChild(enemy.sprite);
+  moveEntity(state.player, new Point(3, 3));
+  moveEntity(enemy, new Point(8, 3));
 
   state.combat = combat;
   state.root.addChild(state.combat);
 
-  state.player.sprite.x = 3 * TILE_SIZE;
-  state.player.sprite.y = 3 * TILE_SIZE;
-
-  enemy.sprite.x = 8 * TILE_SIZE;
-  enemy.sprite.y = 3 * TILE_SIZE;
-
   const combatResult = await combatProcess();
 
+  // Hide hp bars
   state.player.hpBar.visible = false;
   enemy.hpBar.visible = false;
 
@@ -98,7 +96,7 @@ export async function enterCombat(enemy: Actor): Promise<CombatResult> {
     state.world.visible = true;
 
     state.world.addChild(state.player.sprite);
-    state.player.sprite.position = playerWorldPosition;
+    moveEntity(state.player, playerWorldPosition);
   }
 
   return combatResult;
