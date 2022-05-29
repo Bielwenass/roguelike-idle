@@ -28,5 +28,6 @@ export function spawnActor(
     hpBar,
     currentHealth: actorBase.maxHealth,
     strategy: strategies.dummy,
+    lastActionTime: -1,
   };
 }

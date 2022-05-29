@@ -98,3 +98,15 @@ export async function enterCombat(enemy: Actor): Promise<CombatResult> {
     rewards: [],
   };
 }
+
+export function combatCheck(): Promise<void[]> {
+  return Promise.all(state.world.enemies.map(async (enemy, enemyIdx) => {
+    if (enemy.position === state.player.position) {
+      const combatResult = await enterCombat(enemy);
+
+      if (combatResult.isWin) {
+        state.world.enemies.splice(enemyIdx, 1);
+      }
+    }
+  }));
+}

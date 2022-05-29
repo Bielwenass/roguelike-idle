@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 
 import { spawnActor } from './components/Actors';
 import { initCamera } from './components/Camera';
-import { enterCombat } from './components/Combat';
+import { combatCheck } from './components/Combat';
 import { moveEntity, spawnEntity } from './components/Entities';
 import { initGraphics } from './components/Graphics';
 import { state } from './components/State';
@@ -67,16 +67,7 @@ let playBoard = generateField(10);
 
 async function movePlayerToCell(cell: Cell) {
   moveEntity(state.player, cell.position);
-
-  state.world.enemies.forEach(async (enemy, enemyIdx) => {
-    if (enemy.position === state.player.position) {
-      const combatResult = await enterCombat(enemy);
-
-      if (combatResult.isWin) {
-        state.world.enemies.splice(enemyIdx, 1);
-      }
-    }
-  });
+  await combatCheck();
 
   updateTiles(state.player, playBoard);
 }

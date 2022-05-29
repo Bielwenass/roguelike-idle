@@ -32,5 +32,6 @@ export const state: State = {
     hpBar: createHpBar(),
     position: new Point(0, 0),
     strategy: strategies.dummy,
+    lastActionTime: -1,
   },
 };
