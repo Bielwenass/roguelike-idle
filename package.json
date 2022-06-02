@@ -19,6 +19,7 @@
     "vite": "^2.4.0"
   },
   "dependencies": {
-    "pixi.js": "^6.0.4"
+    "pixi.js": "^6.0.4",
+    "wavefunctioncollapse": "^2.1.0"
   }
 }

@@ -26,7 +26,8 @@ async function combatLoop(self: Actor, opponent: Actor, delay: number) {
     setTimeout(() => {
       if (self.currentHealth <= 0) {
         return resolve(opponent);
-      } if (opponent.currentHealth <= 0) {
+      }
+      if (opponent.currentHealth <= 0) {
         return resolve(self);
       }
 

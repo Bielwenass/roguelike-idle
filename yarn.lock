@@ -3249,6 +3249,11 @@ vite@^2.4.0:
   optionalDependencies:
     fsevents "~2.3.2"
 
+wavefunctioncollapse@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/wavefunctioncollapse/-/wavefunctioncollapse-2.1.0.tgz#a573588800316f321833e8698cbe50a38fe3928e"
+  integrity sha512-GclizlVcMKyS2POsjrKb8sHy//NXJj3EI7957Wa+f97DtiNOsj773CzftCo59Hylvb/RBefrqtv4k0pOFfS71g==
+
 which-boxed-primitive@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/which-boxed-primitive/-/which-boxed-primitive-1.0.2.tgz#13757bc89b209b049fe5d86430e21cf40a89a8e6"

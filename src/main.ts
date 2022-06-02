@@ -9,6 +9,7 @@ import {
   spawnEntity,
   updateEntities,
 } from './components/Entities';
+import { generateLevel, removeDisconnectedRegions } from './components/Generation';
 import { initGraphics } from './components/Graphics';
 import { state } from './components/State';
 import {
@@ -23,6 +24,7 @@ import { CreatureType } from './data/enums/CreatureType';
 import { TileType } from './data/enums/TileType';
 
 import { Actor } from './types/Actor';
+import { Entity } from './types/Entity';
 import { WorldContainer } from './types/WorldContainer';
 
 const outerApp = document.querySelector<HTMLDivElement>('.app-wrapper')!;
@@ -55,21 +57,13 @@ state.root.addChild(state.camera);
 
 // World setup
 state.world = new PIXI.Container() as WorldContainer;
-
-// Player setup
-state.player = spawnActor(
-  state.player,
-  state.world,
-  texturePlayer,
-);
-state.player.sprite.visible = true;
-
 state.camera.addChild(state.world);
 
-state.player.sprite.zIndex = 3;
-
 // Board setup
-let playBoard = generateField(10);
+let protoBoard = await generateLevel(48, 48);
+
+protoBoard = removeDisconnectedRegions(protoBoard);
+let playBoard = generateField(protoBoard);
 
 async function movePlayerToCell(cell: Cell) {
   moveEntity(state.player, cell.position);
@@ -81,18 +75,14 @@ async function movePlayerToCell(cell: Cell) {
 }
 
 function spawnEnemies() {
-  const enemiesCount = 4;
+  const enemiesCount = 16;
 
-  state.world.enemies = Array.from(Array(enemiesCount)).map(() => {
-    const selectedTile = getRandomGroundTile(playBoard);
-
-    return spawnActor(
-      creaturePresets[CreatureType.Skeleton],
-      state.world,
-      textureSkeleton,
-      selectedTile.position,
-    );
-  });
+  state.world.enemies = Array.from(Array(enemiesCount)).map(() => spawnActor(
+    creaturePresets[CreatureType.Skeleton],
+    state.world,
+    textureSkeleton,
+    getRandomGroundTile(playBoard).position,
+  ));
 
   state.world.enemies = updateEntities(state.world.enemies, state.player) as Actor[];
 }
@@ -110,6 +100,8 @@ function spawnEntities() {
       }
     });
   });
+
+  state.world.entities = updateEntities(state.world.entities, state.player) as Entity[];
 }
 
 function setup() {
@@ -141,6 +133,15 @@ function setup() {
       });
     });
   });
+
+  // Player setup
+  state.player = spawnActor(
+    state.player,
+    state.world,
+    texturePlayer,
+    getRandomGroundTile(playBoard).position,
+  );
+  state.player.sprite.visible = true;
 
   spawnEnemies();
   spawnEntities();

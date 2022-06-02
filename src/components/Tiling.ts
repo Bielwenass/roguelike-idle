@@ -5,6 +5,7 @@ import { TileType } from '../data/enums/TileType';
 
 import { Actor } from '../types/Actor';
 
+import { get2dArray } from '../utils/get2dArray';
 import getDistance from '../utils/getDistance';
 
 export interface Cell {
@@ -32,17 +33,18 @@ export function getRandomGroundTile(playBoard: Cell[][]): Cell {
   return selectedTile;
 }
 
-export function generateField(size: number): Cell[][] {
-  const resultBoard = [] as Cell[][];
+export function generateField(protoBoard: number[][]): Cell[][] {
+  const width = protoBoard.length;
+  const height = protoBoard[0].length;
 
-  for (let i = 0; i < size; i += 1) {
-    resultBoard[i] = [] as Cell[];
+  const resultBoard = get2dArray(width, height, {}) as Cell[][];
 
-    for (let k = 0; k < size; k += 1) {
-      resultBoard[i][k] = {
-        ground: Math.random() > 0.35,
+  for (let x = 0; x < width; x += 1) {
+    for (let y = 0; y < height; y += 1) {
+      resultBoard[x][y] = {
+        ground: protoBoard[x][y] !== 0,
         type: TileType.Default,
-        position: new Point(i, k),
+        position: new Point(x, y),
         seen: false,
       } as Cell;
     }
