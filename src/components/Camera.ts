@@ -1,4 +1,5 @@
 import { Container } from '@pixi/display';
+import { Rectangle, Sprite } from 'pixi.js';
 
 function onDragStart(this: any, event: { data: any }) {
   // Store a reference to the data
@@ -31,6 +32,11 @@ function onDragMove(this: any): void {
   }
 }
 
+export function centerCameraOn(camera: Container, center: Sprite, screen: Rectangle) {
+  camera.position.x = screen.width / 2 - center.width / 2 - center.x;
+  camera.position.y = screen.height / 2 - center.height / 2 - center.y;
+}
+
 export function initCamera(): Container {
   const camera = new Container();
 
@@ -44,7 +50,3 @@ export function initCamera(): Container {
 
   return camera;
 }
-
-export default {
-  initCamera,
-};

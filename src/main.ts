@@ -2,7 +2,7 @@ import './style.css';
 import * as PIXI from 'pixi.js';
 
 import { spawnActor } from './components/Actors';
-import { initCamera } from './components/Camera';
+import { centerCameraOn, initCamera } from './components/Camera';
 import { combatCheck } from './components/Combat';
 import {
   moveEntity,
@@ -18,6 +18,7 @@ import {
   updateTiles,
   getRandomGroundTile,
 } from './components/Tiling';
+import { enableResize } from './components/WindowResize';
 import { TILE_SIZE } from './constants';
 import { creaturePresets } from './data/creaturePresets';
 import { CreatureType } from './data/enums/CreatureType';
@@ -27,18 +28,11 @@ import { Actor } from './types/Actor';
 import { Entity } from './types/Entity';
 import { WorldContainer } from './types/WorldContainer';
 
-const outerApp = document.querySelector<HTMLDivElement>('.app-wrapper')!;
-
-outerApp.innerHTML = `
-  <div>
-    <h1>roguelike-idle</h1>
-  </div>
-`;
-
 const app = new PIXI.Application();
 
 // Create a canvas element
 document.body.appendChild(app.view);
+enableResize(app.renderer);
 
 const {
   texturePlayer,
@@ -67,6 +61,7 @@ let playBoard = generateField(protoBoard);
 
 async function movePlayerToCell(cell: Cell) {
   moveEntity(state.player, cell.position);
+  centerCameraOn(state.camera, state.player.sprite, app.screen);
   await combatCheck();
 
   playBoard = updateTiles(state.player, playBoard);
@@ -142,6 +137,7 @@ function setup() {
     getRandomGroundTile(playBoard).position,
   );
   state.player.sprite.visible = true;
+  centerCameraOn(state.camera, state.player.sprite, app.screen);
 
   spawnEnemies();
   spawnEntities();

@@ -36,10 +36,17 @@ export async function generateLevel(width: number, height: number): Promise<numb
     true, // Sample edges wrap
     false, // Output edges wrap
     8, // Symmetries
-    0, // Ground level (not applicable to top-down view)
+    0, // Ground pattern (not applicable to top-down view)
   );
 
-  model.generate(Math.random, 0);
+  const success = model.generate(Math.random, 0);
+
+  // Should never happen
+  if (!success) {
+    console.error('Generation failed');
+
+    return get2dArray(width, height, 0);
+  }
 
   const wfcOutput = model.graphics();
   const resultBoard = get2dArray(width, height, 0);

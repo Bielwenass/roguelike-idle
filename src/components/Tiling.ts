@@ -6,7 +6,7 @@ import { TileType } from '../data/enums/TileType';
 import { Actor } from '../types/Actor';
 
 import { get2dArray } from '../utils/get2dArray';
-import getDistance from '../utils/getDistance';
+import { getDistance } from '../utils/getDistance';
 
 export interface Cell {
   ground: boolean,

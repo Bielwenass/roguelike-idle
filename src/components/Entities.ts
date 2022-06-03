@@ -10,7 +10,7 @@ import { TILE_SIZE } from '../constants';
 import { Actor } from '../types/Actor';
 import { Entity } from '../types/Entity';
 
-import getDistance from '../utils/getDistance';
+import { getDistance } from '../utils/getDistance';
 
 export function spawnEntity(
   parent: Container,
