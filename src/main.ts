@@ -11,10 +11,10 @@ import {
 } from './components/Entities';
 import { generateLevel, removeDisconnectedRegions } from './components/Generation';
 import { initGraphics } from './components/Graphics';
+import { selectNextMove } from './components/Movement';
 import { state } from './components/State';
 import {
-  generateField,
-  Cell,
+  convertToBoard,
   updateTiles,
   getRandomGroundTile,
 } from './components/Tiling';
@@ -25,14 +25,15 @@ import { CreatureType } from './data/enums/CreatureType';
 import { TileType } from './data/enums/TileType';
 
 import { Actor } from './types/Actor';
+import { Cell } from './types/Cell';
 import { Entity } from './types/Entity';
 import { WorldContainer } from './types/WorldContainer';
 
-const app = new PIXI.Application();
+import { timeout } from './utils/delay';
 
 // Create a canvas element
-document.body.appendChild(app.view);
-enableResize(app.renderer);
+document.body.appendChild(state.app.view);
+enableResize(state.app.renderer);
 
 const {
   texturePlayer,
@@ -43,7 +44,7 @@ const {
   textureChest,
 } = initGraphics();
 
-state.root = app.stage;
+state.root = state.app.stage;
 
 // Camera setup
 state.camera = initCamera();
@@ -54,19 +55,26 @@ state.world = new PIXI.Container() as WorldContainer;
 state.camera.addChild(state.world);
 
 // Board setup
-let protoBoard = await generateLevel(48, 48);
+let protoBoard = await generateLevel(16, 16);
 
 protoBoard = removeDisconnectedRegions(protoBoard);
-let playBoard = generateField(protoBoard);
+state.world.board = convertToBoard(protoBoard);
+
+const isAutoMovement = false;
 
 async function movePlayerToCell(cell: Cell) {
   moveEntity(state.player, cell.position);
-  centerCameraOn(state.camera, state.player.sprite, app.screen);
   await combatCheck();
+  centerCameraOn(state.camera, state.player.sprite, state.app.screen);
 
-  playBoard = updateTiles(state.player, playBoard);
+  state.world.board = updateTiles(state.player, state.world.board);
   state.world.entities = updateEntities(state.world.entities, state.player);
   state.world.enemies = updateEntities(state.world.enemies, state.player) as Actor[];
+
+  if (isAutoMovement) {
+    await timeout(5000 / state.player.speed);
+    movePlayerToCell(selectNextMove(state.player, state.world.board));
+  }
 }
 
 function spawnEnemies() {
@@ -76,7 +84,7 @@ function spawnEnemies() {
     creaturePresets[CreatureType.Skeleton],
     state.world,
     textureSkeleton,
-    getRandomGroundTile(playBoard).position,
+    getRandomGroundTile(state.world.board).position,
   ));
 
   state.world.enemies = updateEntities(state.world.enemies, state.player) as Actor[];
@@ -85,7 +93,7 @@ function spawnEnemies() {
 function spawnEntities() {
   state.world.entities = [];
 
-  playBoard.forEach((cellRow) => {
+  state.world.board.forEach((cellRow) => {
     cellRow.forEach((cell) => {
       if (cell.type === TileType.Exit) {
         state.world.entities.push(spawnEntity(state.world, textureExit, cell.position));
@@ -100,7 +108,7 @@ function spawnEntities() {
 }
 
 function setup() {
-  playBoard.forEach((cellRow, x) => {
+  state.world.board.forEach((cellRow, x) => {
     cellRow.forEach((cell, y) => {
       let newTileSprite;
 
@@ -122,10 +130,12 @@ function setup() {
       newTile.visible = false;
       cell.sprite = newTile;
 
-      newTile.on('mousedown', (event) => {
-        event.stopPropagation();
-        movePlayerToCell(cell);
-      });
+      if (!isAutoMovement) {
+        newTile.on('mousedown', (event) => {
+          event.stopPropagation();
+          movePlayerToCell(cell);
+        });
+      }
     });
   });
 
@@ -134,15 +144,19 @@ function setup() {
     state.player,
     state.world,
     texturePlayer,
-    getRandomGroundTile(playBoard).position,
+    getRandomGroundTile(state.world.board).position,
   );
   state.player.sprite.visible = true;
-  centerCameraOn(state.camera, state.player.sprite, app.screen);
+  centerCameraOn(state.camera, state.player.sprite, state.app.screen);
 
   spawnEnemies();
   spawnEntities();
 
-  playBoard = updateTiles(state.player, playBoard);
+  state.world.board = updateTiles(state.player, state.world.board);
+
+  if (isAutoMovement) {
+    movePlayerToCell(selectNextMove(state.player, state.world.board));
+  }
 }
 
 setup();

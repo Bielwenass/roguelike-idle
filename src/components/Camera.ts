@@ -1,6 +1,8 @@
 import { Container } from '@pixi/display';
 import { Rectangle, Sprite } from 'pixi.js';
 
+import { state } from './State';
+
 function onDragStart(this: any, event: { data: any }) {
   // Store a reference to the data
   // The reason for this is because of multitouch
@@ -32,7 +34,15 @@ function onDragMove(this: any): void {
   }
 }
 
-export function centerCameraOn(camera: Container, center: Sprite, screen: Rectangle) {
+export function getScreenCenterX(): number {
+  return state.app.screen.width / 2;
+}
+
+export function getScreenCenterY(): number {
+  return state.app.screen.height / 2;
+}
+
+export function centerCameraOn(camera: Container, center: Sprite, screen: Rectangle): void {
   camera.position.x = screen.width / 2 - center.width / 2 - center.x;
   camera.position.y = screen.height / 2 - center.height / 2 - center.y;
 }

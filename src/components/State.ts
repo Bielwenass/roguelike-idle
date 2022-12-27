@@ -1,9 +1,11 @@
 import { Container } from '@pixi/display';
 import { Point } from '@pixi/math';
 import { Sprite } from '@pixi/sprite';
+import { Application } from 'pixi.js';
 
 import { creaturePresets } from '../data/creaturePresets';
 import { CreatureType } from '../data/enums/CreatureType';
+import { movements } from '../data/movements';
 import { strategies } from '../data/strategies';
 import { createHpBar } from './Graphics';
 
@@ -12,6 +14,7 @@ import { CombatContainer } from '../types/CombatContainer';
 import { WorldContainer } from '../types/WorldContainer';
 
 export interface State {
+  app: Application,
   root: Container,
   camera: Container,
   world: WorldContainer,
@@ -21,6 +24,7 @@ export interface State {
 
 // Initial state
 export const state: State = {
+  app: new Application(),
   root: new Container(),
   camera: new Container(),
   world: new Container() as WorldContainer,
@@ -32,6 +36,7 @@ export const state: State = {
     hpBar: createHpBar(),
     position: new Point(0, 0),
     strategy: strategies.dummy,
+    movement: movements.random,
     lastActionTime: -1,
   },
 };

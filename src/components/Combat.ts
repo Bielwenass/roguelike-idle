@@ -1,13 +1,17 @@
 import { Container, Point } from 'pixi.js';
 
+import { TILE_SIZE } from '../constants';
 import { combatActionEffects } from '../data/combatActionEffects';
 import { ActorType } from '../data/enums/ActorType';
+import { getScreenCenterX, getScreenCenterY } from './Camera';
 import { moveEntity } from './Entities';
 import { state } from './State';
 
 import { Actor } from '../types/Actor';
 import { CombatContainer } from '../types/CombatContainer';
 import { CombatResult } from '../types/CombatResult';
+
+import { timeout } from '../utils/delay';
 
 function makeMove(self: Actor, opponent: Actor): { self: Actor, opponent: Actor } {
   const chosenAction = self.strategy(self, opponent);
@@ -21,7 +25,7 @@ function updateHpBars(actors: Actor[]) {
   });
 }
 
-async function combatLoop(self: Actor, opponent: Actor, delay: number) {
+async function combatLoop(self: Actor, opponent: Actor, delay: number): Promise<Actor> {
   return new Promise<Actor>((resolve) => {
     setTimeout(() => {
       if (self.currentHealth <= 0) {
@@ -34,7 +38,7 @@ async function combatLoop(self: Actor, opponent: Actor, delay: number) {
       const moveOutcome = makeMove(self, opponent);
 
       moveOutcome.self.lastActionTime = Date.now();
-      updateHpBars([self, opponent]);
+      updateHpBars([moveOutcome.self, moveOutcome.opponent]);
 
       const attackDelaySelf = moveOutcome.self.lastActionTime + moveOutcome.self.attackDelay - Date.now();
       const attackDelayOpponent = moveOutcome.opponent.lastActionTime + moveOutcome.opponent.attackDelay - Date.now();
@@ -71,13 +75,19 @@ export async function enterCombat(enemy: Actor): Promise<CombatResult> {
   // Move actors to their combat positions
   combat.addChild(state.player.sprite);
   combat.addChild(enemy.sprite);
-  moveEntity(state.player, new Point(3, 3));
-  moveEntity(enemy, new Point(8, 3));
+  state.player.sprite.position.x = getScreenCenterX() - TILE_SIZE * 2.5;
+  state.player.sprite.position.y = getScreenCenterY();
+  enemy.sprite.position.x = getScreenCenterX() + TILE_SIZE * 2.5;
+  enemy.sprite.position.y = getScreenCenterY();
+  enemy.sprite.scale.x *= -1;
 
   state.combat = combat;
   state.root.addChild(state.combat);
 
   const winner = await combatProcess(state.player, state.combat.enemy);
+
+  // 300ms delay on combat exit
+  await timeout(300);
 
   // Hide hp bars
   state.player.hpBar.visible = false;
@@ -100,7 +110,7 @@ export async function enterCombat(enemy: Actor): Promise<CombatResult> {
   };
 }
 
-export function combatCheck(): Promise<void[]> {
+export async function combatCheck(): Promise<void[]> {
   return Promise.all(state.world.enemies.map(async (enemy, enemyIdx) => {
     if (enemy.position === state.player.position) {
       const combatResult = await enterCombat(enemy);

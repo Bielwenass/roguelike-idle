@@ -9,7 +9,7 @@ export function initGraphics() {
   // Enable zIndex
   PIXI.settings.SORTABLE_CHILDREN = true;
 
-  const texturePlayer = PIXI.Texture.from('images/player1.png');
+  const texturePlayer = PIXI.Texture.from('images/player3.png');
   const textureSkeleton = PIXI.Texture.from('images/skeleton.png');
   const textureTile = PIXI.Texture.from('images/tile_dungeon.png');
   const textureWall = PIXI.Texture.from('images/bricks.png');

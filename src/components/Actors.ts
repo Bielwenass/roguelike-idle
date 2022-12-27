@@ -4,6 +4,7 @@ import {
   Texture,
 } from 'pixi.js';
 
+import { movements } from '../data/movements';
 import { strategies } from '../data/strategies';
 import { spawnEntity } from './Entities';
 import { createHpBar } from './Graphics';
@@ -28,6 +29,7 @@ export function spawnActor(
     hpBar,
     currentHealth: actorBase.maxHealth,
     strategy: strategies.dummy,
+    movement: movements.random,
     lastActionTime: -1,
   };
 }
