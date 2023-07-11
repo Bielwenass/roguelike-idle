@@ -1,6 +1,6 @@
 import { Point } from '@pixi/math';
 
-import { TileType } from '../data/enums/TileType';
+import { EntityType } from '../data/enums/EntityType';
 
 import { Actor } from '../types/Actor';
 import { Cell } from '../types/Cell';
@@ -15,12 +15,19 @@ export function getRandomTile(playBoard: Cell[][]): Cell {
   return playBoard[x][y];
 }
 
-export function getRandomGroundTile(playBoard: Cell[][]): Cell {
-  let selectedTile = null;
+// TODO: Handle edge cases
+export function getRandomGroundTile(playBoard: Cell[][], spawnable = false): Cell {
+  let selectedTile = {} as Cell;
+  let attemptCount = 0;
 
   do {
     selectedTile = getRandomTile(playBoard);
-  } while (!selectedTile.ground);
+    attemptCount += 1;
+  } while (attemptCount < 10 && !(selectedTile.isGround && (!spawnable || !selectedTile.hasActor)));
+
+  if (attemptCount >= 10) {
+    selectedTile = {} as Cell;
+  }
 
   return selectedTile;
 }
@@ -35,10 +42,11 @@ export function convertToBoard(protoBoard: number[][]): Cell[][] {
   for (let x = 0; x < width; x += 1) {
     for (let y = 0; y < height; y += 1) {
       resultBoard[x][y] = {
-        ground: protoBoard[x][y] !== 0,
-        type: TileType.Default,
+        isGround: protoBoard[x][y] !== 0,
+        entityType: EntityType.None,
         position: new Point(x, y),
-        seen: false,
+        wasSeen: false,
+        hasActor: false,
       } as Cell;
     }
   }
@@ -46,7 +54,7 @@ export function convertToBoard(protoBoard: number[][]): Cell[][] {
   // Select the exit tile
   const exitTile = getRandomGroundTile(resultBoard);
 
-  exitTile.type = TileType.Exit;
+  exitTile.entityType = EntityType.Exit;
 
   return resultBoard;
 }
@@ -56,18 +64,18 @@ export function updateTiles(player: Actor, playBoard: Cell[][]): Cell[][] {
     const dist = getDistance(player.position, cell.position);
 
     if (dist <= player.sightRange) {
-      cell.seen = true;
+      cell.wasSeen = true;
       cell.sprite.visible = true;
       cell.sprite.alpha = 1;
 
-      if (dist === 1 && cell.ground) {
+      if (dist === 1 && cell.isGround) {
         cell.sprite.tint = 0xffff88;
         cell.sprite.interactive = true;
       } else {
         cell.sprite.tint = 0xffffff;
         cell.sprite.interactive = false;
       }
-    } else if (cell.seen) {
+    } else if (cell.wasSeen) {
       cell.sprite.alpha = 0.5;
     } else {
       cell.sprite.visible = false;

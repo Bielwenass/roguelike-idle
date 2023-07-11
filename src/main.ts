@@ -9,8 +9,8 @@ import {
   spawnEntity,
   updateEntities,
 } from './components/Entities';
-import { generateLevel, removeDisconnectedRegions } from './components/Generation';
 import { initGraphics } from './components/Graphics';
+import { generateLevel, removeDisconnectedRegions } from './components/LevelGeneration';
 import { selectNextMove } from './components/Movement';
 import { state } from './components/State';
 import {
@@ -22,7 +22,7 @@ import { enableResize } from './components/WindowResize';
 import { TILE_SIZE } from './constants';
 import { creaturePresets } from './data/creaturePresets';
 import { CreatureType } from './data/enums/CreatureType';
-import { TileType } from './data/enums/TileType';
+import { EntityType } from './data/enums/EntityType';
 
 import { Actor } from './types/Actor';
 import { Cell } from './types/Cell';
@@ -60,7 +60,7 @@ let protoBoard = await generateLevel(16, 16);
 protoBoard = removeDisconnectedRegions(protoBoard);
 state.world.board = convertToBoard(protoBoard);
 
-const isAutoMovement = false;
+const isAutoMovement = true;
 
 async function movePlayerToCell(cell: Cell) {
   moveEntity(state.player, cell.position);
@@ -80,12 +80,18 @@ async function movePlayerToCell(cell: Cell) {
 function spawnEnemies() {
   const enemiesCount = 16;
 
-  state.world.enemies = Array.from(Array(enemiesCount)).map(() => spawnActor(
-    creaturePresets[CreatureType.Skeleton],
-    state.world,
-    textureSkeleton,
-    getRandomGroundTile(state.world.board).position,
-  ));
+  state.world.enemies = Array.from(Array(enemiesCount)).map(() => {
+    const selectedTile = getRandomGroundTile(state.world.board, true);
+
+    selectedTile.hasActor = true;
+
+    return spawnActor(
+      creaturePresets[CreatureType.Skeleton],
+      state.world,
+      textureSkeleton,
+      selectedTile.position,
+    );
+  });
 
   state.world.enemies = updateEntities(state.world.enemies, state.player) as Actor[];
 }
@@ -95,10 +101,10 @@ function spawnEntities() {
 
   state.world.board.forEach((cellRow) => {
     cellRow.forEach((cell) => {
-      if (cell.type === TileType.Exit) {
+      if (cell.entityType === EntityType.Exit) {
         state.world.entities.push(spawnEntity(state.world, textureExit, cell.position));
       }
-      if (cell.type === TileType.Chest) {
+      if (cell.entityType === EntityType.Chest) {
         state.world.entities.push(spawnEntity(state.world, textureChest, cell.position));
       }
     });
@@ -112,7 +118,7 @@ function setup() {
     cellRow.forEach((cell, y) => {
       let newTileSprite;
 
-      if (cell.ground) {
+      if (cell.isGround) {
         newTileSprite = new PIXI.Sprite(textureTile);
       } else {
         newTileSprite = new PIXI.Sprite(textureWall);
@@ -140,11 +146,15 @@ function setup() {
   });
 
   // Player setup
+  const playerSpawnTile = getRandomGroundTile(state.world.board);
+
+  playerSpawnTile.hasActor = true;
+
   state.player = spawnActor(
     state.player,
     state.world,
     texturePlayer,
-    getRandomGroundTile(state.world.board).position,
+    playerSpawnTile.position,
   );
   state.player.sprite.visible = true;
   centerCameraOn(state.camera, state.player.sprite, state.app.screen);

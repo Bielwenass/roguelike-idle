@@ -1,12 +1,13 @@
 import { Point } from '@pixi/math';
 import { Sprite } from '@pixi/sprite';
 
-import { TileType } from '../data/enums/TileType';
+import { EntityType } from '../data/enums/EntityType';
 
 export interface Cell {
-  ground: boolean,
-  type: TileType,
-  sprite: Sprite,
   position: Point,
-  seen: boolean,
+  isGround: boolean,
+  sprite: Sprite,
+  entityType: EntityType,
+  wasSeen: boolean,
+  hasActor: boolean,
 }

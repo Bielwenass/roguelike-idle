@@ -5,6 +5,7 @@ import { combatActionEffects } from '../data/combatActionEffects';
 import { ActorType } from '../data/enums/ActorType';
 import { getScreenCenterX, getScreenCenterY } from './Camera';
 import { moveEntity } from './Entities';
+import { rollItem } from './ItemGeneration';
 import { state } from './State';
 
 import { Actor } from '../types/Actor';
@@ -104,9 +105,11 @@ export async function enterCombat(enemy: Actor): Promise<CombatResult> {
     moveEntity(state.player, playerWorldPosition);
   }
 
+  const reward = rollItem(1, 1);
+
   return {
     isWin,
-    rewards: [],
+    rewards: [reward],
   };
 }
 
