@@ -1,4 +1,4 @@
 export enum ActorType {
-  Player,
+  Player = 1,
   Enemy,
 }

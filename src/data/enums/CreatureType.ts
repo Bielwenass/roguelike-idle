@@ -1,4 +1,4 @@
 export enum CreatureType {
-  Player,
+  Player = 1,
   Skeleton,
 }

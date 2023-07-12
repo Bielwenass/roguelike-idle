@@ -1,9 +1,13 @@
 import { Point } from '@pixi/math';
+import { Sprite } from '@pixi/sprite';
 
+import { TILE_SIZE } from '../constants';
 import { EntityType } from '../data/enums/EntityType';
+import { textureTile, textureWall } from './Graphics';
 
 import { Actor } from '../types/Actor';
 import { Cell } from '../types/Cell';
+import { WorldContainer } from '../types/WorldContainer';
 
 import { get2dArray } from '../utils/get2dArray';
 import { getDistance } from '../utils/getDistance';
@@ -59,6 +63,33 @@ export function convertToBoard(protoBoard: number[][]): Cell[][] {
   return resultBoard;
 }
 
+export function tileBoard(world: WorldContainer) {
+  for (const [x, cellRow] of world.board.entries()) {
+    for (const [y, cell] of cellRow.entries()) {
+      let newTileSprite;
+
+      if (cell.isGround) {
+        newTileSprite = new Sprite(textureTile);
+      } else {
+        newTileSprite = new Sprite(textureWall);
+      }
+
+      newTileSprite.width = TILE_SIZE;
+      newTileSprite.height = TILE_SIZE;
+
+      const newTile = world.addChild(newTileSprite);
+
+      newTile.x = x * TILE_SIZE;
+      newTile.y = y * TILE_SIZE;
+
+      newTile.interactive = false;
+      newTile.visible = false;
+      cell.sprite = newTile;
+    }
+  }
+}
+
+// Update tiles visibility
 export function updateTiles(player: Actor, playBoard: Cell[][]): Cell[][] {
   return playBoard.map((e) => e.map((cell) => {
     const dist = getDistance(player.position, cell.position);

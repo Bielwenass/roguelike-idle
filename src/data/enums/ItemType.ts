@@ -1,6 +1,9 @@
 export enum ItemType {
-  Weapon,
-  Armor,
-  Strategy,
-  Movement,
+  Dagger = 1,
+  Sword,
+  Greatsword,
+  Helmet,
+  Chestplate,
+  Gloves,
+  Boots,
 }

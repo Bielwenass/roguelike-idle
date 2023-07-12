@@ -1,47 +1,48 @@
 import * as PIXI from 'pixi.js';
 
+import { ItemType } from '../data/enums/ItemType';
+
 import { HpBar } from '../types/HpBar';
 
+// TODO: Look into later
+// const TextureCache = PIXI.utils.TextureCache
+
+// Enable zIndex
+PIXI.settings.SORTABLE_CHILDREN = true;
+PIXI.settings.ROUND_PIXELS = true;
+PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+
+const texturePlayer = PIXI.Texture.from('images/player.png');
+const textureSkeleton = PIXI.Texture.from('images/skeleton.png');
+const textureTile = PIXI.Texture.from('images/tile_dungeon.png');
+const textureWall = PIXI.Texture.from('images/bricks.png');
+const textureExit = PIXI.Texture.from('images/hatch.png');
+const textureChest = PIXI.Texture.from('images/chest.png');
+const textureUiInventoryBorder = PIXI.Texture.from('images/ui/icon_border.png');
+const textureUiInventoryBg = PIXI.Texture.from('images/ui/inventory_backdrop.png');
+const textureUiInventoryEquip = PIXI.Texture.from('images/ui/equipment_backdrop.png');
 const textureIconSword = PIXI.Texture.from('images/ui/icon_sword.png');
+const textureIconHelmet = PIXI.Texture.from('images/ui/icon_helmet.png');
+const textureIconChestplate = PIXI.Texture.from('images/ui/icon_chestplate.png');
+const textureIconGloves = PIXI.Texture.from('images/ui/icon_gloves.png');
+const textureIconBoots = PIXI.Texture.from('images/ui/icon_boots.png');
 
-textureIconSword.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-
-export function initGraphics() {
-  // TODO Look into later
-  // const TextureCache = PIXI.utils.TextureCache
-
-  // Enable zIndex
-  PIXI.settings.SORTABLE_CHILDREN = true;
-
-  const texturePlayer = PIXI.Texture.from('images/player3.png');
-  const textureSkeleton = PIXI.Texture.from('images/skeleton.png');
-  const textureTile = PIXI.Texture.from('images/tile_dungeon.png');
-  const textureWall = PIXI.Texture.from('images/bricks.png');
-  const textureExit = PIXI.Texture.from('images/hatch.png');
-  const textureChest = PIXI.Texture.from('images/chest.png');
-  const textureUiInventoryBorder = PIXI.Texture.from('images/ui/icon_border.png');
-  const textureUiInventoryBg = PIXI.Texture.from('images/ui/inventory_backdrop.png');
-
-  texturePlayer.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-  textureSkeleton.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-  textureTile.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-  textureWall.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-  textureExit.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-  textureChest.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-  textureUiInventoryBorder.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-  textureUiInventoryBg.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-
-  return {
-    texturePlayer,
-    textureSkeleton,
-    textureTile,
-    textureWall,
-    textureExit,
-    textureChest,
-    textureUiInventoryBorder,
-    textureUiInventoryBg,
-  };
-}
+export {
+  texturePlayer,
+  textureSkeleton,
+  textureTile,
+  textureWall,
+  textureExit,
+  textureChest,
+  textureUiInventoryBorder,
+  textureUiInventoryBg,
+  textureUiInventoryEquip,
+  textureIconSword,
+  textureIconHelmet,
+  textureIconChestplate,
+  textureIconGloves,
+  textureIconBoots,
+};
 
 export function createHpBar() {
   const hpBar = new PIXI.Graphics() as HpBar;
@@ -66,7 +67,16 @@ export function createHpBar() {
   return hpBar;
 }
 
-// TODO: Multiple icons
-export function getItemIcon(): PIXI.Texture {
-  return textureIconSword;
+export function getItemIcon(type: ItemType): PIXI.Texture {
+  const iconByType = {
+    [ItemType.Dagger]: textureIconSword,
+    [ItemType.Sword]: textureIconSword,
+    [ItemType.Greatsword]: textureIconSword,
+    [ItemType.Helmet]: textureIconHelmet,
+    [ItemType.Chestplate]: textureIconChestplate,
+    [ItemType.Gloves]: textureIconGloves,
+    [ItemType.Boots]: textureIconBoots,
+  };
+
+  return iconByType[type];
 }

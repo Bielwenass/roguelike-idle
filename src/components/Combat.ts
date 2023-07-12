@@ -11,7 +11,7 @@ import { state } from './State';
 import { Actor } from '../types/Actor';
 import { CombatContainer } from '../types/CombatContainer';
 
-import { timeout } from '../utils/delay';
+import { timeout } from '../utils/timeout';
 
 function makeMove(self: Actor, opponent: Actor): { self: Actor, opponent: Actor } {
   const chosenAction = self.strategy(self, opponent);

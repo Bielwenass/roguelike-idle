@@ -6,23 +6,34 @@ import { Item } from '../types/Item';
 
 function rollRarity(diffMod: number): ItemRarity {
   const rarityNum = Math.random();
-  let rarity = ItemRarity.Common;
 
   if (rarityNum < 0.003 * diffMod) {
-    rarity = ItemRarity.Legendary;
-  } else if (rarityNum < 0.015 * diffMod) {
-    rarity = ItemRarity.Epic;
-  } else if (rarityNum < 0.062 * diffMod) {
-    rarity = ItemRarity.Rare;
-  } else if (rarityNum < 0.25 * diffMod) {
-    rarity = ItemRarity.Uncommon;
+    return ItemRarity.Legendary;
+  } if (rarityNum < 0.015 * diffMod) {
+    return ItemRarity.Epic;
+  } if (rarityNum < 0.062 * diffMod) {
+    return ItemRarity.Rare;
+  } if (rarityNum < 0.25 * diffMod) {
+    return ItemRarity.Uncommon;
   }
 
-  return rarity;
+  return ItemRarity.Common;
 }
 
 function rollType(): ItemType {
-  return Math.random() > 0.5 ? ItemType.Armor : ItemType.Weapon;
+  const typeNum = Math.random();
+
+  if (typeNum < 0.2) {
+    return ItemType.Sword;
+  } if (typeNum < 0.4) {
+    return ItemType.Helmet;
+  } if (typeNum < 0.6) {
+    return ItemType.Chestplate;
+  } if (typeNum < 0.8) {
+    return ItemType.Gloves;
+  }
+
+  return ItemType.Boots;
 }
 
 export function rollItem(level: number, diffMod: number): Item {

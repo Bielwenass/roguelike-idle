@@ -1,5 +1,3 @@
-import { Sprite } from 'pixi.js';
-
 import { ItemRarity } from '../data/enums/ItemRarity';
 import { ItemType } from '../data/enums/ItemType';
 

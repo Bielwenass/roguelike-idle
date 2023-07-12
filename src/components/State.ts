@@ -11,6 +11,7 @@ import { createHpBar } from './Graphics';
 
 import { Actor } from '../types/Actor';
 import { CombatContainer } from '../types/CombatContainer';
+import { EquippedItems } from '../types/EquippedItems';
 import { Item } from '../types/Item';
 import { WorldContainer } from '../types/WorldContainer';
 
@@ -24,6 +25,7 @@ export interface State {
   inventory: {
     vault: Item[],
     temp: Item[],
+    equipped: EquippedItems,
   },
   meta: {
     lastItemId: number,
@@ -48,8 +50,9 @@ export const state: State = {
     lastActionTime: -1,
   },
   inventory: {
-    vault: [] as Item[],
-    temp: [] as Item[],
+    vault: [],
+    temp: [],
+    equipped: {} as EquippedItems,
   },
   meta: {
     lastItemId: 1,

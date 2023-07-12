@@ -9,9 +9,14 @@ import {
   spawnEntity,
   updateEntities,
 } from './components/Entities';
-import { initGraphics } from './components/Graphics';
 import {
-  updateGui, getGui, toggleInventoryDisplay, enableResizeGui,
+  texturePlayer,
+  textureSkeleton,
+  textureExit,
+  textureChest,
+} from './components/Graphics';
+import {
+  updateTempInventory, getGui, toggleInventoryDisplay, enableResizeGui,
 } from './components/Gui';
 import { rollItem } from './components/ItemGeneration';
 import { generateLevel, removeDisconnectedRegions } from './components/LevelGeneration';
@@ -21,9 +26,9 @@ import {
   convertToBoard,
   updateTiles,
   getRandomGroundTile,
+  tileBoard,
 } from './components/Tiling';
 import { enableResize } from './components/WindowResize';
-import { TILE_SIZE } from './constants';
 import { creaturePresets } from './data/creaturePresets';
 import { CombatResult } from './data/enums/CombatResult';
 import { CreatureType } from './data/enums/CreatureType';
@@ -34,21 +39,13 @@ import { Cell } from './types/Cell';
 import { Entity } from './types/Entity';
 import { WorldContainer } from './types/WorldContainer';
 
-import { timeout } from './utils/delay';
+import { flatten } from './utils/flatten';
+import { timeout } from './utils/timeout';
 
 // Create a canvas element
 document.body.appendChild(state.app.view);
 enableResizeGui(state.app.renderer);
 enableResize(state.app.renderer);
-
-const {
-  texturePlayer,
-  textureSkeleton,
-  textureTile,
-  textureWall,
-  textureExit,
-  textureChest,
-} = initGraphics();
 
 state.root = state.app.stage;
 
@@ -59,43 +56,10 @@ state.root.addChild(state.camera);
 // GUI setup
 state.root.addChild(getGui());
 
-// World setup
-state.world = new PIXI.Container() as WorldContainer;
-state.camera.addChild(state.world);
-
-// Board setup
-let protoBoard = await generateLevel(16, 16);
-
-protoBoard = removeDisconnectedRegions(protoBoard);
-state.world.board = convertToBoard(protoBoard);
-
-const isAutoMovement = true;
-
-async function movePlayerToCell(cell: Cell) {
-  moveEntity(state.player, cell.position);
-  const combatResult = await combatCheck();
-
-  if (combatResult === CombatResult.Won) {
-    const newItem = rollItem(1, 1);
-
-    state.inventory.temp.push(newItem);
-    updateGui(state.inventory.temp);
-  }
-
-  centerCameraOn(state.camera, state.player.sprite, state.app.screen);
-
-  state.world.board = updateTiles(state.player, state.world.board);
-  state.world.entities = updateEntities(state.world.entities, state.player);
-  state.world.enemies = updateEntities(state.world.enemies, state.player) as Actor[];
-
-  if (isAutoMovement) {
-    await timeout(5000 / state.player.speed);
-    movePlayerToCell(selectNextMove(state.player, state.world.board));
-  }
-}
+const isAutoMovement = false;
 
 function spawnEnemies() {
-  const enemiesCount = 64;
+  const enemiesCount = 10;
 
   state.world.enemies = Array(enemiesCount).fill(null).map(() => {
     const selectedTile = getRandomGroundTile(state.world.board, true);
@@ -130,43 +94,29 @@ function spawnEntities() {
   state.world.entities = updateEntities(state.world.entities, state.player) as Entity[];
 }
 
-function setup() {
-  for (const [x, cellRow] of state.world.board.entries()) {
-    for (const [y, cell] of cellRow.entries()) {
-      let newTileSprite;
+function resetWorld() {
+  // World setup
+  state.world.destroy();
+  state.world = new PIXI.Container() as WorldContainer;
+  state.camera.addChild(state.world);
+}
 
-      if (cell.isGround) {
-        newTileSprite = new PIXI.Sprite(textureTile);
-      } else {
-        newTileSprite = new PIXI.Sprite(textureWall);
-      }
+async function enterDungeon() {
+  // Board setup
+  let protoBoard = await generateLevel(16, 16);
 
-      newTileSprite.width = TILE_SIZE;
-      newTileSprite.height = TILE_SIZE;
+  protoBoard = removeDisconnectedRegions(protoBoard);
+  state.world.board = convertToBoard(protoBoard);
+  tileBoard(state.world);
 
-      const newTile = state.world.addChild(newTileSprite);
-
-      newTile.x = x * TILE_SIZE;
-      newTile.y = y * TILE_SIZE;
-
-      newTile.interactive = false;
-      newTile.visible = false;
-      cell.sprite = newTile;
-
-      if (!isAutoMovement) {
-        newTile.on('mousedown', (event) => {
-          event.stopPropagation();
-          movePlayerToCell(cell);
-        });
-      }
+  if (!isAutoMovement) {
+    for (const tile of flatten(state.world.board)) {
+      tile.sprite.on('mousedown', (event) => {
+        event.stopPropagation();
+        movePlayerToCell(tile);
+      });
     }
   }
-
-  document.body.addEventListener('keydown', ((event: KeyboardEvent) => {
-    if (event.key === 'i') {
-      toggleInventoryDisplay();
-    }
-  }));
 
   // Player setup
   const playerSpawnTile = getRandomGroundTile(state.world.board);
@@ -188,8 +138,52 @@ function setup() {
   state.world.board = updateTiles(state.player, state.world.board);
 
   if (isAutoMovement) {
+    await timeout(2000);
     movePlayerToCell(selectNextMove(state.player, state.world.board));
   }
+}
+
+async function movePlayerToCell(cell: Cell) {
+  moveEntity(state.player, cell.position);
+  const combatResult = await combatCheck();
+
+  if (combatResult === CombatResult.Won) {
+    const newItem = rollItem(1, 1);
+
+    state.inventory.temp.push(newItem);
+    updateTempInventory(state.inventory.temp);
+  }
+
+  centerCameraOn(state.camera, state.player.sprite, state.app.screen);
+
+  if (cell.entityType === EntityType.Exit) {
+    resetWorld();
+    enterDungeon();
+    state.camera.position.x = 0;
+    state.camera.position.y = 0;
+
+    return;
+  }
+
+  state.world.board = updateTiles(state.player, state.world.board);
+  state.world.entities = updateEntities(state.world.entities, state.player);
+  state.world.enemies = updateEntities(state.world.enemies, state.player) as Actor[];
+
+  if (isAutoMovement) {
+    await timeout(5000 / state.player.speed);
+    movePlayerToCell(selectNextMove(state.player, state.world.board));
+  }
+}
+
+async function setup() {
+  document.body.addEventListener('keydown', ((event: KeyboardEvent) => {
+    if (event.key === 'i') {
+      toggleInventoryDisplay();
+    }
+  }));
+
+  resetWorld();
+  await enterDungeon();
 }
 
 setup();

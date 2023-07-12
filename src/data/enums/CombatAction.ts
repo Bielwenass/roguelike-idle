@@ -1,5 +1,5 @@
 export enum CombatAction {
-  Attack,
+  Attack = 1,
   Defend,
   Heal,
   Wait,
