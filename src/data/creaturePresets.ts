@@ -7,10 +7,10 @@ export const creaturePresets = {
   [CreatureType.Player]: {
     name: 'Player',
     type: ActorType.Player,
-    maxHealth: 10,
+    maxHealth: 100,
     attack: 3,
     attackDelay: 1000,
-    speed: 2,
+    speed: 20,
     sightRange: 10,
   },
   [CreatureType.Skeleton]: {

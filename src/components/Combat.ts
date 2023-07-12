@@ -1,16 +1,15 @@
-import { Container, Point } from 'pixi.js';
+import { Container } from 'pixi.js';
 
 import { TILE_SIZE } from '../constants';
 import { combatActionEffects } from '../data/combatActionEffects';
 import { ActorType } from '../data/enums/ActorType';
+import { CombatResult } from '../data/enums/CombatResult';
 import { getScreenCenterX, getScreenCenterY } from './Camera';
 import { moveEntity } from './Entities';
-import { rollItem } from './ItemGeneration';
 import { state } from './State';
 
 import { Actor } from '../types/Actor';
 import { CombatContainer } from '../types/CombatContainer';
-import { CombatResult } from '../types/CombatResult';
 
 import { timeout } from '../utils/delay';
 
@@ -21,9 +20,9 @@ function makeMove(self: Actor, opponent: Actor): { self: Actor, opponent: Actor 
 }
 
 function updateHpBars(actors: Actor[]) {
-  actors.forEach((actor) => {
+  for (const actor of actors) {
     actor.hpBar.set(actor.currentHealth / actor.maxHealth);
-  });
+  }
 }
 
 async function combatLoop(self: Actor, opponent: Actor, delay: number): Promise<Actor> {
@@ -61,18 +60,20 @@ async function combatProcess(player: Actor, enemy: Actor): Promise<Actor> {
   return combatLoop(enemy, player, enemy.attackDelay);
 }
 
-export async function enterCombat(enemy: Actor): Promise<CombatResult> {
+export async function enterCombat(enemy: Actor): Promise<boolean> {
   state.world.visible = false;
-  const playerWorldPosition = state.player.position.clone();
 
+  const playerWorldPosition = state.player.position.clone();
   const combat = new Container() as CombatContainer;
 
+  combat.zIndex = 0;
   combat.enemy = enemy;
 
   // Show hp bars
   state.player.hpBar.visible = true;
   enemy.hpBar.visible = true;
 
+  // TODO: Move sprite logic elsewhere
   // Move actors to their combat positions
   combat.addChild(state.player.sprite);
   combat.addChild(enemy.sprite);
@@ -83,7 +84,7 @@ export async function enterCombat(enemy: Actor): Promise<CombatResult> {
   enemy.sprite.scale.x *= -1;
 
   state.combat = combat;
-  state.root.addChild(state.combat);
+  state.root.addChildAt(state.combat, 0);
 
   const winner = await combatProcess(state.player, state.combat.enemy);
 
@@ -105,22 +106,21 @@ export async function enterCombat(enemy: Actor): Promise<CombatResult> {
     moveEntity(state.player, playerWorldPosition);
   }
 
-  const reward = rollItem(1, 1);
-
-  return {
-    isWin,
-    rewards: [reward],
-  };
+  return isWin;
 }
 
-export async function combatCheck(): Promise<void[]> {
-  return Promise.all(state.world.enemies.map(async (enemy, enemyIdx) => {
-    if (enemy.position === state.player.position) {
-      const combatResult = await enterCombat(enemy);
+export async function combatCheck(): Promise<CombatResult> {
+  let result = CombatResult.DidNotFight;
+  const enemyIdx = state.world.enemies.findIndex((e) => e.position === state.player.position);
 
-      if (combatResult.isWin) {
-        state.world.enemies.splice(enemyIdx, 1);
-      }
+  if (enemyIdx !== -1) {
+    result = await enterCombat(state.world.enemies[enemyIdx]) ? CombatResult.Won : CombatResult.Lost;
+
+    // TODO: Move elsewhere
+    if (result === CombatResult.Won) {
+      state.world.enemies.splice(enemyIdx, 1);
     }
-  }));
+  }
+
+  return result;
 }

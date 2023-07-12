@@ -10,6 +10,10 @@ import {
   updateEntities,
 } from './components/Entities';
 import { initGraphics } from './components/Graphics';
+import {
+  updateGui, getGui, toggleInventoryDisplay, enableResizeGui,
+} from './components/Gui';
+import { rollItem } from './components/ItemGeneration';
 import { generateLevel, removeDisconnectedRegions } from './components/LevelGeneration';
 import { selectNextMove } from './components/Movement';
 import { state } from './components/State';
@@ -21,6 +25,7 @@ import {
 import { enableResize } from './components/WindowResize';
 import { TILE_SIZE } from './constants';
 import { creaturePresets } from './data/creaturePresets';
+import { CombatResult } from './data/enums/CombatResult';
 import { CreatureType } from './data/enums/CreatureType';
 import { EntityType } from './data/enums/EntityType';
 
@@ -33,6 +38,7 @@ import { timeout } from './utils/delay';
 
 // Create a canvas element
 document.body.appendChild(state.app.view);
+enableResizeGui(state.app.renderer);
 enableResize(state.app.renderer);
 
 const {
@@ -50,6 +56,9 @@ state.root = state.app.stage;
 state.camera = initCamera();
 state.root.addChild(state.camera);
 
+// GUI setup
+state.root.addChild(getGui());
+
 // World setup
 state.world = new PIXI.Container() as WorldContainer;
 state.camera.addChild(state.world);
@@ -64,7 +73,15 @@ const isAutoMovement = true;
 
 async function movePlayerToCell(cell: Cell) {
   moveEntity(state.player, cell.position);
-  await combatCheck();
+  const combatResult = await combatCheck();
+
+  if (combatResult === CombatResult.Won) {
+    const newItem = rollItem(1, 1);
+
+    state.inventory.temp.push(newItem);
+    updateGui(state.inventory.temp);
+  }
+
   centerCameraOn(state.camera, state.player.sprite, state.app.screen);
 
   state.world.board = updateTiles(state.player, state.world.board);
@@ -78,9 +95,9 @@ async function movePlayerToCell(cell: Cell) {
 }
 
 function spawnEnemies() {
-  const enemiesCount = 16;
+  const enemiesCount = 64;
 
-  state.world.enemies = Array.from(Array(enemiesCount)).map(() => {
+  state.world.enemies = Array(enemiesCount).fill(null).map(() => {
     const selectedTile = getRandomGroundTile(state.world.board, true);
 
     selectedTile.hasActor = true;
@@ -99,23 +116,23 @@ function spawnEnemies() {
 function spawnEntities() {
   state.world.entities = [];
 
-  state.world.board.forEach((cellRow) => {
-    cellRow.forEach((cell) => {
+  for (const cellRow of state.world.board) {
+    for (const cell of cellRow) {
       if (cell.entityType === EntityType.Exit) {
         state.world.entities.push(spawnEntity(state.world, textureExit, cell.position));
       }
       if (cell.entityType === EntityType.Chest) {
         state.world.entities.push(spawnEntity(state.world, textureChest, cell.position));
       }
-    });
-  });
+    }
+  }
 
   state.world.entities = updateEntities(state.world.entities, state.player) as Entity[];
 }
 
 function setup() {
-  state.world.board.forEach((cellRow, x) => {
-    cellRow.forEach((cell, y) => {
+  for (const [x, cellRow] of state.world.board.entries()) {
+    for (const [y, cell] of cellRow.entries()) {
       let newTileSprite;
 
       if (cell.isGround) {
@@ -142,8 +159,14 @@ function setup() {
           movePlayerToCell(cell);
         });
       }
-    });
-  });
+    }
+  }
+
+  document.body.addEventListener('keydown', ((event: KeyboardEvent) => {
+    if (event.key === 'i') {
+      toggleInventoryDisplay();
+    }
+  }));
 
   // Player setup
   const playerSpawnTile = getRandomGroundTile(state.world.board);

@@ -123,12 +123,12 @@ export function removeDisconnectedRegions(board: number[][]): number[][] {
   let maxArea = 0;
   let largestRegionId = 0;
 
-  areaByRegion.forEach((area, regionId) => {
+  for (const [regionId, area] of areaByRegion) {
     if (area > maxArea) {
       largestRegionId = regionId;
       maxArea = area;
     }
-  });
+  }
 
   // Leave largest region tiles intact, set others to be walls
   return board.map((xArr, x) => xArr.map((cellValue, y) => (tileRegion[x][y] === largestRegionId ? cellValue : 0)));

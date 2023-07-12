@@ -1,5 +1,6 @@
 import { ItemRarity } from '../data/enums/ItemRarity';
 import { ItemType } from '../data/enums/ItemType';
+import { state } from './State';
 
 import { Item } from '../types/Item';
 
@@ -27,8 +28,12 @@ function rollType(): ItemType {
 export function rollItem(level: number, diffMod: number): Item {
   const itemRarity = rollRarity(diffMod);
   const itemType = rollType();
+  const id = state.meta.lastItemId + 1;
+
+  state.meta.lastItemId += 1;
 
   return {
+    id,
     type: itemType,
     rarity: itemRarity,
     level: 1,

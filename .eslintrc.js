@@ -31,6 +31,14 @@ module.exports = {
       ignoreRegExpLiterals: true,
     }],
 
+    // Disallow certain syntax forms
+    'no-restricted-syntax': [
+      'error',
+      'ForInStatement',
+      'LabeledStatement',
+      'WithStatement',
+    ],
+
     // Padding lines
     'padding-line-between-statements': ['error',
 

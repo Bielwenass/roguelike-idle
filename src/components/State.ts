@@ -11,6 +11,7 @@ import { createHpBar } from './Graphics';
 
 import { Actor } from '../types/Actor';
 import { CombatContainer } from '../types/CombatContainer';
+import { Item } from '../types/Item';
 import { WorldContainer } from '../types/WorldContainer';
 
 export interface State {
@@ -20,6 +21,13 @@ export interface State {
   world: WorldContainer,
   combat: CombatContainer,
   player: Actor,
+  inventory: {
+    vault: Item[],
+    temp: Item[],
+  },
+  meta: {
+    lastItemId: number,
+  }
 }
 
 // Initial state
@@ -38,5 +46,12 @@ export const state: State = {
     strategy: strategies.dummy,
     movement: movements.random,
     lastActionTime: -1,
+  },
+  inventory: {
+    vault: [] as Item[],
+    temp: [] as Item[],
+  },
+  meta: {
+    lastItemId: 1,
   },
 };

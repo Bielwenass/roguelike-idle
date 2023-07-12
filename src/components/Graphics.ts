@@ -2,6 +2,10 @@ import * as PIXI from 'pixi.js';
 
 import { HpBar } from '../types/HpBar';
 
+const textureIconSword = PIXI.Texture.from('images/ui/icon_sword.png');
+
+textureIconSword.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+
 export function initGraphics() {
   // TODO Look into later
   // const TextureCache = PIXI.utils.TextureCache
@@ -15,6 +19,8 @@ export function initGraphics() {
   const textureWall = PIXI.Texture.from('images/bricks.png');
   const textureExit = PIXI.Texture.from('images/hatch.png');
   const textureChest = PIXI.Texture.from('images/chest.png');
+  const textureUiInventoryBorder = PIXI.Texture.from('images/ui/icon_border.png');
+  const textureUiInventoryBg = PIXI.Texture.from('images/ui/inventory_backdrop.png');
 
   texturePlayer.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
   textureSkeleton.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
@@ -22,6 +28,8 @@ export function initGraphics() {
   textureWall.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
   textureExit.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
   textureChest.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+  textureUiInventoryBorder.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+  textureUiInventoryBg.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
 
   return {
     texturePlayer,
@@ -30,6 +38,8 @@ export function initGraphics() {
     textureWall,
     textureExit,
     textureChest,
+    textureUiInventoryBorder,
+    textureUiInventoryBg,
   };
 }
 
@@ -54,4 +64,9 @@ export function createHpBar() {
   };
 
   return hpBar;
+}
+
+// TODO: Multiple icons
+export function getItemIcon(): PIXI.Texture {
+  return textureIconSword;
 }
