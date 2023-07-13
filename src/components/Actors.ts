@@ -31,5 +31,6 @@ export function spawnActor(
     strategy: strategies.dummy,
     movement: movements.random,
     lastActionTime: -1,
+    lastCells: Array(5),
   };
 }
