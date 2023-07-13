@@ -1,4 +1,5 @@
 import { CombatAction } from './enums/CombatAction';
+import { getDamage } from '../components/formulas/Attack';
 
 import { Actor } from '../types/Actor';
 
@@ -7,7 +8,7 @@ export const combatActionEffects = {
     self,
     opponent: {
       ...opponent,
-      currentHealth: opponent.currentHealth - self.attack,
+      currentHealth: opponent.currentHealth - getDamage(self, opponent),
     } as Actor,
   }),
   // TODO
