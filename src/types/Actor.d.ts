@@ -27,5 +27,6 @@ export interface Actor extends ActorBase, Entity {
   hpBar: HpBar,
   strategy: Strategy,
   movement: Movement,
+  lastCells: Cell[],
   lastActionTime: number,
 }

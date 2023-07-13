@@ -48,6 +48,7 @@ export const state: State = {
     strategy: strategies.dummy,
     movement: movements.random,
     lastActionTime: -1,
+    lastCells: new Array(5), // array size defines how many last movements to keep
   },
   inventory: {
     vault: [],

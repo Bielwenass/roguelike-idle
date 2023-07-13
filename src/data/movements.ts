@@ -1,30 +1,51 @@
 import { MovementAction } from './enums/MovementAction';
 
-import { Movement } from '../types/Actor';
+import { Actor, Movement } from '../types/Actor';
 
 import { isGroundCell } from '../utils/isGroundCell';
+import { Cell } from '../types/Cell';
 
 export const movements = {
   random: (self, playBoard) => {
-    const availableDirections = [];
+    const availableDirections: MovementAction[] = [];
 
-    if (isGroundCell(self.position.x - 1, self.position.y, playBoard)) {
-      availableDirections.push(MovementAction.Left);
+    const basicDirections = [
+      {action: MovementAction.Left, point: [-1, 0]},
+      {action: MovementAction.Up, point: [0, -1]},
+      {action: MovementAction.Right, point: [1, 0]},
+      {action: MovementAction.Down, point: [0, 1]},
+    ];
+
+    // 1st cycle: try to find directions without moving backward
+    availableDirections.push(...basicDirections.filter(a => 
+      isPossibleDirection(self, a.point[0], a.point[1], playBoard) && !isRecentDirection(self, a.point[0], a.point[1])
+    ).map(a => a.action));
+
+    if (availableDirections.length > 0) {
+      return getRandomDirection(availableDirections);
     }
-    if (isGroundCell(self.position.x, self.position.y - 1, playBoard)) {
-      availableDirections.push(MovementAction.Up);
-    }
-    if (isGroundCell(self.position.x + 1, self.position.y, playBoard)) {
-      availableDirections.push(MovementAction.Right);
-    }
-    if (isGroundCell(self.position.x, self.position.y + 1, playBoard)) {
-      availableDirections.push(MovementAction.Down);
-    }
+
+    // 2nd cycle: try to find any possible direction
+    availableDirections.push(...basicDirections.filter(a => 
+      isPossibleDirection(self, a.point[0], a.point[1], playBoard)
+    ).map(a => a.action));
 
     if (availableDirections.length === 0) {
-      return MovementAction.Skip;
+      return MovementAction.Skip; 
     }
 
-    return availableDirections[Math.floor(Math.random() * availableDirections.length)];
+    return getRandomDirection(availableDirections);
   },
 } as Record<string, Movement>;
+
+function getRandomDirection(availableDirections: MovementAction[]): MovementAction {
+  return availableDirections[Math.floor(Math.random() * availableDirections.length)];
+}
+
+function isPossibleDirection(actor: Actor, x: number, y: number, playBoard: Cell[][]): boolean {
+  return isGroundCell(actor.position.x + x, actor.position.y + y, playBoard);
+}
+
+function isRecentDirection(actor: Actor, x: number, y: number): boolean {
+  return actor.lastCells.some(o => o.position.x === (actor.position.x + x) && o.position.y === (actor.position.y + y));
+}

@@ -145,6 +145,8 @@ async function enterDungeon() {
 
 async function movePlayerToCell(cell: Cell) {
   moveEntity(state.player, cell.position);
+  state.player.lastCells.unshift(cell);
+  state.player.lastCells.pop();
   const combatResult = await combatCheck();
 
   if (combatResult === CombatResult.Won) {
