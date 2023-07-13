@@ -6,14 +6,12 @@ import { centerCameraOn, initCamera } from './components/Camera';
 import { combatCheck } from './components/Combat';
 import {
   moveEntity,
-  spawnEntity,
-  updateEntities,
+  spawnEntities,
+  updateEntitiesVisibility,
 } from './components/Entities';
 import {
   texturePlayer,
   textureSkeleton,
-  textureExit,
-  textureChest,
 } from './components/Graphics';
 import {
   updateTempInventory, getGui, toggleInventoryDisplay, enableResizeGui,
@@ -24,7 +22,7 @@ import { selectNextMove } from './components/Movement';
 import { state } from './components/State';
 import {
   convertToBoard,
-  updateTiles,
+  updateTilesVisibility,
   getRandomGroundTile,
   tileBoard,
 } from './components/Tiling';
@@ -36,7 +34,6 @@ import { EntityType } from './data/enums/EntityType';
 
 import { Actor } from './types/Actor';
 import { Cell } from './types/Cell';
-import { Entity } from './types/Entity';
 import { WorldContainer } from './types/WorldContainer';
 
 import { flatten } from './utils/flatten';
@@ -57,11 +54,10 @@ state.root.addChild(state.camera);
 state.root.addChild(getGui());
 
 const isAutoMovement = true;
+let worldLevel = 1;
 
-function spawnEnemies() {
-  const enemiesCount = 16;
-
-  state.world.enemies = Array(enemiesCount).fill(null).map(() => {
+function spawnEnemies(count: number): Actor[] {
+  state.world.enemies = Array(count).fill(null).map(() => {
     const selectedTile = getRandomGroundTile(state.world.board, true);
 
     selectedTile.hasActor = true;
@@ -74,36 +70,19 @@ function spawnEnemies() {
     );
   });
 
-  state.world.enemies = updateEntities(state.world.enemies, state.player) as Actor[];
+  return updateEntitiesVisibility(state.world.enemies, state.player) as Actor[];
 }
 
-function spawnEntities() {
-  state.world.entities = [];
-
-  for (const cellRow of state.world.board) {
-    for (const cell of cellRow) {
-      if (cell.entityType === EntityType.Exit) {
-        state.world.entities.push(spawnEntity(state.world, textureExit, cell.position));
-      }
-      if (cell.entityType === EntityType.Chest) {
-        state.world.entities.push(spawnEntity(state.world, textureChest, cell.position));
-      }
-    }
-  }
-
-  state.world.entities = updateEntities(state.world.entities, state.player) as Entity[];
-}
-
-function resetWorld() {
+function resetWorld(): void {
   // World setup
   state.world.destroy();
   state.world = new PIXI.Container() as WorldContainer;
   state.camera.addChild(state.world);
 }
 
-async function enterDungeon() {
+async function enterDungeon(level: number): Promise<void> {
   // Board setup
-  let protoBoard = await generateLevel(16, 16);
+  let protoBoard = await generateLevel(level + 6, level + 6);
 
   protoBoard = removeDisconnectedRegions(protoBoard);
   state.world.board = convertToBoard(protoBoard);
@@ -132,10 +111,10 @@ async function enterDungeon() {
   state.player.sprite.visible = true;
   centerCameraOn(state.camera, state.player.sprite, state.app.screen);
 
-  spawnEnemies();
-  spawnEntities();
-
-  state.world.board = updateTiles(state.player, state.world.board);
+  state.world.enemies = spawnEnemies(level * 2 + 4);
+  state.world.entities = spawnEntities(state.world);
+  state.world.entities = updateEntitiesVisibility(state.world.entities, state.player);
+  state.world.board = updateTilesVisibility(state.player, state.world.board);
 
   if (isAutoMovement) {
     await timeout(2000);
@@ -150,7 +129,7 @@ async function movePlayerToCell(cell: Cell) {
   const combatResult = await combatCheck();
 
   if (combatResult === CombatResult.Won) {
-    const newItem = rollItem(1, 1);
+    const newItem = rollItem(worldLevel, 1);
 
     state.inventory.temp.push(newItem);
     updateTempInventory(state.inventory.temp);
@@ -160,16 +139,16 @@ async function movePlayerToCell(cell: Cell) {
 
   if (cell.entityType === EntityType.Exit) {
     resetWorld();
-    enterDungeon();
+    enterDungeon(worldLevel += 1);
     state.camera.position.x = 0;
     state.camera.position.y = 0;
 
     return;
   }
 
-  state.world.board = updateTiles(state.player, state.world.board);
-  state.world.entities = updateEntities(state.world.entities, state.player);
-  state.world.enemies = updateEntities(state.world.enemies, state.player) as Actor[];
+  state.world.board = updateTilesVisibility(state.player, state.world.board);
+  state.world.entities = updateEntitiesVisibility(state.world.entities, state.player);
+  state.world.enemies = updateEntitiesVisibility(state.world.enemies, state.player) as Actor[];
 
   if (isAutoMovement) {
     await timeout(5000 / state.player.speed);
@@ -185,7 +164,7 @@ async function setup() {
   }));
 
   resetWorld();
-  await enterDungeon();
+  await enterDungeon(worldLevel);
 }
 
 setup();

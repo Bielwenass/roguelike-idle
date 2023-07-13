@@ -5,12 +5,25 @@ import {
   Texture,
 } from 'pixi.js';
 
+import { textureChest, textureExit } from './Graphics';
 import { TILE_SIZE } from '../constants';
+import { EntityType } from '../data/enums/EntityType';
 
 import { Actor } from '../types/Actor';
 import { Entity } from '../types/Entity';
+import { WorldContainer } from '../types/WorldContainer';
 
 import { getDistance } from '../utils/getDistance';
+
+export function updateEntitiesVisibility(entities: Entity[], player: Actor) {
+  return entities.map((e) => {
+    const dist = getDistance(e.position, player.position);
+
+    e.sprite.visible = dist <= player.sightRange;
+
+    return e;
+  });
+}
 
 export function spawnEntity(
   parent: Container,
@@ -35,14 +48,21 @@ export function spawnEntity(
   };
 }
 
-export function updateEntities(entities: Entity[], player: Actor) {
-  return entities.map((e) => {
-    const dist = getDistance(e.position, player.position);
+export function spawnEntities(world: WorldContainer): Entity[] {
+  world.entities = [];
 
-    e.sprite.visible = dist <= player.sightRange;
+  for (const cellRow of world.board) {
+    for (const cell of cellRow) {
+      if (cell.entityType === EntityType.Exit) {
+        world.entities.push(spawnEntity(world, textureExit, cell.position));
+      }
+      if (cell.entityType === EntityType.Chest) {
+        world.entities.push(spawnEntity(world, textureChest, cell.position));
+      }
+    }
+  }
 
-    return e;
-  });
+  return world.entities;
 }
 
 export function moveEntity(entity: Entity, point: Point): void {

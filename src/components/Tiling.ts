@@ -90,7 +90,7 @@ export function tileBoard(world: WorldContainer) {
 }
 
 // Update tiles visibility
-export function updateTiles(player: Actor, playBoard: Cell[][]): Cell[][] {
+export function updateTilesVisibility(player: Actor, playBoard: Cell[][]): Cell[][] {
   return playBoard.map((e) => e.map((cell) => {
     const dist = getDistance(player.position, cell.position);
 
