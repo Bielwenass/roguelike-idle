@@ -2,6 +2,7 @@ import { state } from './State';
 import { ItemRarity } from '../data/enums/ItemRarity';
 import { ItemType } from '../data/enums/ItemType';
 import { itemPresets } from '../data/items/itemPresets';
+import { itemStatModByRarity } from '../data/items/itemStatModByRarity';
 
 import { Item, ItemBase } from '../types/Item';
 
@@ -41,10 +42,29 @@ function rollType(): ItemType {
   return ItemType.Boots;
 }
 
-function rollStats(type: ItemType, rarity: ItemRarity, level: number): ItemBase {
-  const item = itemPresets[type];
+// Stat modifiers from rarity, 1.0 to 1.35
+function getRarityMod(rarity: ItemRarity): number {
+  const range = itemStatModByRarity.get(rarity)!;
 
-  item.goldValue *= level * (1 + rarity / 2);
+  return range[0] + Math.random() * (range[1] - range[0]);
+}
+
+function rollStats(type: ItemType, rarity: ItemRarity, level: number): ItemBase {
+  const item = {
+    ...itemPresets[type],
+  };
+
+  if (item.attack) {
+    item.attack = Math.floor(getRarityMod(rarity) * item.attack * 1.09 ** level);
+  }
+  if (item.defense) {
+    item.defense = Math.floor(getRarityMod(rarity) * item.defense * 1.09 ** level);
+  }
+  if (item.speed) {
+    item.speed = Math.floor(getRarityMod(rarity) * item.speed * 1.02 ** level);
+  }
+
+  item.goldValue *= Math.floor((level ** 1.1) * ((getRarityMod(rarity) - 1) * 20 + 1));
 
   return item;
 }
