@@ -23,8 +23,8 @@ import { state } from './components/State';
 import {
   convertToBoard,
   updateTilesVisibility,
-  getRandomGroundTile,
   tileBoard,
+  getRandomFreeTilePoint,
 } from './components/Tiling';
 import { enableResize } from './components/WindowResize';
 import { creaturePresets } from './data/creaturePresets';
@@ -58,7 +58,8 @@ let worldLevel = 1;
 
 function spawnEnemies(count: number): Actor[] {
   state.world.enemies = Array(count).fill(null).map(() => {
-    const selectedTile = getRandomGroundTile(state.world.board, true);
+    const selectedTilePoint = getRandomFreeTilePoint();
+    const selectedTile = state.world.board[selectedTilePoint.x][selectedTilePoint.y];
 
     selectedTile.hasActor = true;
 
@@ -98,7 +99,8 @@ async function enterDungeon(level: number): Promise<void> {
   }
 
   // Player setup
-  const playerSpawnTile = getRandomGroundTile(state.world.board);
+  const playerSpawnTilePoint = getRandomFreeTilePoint();
+  const playerSpawnTile = state.world.board[playerSpawnTilePoint.x][playerSpawnTilePoint.y];
 
   playerSpawnTile.hasActor = true;
 
