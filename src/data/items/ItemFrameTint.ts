@@ -1,6 +1,6 @@
 import { ItemRarity } from '../enums/ItemRarity';
 
-export const itemFrameTint = {
+export const itemFrameTint: Record<ItemRarity, number> = {
   [ItemRarity.Common]: 0xcccccc,
   [ItemRarity.Uncommon]: 0x3abe00,
   [ItemRarity.Rare]: 0x3f79d3,

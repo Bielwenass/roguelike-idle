@@ -4,7 +4,7 @@ import { Movement } from '../types/Actor';
 
 import { isGroundCell } from '../utils/isGroundCell';
 
-export const movements = {
+export const movements: Record<string, Movement> = {
   random: (self, playBoard) => {
     const availableDirections = [];
 
@@ -27,4 +27,4 @@ export const movements = {
 
     return availableDirections[Math.floor(Math.random() * availableDirections.length)];
   },
-} as Record<string, Movement>;
+};

@@ -3,7 +3,7 @@ import { CreatureType } from './enums/CreatureType';
 
 import { ActorBase } from '../types/Actor';
 
-export const creaturePresets = {
+export const creaturePresets: Record<CreatureType, ActorBase> = {
   [CreatureType.Player]: {
     name: 'Player',
     type: ActorType.Player,
@@ -24,4 +24,4 @@ export const creaturePresets = {
     speed: 2,
     sightRange: 3,
   },
-} as Record<CreatureType, ActorBase>;
+};

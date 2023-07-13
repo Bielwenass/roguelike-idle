@@ -2,6 +2,6 @@ import { CombatAction } from './enums/CombatAction';
 
 import { Strategy } from '../types/Actor';
 
-export const strategies = {
+export const strategies: Record<string, Strategy> = {
   dummy: () => CombatAction.Attack,
-} as Record<string, Strategy>;
+};
