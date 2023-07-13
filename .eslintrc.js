@@ -8,7 +8,7 @@ module.exports = {
     'airbnb-typescript/base'
   ],
   parserOptions: {
-    ecmaVersion: 2020,
+    ecmaVersion: 'latest',
     ecmaFeatures: {
       useStrict: true,
     },
