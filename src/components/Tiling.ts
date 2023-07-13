@@ -1,9 +1,9 @@
 import { Point } from '@pixi/math';
 import { Sprite } from '@pixi/sprite';
 
+import { textureTile, textureWall } from './Graphics';
 import { TILE_SIZE } from '../constants';
 import { EntityType } from '../data/enums/EntityType';
-import { textureTile, textureWall } from './Graphics';
 
 import { Actor } from '../types/Actor';
 import { Cell } from '../types/Cell';

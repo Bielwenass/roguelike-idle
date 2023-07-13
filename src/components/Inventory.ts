@@ -1,4 +1,4 @@
-import { itemSlotByType } from '../data/itemSlotByType';
+import { itemSlotByType } from '../data/items/itemSlotByType';
 import { state } from './State';
 
 import { Item } from '../types/Item';

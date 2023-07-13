@@ -1,5 +1,5 @@
-import { ItemSlot } from './enums/ItemSlot';
-import { ItemType } from './enums/ItemType';
+import { ItemSlot } from '../enums/ItemSlot';
+import { ItemType } from '../enums/ItemType';
 
 export const itemSlotByType = {
   [ItemType.Dagger]: ItemSlot.Weapon,

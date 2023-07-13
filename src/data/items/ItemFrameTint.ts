@@ -1,4 +1,4 @@
-import { ItemRarity } from './enums/ItemRarity';
+import { ItemRarity } from '../enums/ItemRarity';
 
 export const itemFrameTint = {
   [ItemRarity.Common]: 0xcccccc,

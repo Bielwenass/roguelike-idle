@@ -3,11 +3,11 @@ import { Point } from '@pixi/math';
 import { Sprite } from '@pixi/sprite';
 import { Application } from 'pixi.js';
 
+import { createHpBar } from './Graphics';
 import { creaturePresets } from '../data/creaturePresets';
 import { CreatureType } from '../data/enums/CreatureType';
 import { movements } from '../data/movements';
 import { strategies } from '../data/strategies';
-import { createHpBar } from './Graphics';
 
 import { Actor } from '../types/Actor';
 import { CombatContainer } from '../types/CombatContainer';
@@ -16,7 +16,7 @@ import { Item } from '../types/Item';
 import { WorldContainer } from '../types/WorldContainer';
 
 export interface State {
-  app: Application,
+  app: Application<HTMLCanvasElement>,
   root: Container,
   camera: Container,
   world: WorldContainer,

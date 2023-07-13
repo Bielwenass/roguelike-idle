@@ -1,9 +1,7 @@
 import { Container } from '@pixi/display';
 import { Sprite } from '@pixi/sprite';
-import { AbstractRenderer, Point } from 'pixi.js';
+import { Application, Point } from 'pixi.js';
 
-import { ItemSlot } from '../data/enums/ItemSlot';
-import { itemFrameTint } from '../data/ItemFrameTint';
 import { getScreenCenterX, getScreenCenterY } from './Camera';
 // TODO: Standardize texture usage
 import {
@@ -14,6 +12,8 @@ import {
 } from './Graphics';
 import { equipItem, unequipItem } from './Inventory';
 import { state } from './State';
+import { ItemSlot } from '../data/enums/ItemSlot';
+import { itemFrameTint } from '../data/items/ItemFrameTint';
 
 import { EquippedItems } from '../types/EquippedItems';
 import { Item } from '../types/Item';
@@ -148,7 +148,7 @@ export function toggleInventoryDisplay() {
   inventoryGui.visible = !inventoryGui.visible;
 }
 
-export function enableResizeGui(renderer: AbstractRenderer) {
+export function enableResizeGui(renderer: Application['renderer']) {
   renderer.on('resize', () => centerInventory());
 }
 

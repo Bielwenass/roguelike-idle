@@ -4,10 +4,10 @@ import {
   Texture,
 } from 'pixi.js';
 
-import { movements } from '../data/movements';
-import { strategies } from '../data/strategies';
 import { spawnEntity } from './Entities';
 import { createHpBar } from './Graphics';
+import { movements } from '../data/movements';
+import { strategies } from '../data/strategies';
 
 import { Actor, ActorBase } from '../types/Actor';
 

@@ -56,10 +56,10 @@ state.root.addChild(state.camera);
 // GUI setup
 state.root.addChild(getGui());
 
-const isAutoMovement = false;
+const isAutoMovement = true;
 
 function spawnEnemies() {
-  const enemiesCount = 10;
+  const enemiesCount = 16;
 
   state.world.enemies = Array(enemiesCount).fill(null).map(() => {
     const selectedTile = getRandomGroundTile(state.world.board, true);

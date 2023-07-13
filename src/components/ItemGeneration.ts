@@ -1,8 +1,9 @@
+import { state } from './State';
 import { ItemRarity } from '../data/enums/ItemRarity';
 import { ItemType } from '../data/enums/ItemType';
-import { state } from './State';
+import { itemPresets } from '../data/items/itemPresets';
 
-import { Item } from '../types/Item';
+import { Item, ItemBase } from '../types/Item';
 
 function rollRarity(diffMod: number): ItemRarity {
   const rarityNum = Math.random();
@@ -23,17 +24,29 @@ function rollRarity(diffMod: number): ItemRarity {
 function rollType(): ItemType {
   const typeNum = Math.random();
 
-  if (typeNum < 0.2) {
+  if (typeNum < 0.1) {
+    return ItemType.Dagger;
+  } if (typeNum < 0.2) {
     return ItemType.Sword;
-  } if (typeNum < 0.4) {
+  } if (typeNum < 0.3) {
+    return ItemType.Greatsword;
+  } if (typeNum < 0.475) {
     return ItemType.Helmet;
-  } if (typeNum < 0.6) {
+  } if (typeNum < 0.65) {
     return ItemType.Chestplate;
-  } if (typeNum < 0.8) {
+  } if (typeNum < 0.825) {
     return ItemType.Gloves;
   }
 
   return ItemType.Boots;
+}
+
+function rollStats(type: ItemType, rarity: ItemRarity, level: number): ItemBase {
+  const item = itemPresets[type];
+
+  item.goldValue *= level * (1 + rarity / 2);
+
+  return item;
 }
 
 export function rollItem(level: number, diffMod: number): Item {
@@ -47,7 +60,7 @@ export function rollItem(level: number, diffMod: number): Item {
     id,
     type: itemType,
     rarity: itemRarity,
-    level: 1,
-    goldValue: 1,
+    level,
+    ...rollStats(itemType, itemRarity, level),
   };
 }
