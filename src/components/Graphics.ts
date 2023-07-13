@@ -21,7 +21,9 @@ const textureChest = PIXI.Texture.from('images/chest.png');
 const textureUiInventoryBorder = PIXI.Texture.from('images/ui/icon_border.png');
 const textureUiInventoryBg = PIXI.Texture.from('images/ui/inventory_backdrop.png');
 const textureUiInventoryEquip = PIXI.Texture.from('images/ui/equipment_backdrop.png');
+const textureIconDagger = PIXI.Texture.from('images/ui/icon_dagger.png');
 const textureIconSword = PIXI.Texture.from('images/ui/icon_sword.png');
+const textureIconGreatsword = PIXI.Texture.from('images/ui/icon_greatsword.png');
 const textureIconHelmet = PIXI.Texture.from('images/ui/icon_helmet.png');
 const textureIconChestplate = PIXI.Texture.from('images/ui/icon_chestplate.png');
 const textureIconGloves = PIXI.Texture.from('images/ui/icon_gloves.png');
@@ -37,7 +39,9 @@ export {
   textureUiInventoryBorder,
   textureUiInventoryBg,
   textureUiInventoryEquip,
+  textureIconDagger,
   textureIconSword,
+  textureIconGreatsword,
   textureIconHelmet,
   textureIconChestplate,
   textureIconGloves,
@@ -69,9 +73,9 @@ export function createHpBar() {
 
 export function getItemIcon(type: ItemType): PIXI.Texture {
   const iconByType = {
-    [ItemType.Dagger]: textureIconSword,
+    [ItemType.Dagger]: textureIconDagger,
     [ItemType.Sword]: textureIconSword,
-    [ItemType.Greatsword]: textureIconSword,
+    [ItemType.Greatsword]: textureIconGreatsword,
     [ItemType.Helmet]: textureIconHelmet,
     [ItemType.Chestplate]: textureIconChestplate,
     [ItemType.Gloves]: textureIconGloves,
