@@ -3,6 +3,8 @@ import { MovementAction } from '../data/enums/MovementAction';
 import { Actor } from '../types/Actor';
 import { Cell } from '../types/Cell';
 
+import { isGroundCell } from '../utils/isGroundCell';
+
 export function selectNextMove(self: Actor, playBoard: Cell[][]): Cell {
   switch (self.movement(self, playBoard)) {
     case MovementAction.Left:
@@ -16,9 +18,18 @@ export function selectNextMove(self: Actor, playBoard: Cell[][]): Cell {
 
     case MovementAction.Down:
       return playBoard[self.position.x][self.position.y + 1];
-  
+
     default:
       // Don't move if "Skip" action is chosen
       return playBoard[self.position.x][self.position.y];
   }
+}
+
+export function isPossibleDirection(actor: Actor, point: number[], playBoard: Cell[][]): boolean {
+  return isGroundCell(actor.position.x + point[0], actor.position.y + point[1], playBoard);
+}
+
+export function isRecentDirection(actor: Actor, point: number[]): boolean {
+  return actor.lastCells.some((e) => e.position.x === (actor.position.x + point[0])
+  && e.position.y === (actor.position.y + point[1]));
 }
