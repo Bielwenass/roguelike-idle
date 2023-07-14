@@ -6,20 +6,16 @@ import {
 } from 'pixi.js';
 
 import { textureChest, textureExit } from './Graphics';
+import { isPointVisible } from './Tiling';
 import { TILE_SIZE } from '../constants';
 import { EntityType } from '../data/enums/EntityType';
 
-import { Actor } from '../types/Actor';
 import { Entity } from '../types/Entity';
 import { WorldContainer } from '../types/WorldContainer';
 
-import { getDistance } from '../utils/getDistance';
-
-export function updateEntitiesVisibility(entities: Entity[], player: Actor) {
+export function updateEntitiesVisibility(entities: Entity[]) {
   return entities.map((e) => {
-    const dist = getDistance(e.position, player.position);
-
-    e.sprite.visible = dist <= player.sightRange;
+    e.sprite.visible = isPointVisible(e.position);
 
     return e;
   });

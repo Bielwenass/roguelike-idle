@@ -71,7 +71,7 @@ function spawnEnemies(count: number): Actor[] {
     );
   });
 
-  return updateEntitiesVisibility(state.world.enemies, state.player) as Actor[];
+  return updateEntitiesVisibility(state.world.enemies) as Actor[];
 }
 
 function resetWorld(): void {
@@ -113,10 +113,10 @@ async function enterDungeon(level: number): Promise<void> {
   state.player.sprite.visible = true;
   centerCameraOn(state.camera, state.player.sprite, state.app.screen);
 
+  state.world.board = updateTilesVisibility(state.player, state.world.board);
   state.world.enemies = spawnEnemies(level * 2 + 4);
   state.world.entities = spawnEntities(state.world);
-  state.world.entities = updateEntitiesVisibility(state.world.entities, state.player);
-  state.world.board = updateTilesVisibility(state.player, state.world.board);
+  state.world.entities = updateEntitiesVisibility(state.world.entities);
 
   if (isAutoMovement) {
     await timeout(2000);
@@ -149,8 +149,8 @@ async function movePlayerToCell(cell: Cell) {
   }
 
   state.world.board = updateTilesVisibility(state.player, state.world.board);
-  state.world.entities = updateEntitiesVisibility(state.world.entities, state.player);
-  state.world.enemies = updateEntitiesVisibility(state.world.enemies, state.player) as Actor[];
+  state.world.entities = updateEntitiesVisibility(state.world.entities);
+  state.world.enemies = updateEntitiesVisibility(state.world.enemies) as Actor[];
 
   if (isAutoMovement) {
     await timeout(5000 / state.player.speed);

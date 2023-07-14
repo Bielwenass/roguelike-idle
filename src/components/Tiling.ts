@@ -15,6 +15,7 @@ import { get2dArray } from '../utils/get2dArray';
 import { getDistance } from '../utils/getDistance';
 
 let freeTiles: Point[] = [];
+let visibleTiles: Point[] = [];
 
 export function getRandomFreeTilePoint(): Point {
   return freeTiles.splice(Math.floor(Math.random() * freeTiles.length), 1)[0] ?? new Point(0, 0);
@@ -79,15 +80,18 @@ export function tileBoard(world: WorldContainer) {
   }
 }
 
+export function isPointVisible(point: Point) {
+  return visibleTiles.some((c) => c.x === point.x && c.y === point.y);
+}
+
 // Update tiles visibility
 export function updateTilesVisibility(player: Actor, playBoard: PlayBoard): PlayBoard {
-  const visibleCells = basicBfs(playBoard, player.position, player.sightRange);
+  visibleTiles = basicBfs(playBoard, player.position, player.sightRange);
 
   return playBoard.map((e) => e.map((cell) => {
     const dist = getDistance(player.position, cell.position);
-    const isCellVisible = visibleCells.some((c) => c.x === cell.position.x && c.y === cell.position.y);
 
-    if (isCellVisible) {
+    if (isPointVisible(cell.position)) {
       cell.wasSeen = true;
       cell.sprite.visible = true;
       cell.sprite.alpha = 1;
