@@ -3,12 +3,13 @@ import { Texture } from 'pixi.js';
 import { Cell } from './Cell';
 import { Entity } from './Entity';
 import { HpBar } from './HpBar';
+import { PlayBoard } from './PlayBoard';
 import { ActorType } from '../data/enums/ActorType';
 import { CombatAction } from '../data/enums/CombatAction';
 import { MovementAction } from '../data/enums/MovementAction';
 
 export type Strategy = (self: Actor, opponent: Actor) => CombatAction;
-export type Movement = (self: Actor, playBoard: Cell[][]) => MovementAction;
+export type Movement = (self: Actor, playBoard: PlayBoard) => MovementAction;
 
 export interface ActorBase {
   name: string,

@@ -2,10 +2,11 @@ import { MovementAction } from '../data/enums/MovementAction';
 
 import { Actor } from '../types/Actor';
 import { Cell } from '../types/Cell';
+import { PlayBoard } from '../types/PlayBoard';
 
 import { isGroundCell } from '../utils/isGroundCell';
 
-export function selectNextMove(self: Actor, playBoard: Cell[][]): Cell {
+export function selectNextMove(self: Actor, playBoard: PlayBoard): Cell {
   switch (self.movement(self, playBoard)) {
     case MovementAction.Left:
       return playBoard[self.position.x - 1][self.position.y];
@@ -25,7 +26,7 @@ export function selectNextMove(self: Actor, playBoard: Cell[][]): Cell {
   }
 }
 
-export function isPossibleDirection(actor: Actor, point: number[], playBoard: Cell[][]): boolean {
+export function isPossibleDirection(actor: Actor, point: number[], playBoard: PlayBoard): boolean {
   return isGroundCell(actor.position.x + point[0], actor.position.y + point[1], playBoard);
 }
 
