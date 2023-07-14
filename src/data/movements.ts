@@ -1,26 +1,9 @@
 import { MovementAction } from './enums/MovementAction';
-import { isPossibleDirection, isRecentDirection } from '../components/Movement';
+import {
+  basicDirections, getRandomDirection, isPossibleDirection, isRecentDirection,
+} from '../components/Movement';
 
 import { Movement } from '../types/Actor';
-
-function getRandomDirection(availableDirections: MovementAction[]): MovementAction {
-  return availableDirections[Math.floor(Math.random() * availableDirections.length)];
-}
-
-export const basicDirections = [
-  {
-    action: MovementAction.Left, point: [-1, 0],
-  },
-  {
-    action: MovementAction.Up, point: [0, -1],
-  },
-  {
-    action: MovementAction.Right, point: [1, 0],
-  },
-  {
-    action: MovementAction.Down, point: [0, 1],
-  },
-];
 
 export const movements: Record<string, Movement> = {
   random: (self, playBoard) => {

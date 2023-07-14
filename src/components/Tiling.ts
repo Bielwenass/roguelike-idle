@@ -2,6 +2,7 @@ import { Point } from '@pixi/math';
 import { Sprite } from '@pixi/sprite';
 
 import { textureTile, textureWall } from './Graphics';
+import { basicBfs } from './Movement';
 import { TILE_SIZE } from '../constants';
 import { EntityType } from '../data/enums/EntityType';
 
@@ -80,10 +81,13 @@ export function tileBoard(world: WorldContainer) {
 
 // Update tiles visibility
 export function updateTilesVisibility(player: Actor, playBoard: PlayBoard): PlayBoard {
+  const visibleCells = basicBfs(playBoard, player.position, player.sightRange);
+
   return playBoard.map((e) => e.map((cell) => {
     const dist = getDistance(player.position, cell.position);
+    const isCellVisible = visibleCells.some((c) => c.x === cell.position.x && c.y === cell.position.y);
 
-    if (dist <= player.sightRange) {
+    if (isCellVisible) {
       cell.wasSeen = true;
       cell.sprite.visible = true;
       cell.sprite.alpha = 1;
