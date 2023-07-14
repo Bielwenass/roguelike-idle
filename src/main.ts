@@ -31,6 +31,7 @@ import { creaturePresets } from './data/creaturePresets';
 import { CombatResult } from './data/enums/CombatResult';
 import { CreatureType } from './data/enums/CreatureType';
 import { EntityType } from './data/enums/EntityType';
+import { MoveResult } from './data/enums/MoveResult';
 
 import { Actor } from './types/Actor';
 import { Cell } from './types/Cell';
@@ -118,13 +119,37 @@ async function enterDungeon(level: number): Promise<void> {
   state.world.entities = spawnEntities(state.world);
   state.world.entities = updateEntitiesVisibility(state.world.entities);
 
-  if (isAutoMovement) {
-    await timeout(2000);
-    movePlayerToCell(selectNextMove(state.player, state.world.board));
+  let moveResult = MoveResult.None;
+
+  /* eslint-disable no-await-in-loop */
+  while (isAutoMovement) {
+    await timeout(5000 / state.player.speed);
+
+    moveResult = await movePlayerToCell(selectNextMove(state.player, state.world.board));
+
+    if (moveResult !== MoveResult.None) {
+      break;
+    }
+
+    // basic enemies moving
+    // TODO: avoid moving to the player cell or starting a combat
+    // state.world.enemies.forEach((e) => moveEntity(e, selectNextMove(e, state.world.board).position));
+
+    state.world.board = updateTilesVisibility(state.player, state.world.board);
+    state.world.entities = updateEntitiesVisibility(state.world.entities);
+    state.world.enemies = updateEntitiesVisibility(state.world.enemies) as Actor[];
+  }
+  /* eslint-enable no-await-in-loop */
+
+  if (moveResult === MoveResult.EnterDungeon) {
+    resetWorld();
+    await enterDungeon(worldLevel += 1);
+    state.camera.position.x = 0;
+    state.camera.position.y = 0;
   }
 }
 
-async function movePlayerToCell(cell: Cell) {
+async function movePlayerToCell(cell: Cell): Promise<MoveResult> {
   moveEntity(state.player, cell.position);
   state.player.lastCells.unshift(cell);
   state.player.lastCells.pop();
@@ -140,22 +165,10 @@ async function movePlayerToCell(cell: Cell) {
   centerCameraOn(state.camera, state.player.sprite, state.app.screen);
 
   if (cell.entityType === EntityType.Exit) {
-    resetWorld();
-    enterDungeon(worldLevel += 1);
-    state.camera.position.x = 0;
-    state.camera.position.y = 0;
-
-    return;
+    return MoveResult.EnterDungeon;
   }
 
-  state.world.board = updateTilesVisibility(state.player, state.world.board);
-  state.world.entities = updateEntitiesVisibility(state.world.entities);
-  state.world.enemies = updateEntitiesVisibility(state.world.enemies) as Actor[];
-
-  if (isAutoMovement) {
-    await timeout(5000 / state.player.speed);
-    movePlayerToCell(selectNextMove(state.player, state.world.board));
-  }
+  return MoveResult.None;
 }
 
 async function setup() {
