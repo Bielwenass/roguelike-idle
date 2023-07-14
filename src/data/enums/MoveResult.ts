@@ -1,5 +1,6 @@
 export enum MoveResult {
-  None,
+  Default,
   ExitToTown,
   EnterDungeon,
+  EnterCombat,
 }

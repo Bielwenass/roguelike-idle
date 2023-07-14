@@ -81,7 +81,7 @@ export function tileBoard(world: WorldContainer) {
 }
 
 export function isPointVisible(point: Point) {
-  return visibleTiles.some((c) => c.x === point.x && c.y === point.y);
+  return visibleTiles.some((e) => e.x === point.x && e.y === point.y);
 }
 
 // Update tiles visibility

@@ -119,7 +119,7 @@ async function enterDungeon(level: number): Promise<void> {
   state.world.entities = spawnEntities(state.world);
   state.world.entities = updateEntitiesVisibility(state.world.entities);
 
-  let moveResult = MoveResult.None;
+  let moveResult = MoveResult.Default;
 
   /* eslint-disable no-await-in-loop */
   while (isAutoMovement) {
@@ -127,7 +127,7 @@ async function enterDungeon(level: number): Promise<void> {
 
     moveResult = await movePlayerToCell(selectNextMove(state.player, state.world.board));
 
-    if (moveResult !== MoveResult.None) {
+    if (moveResult !== MoveResult.Default) {
       break;
     }
 
@@ -168,7 +168,7 @@ async function movePlayerToCell(cell: Cell): Promise<MoveResult> {
     return MoveResult.EnterDungeon;
   }
 
-  return MoveResult.None;
+  return MoveResult.Default;
 }
 
 async function setup() {

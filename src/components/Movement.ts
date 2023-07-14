@@ -44,7 +44,7 @@ export const basicDirections = [
   },
 ];
 
-export function getDirectionsForThePoint(point: Point): Point[] {
+export function getDirectionsForPoint(point: Point): Point[] {
   return basicDirections.map((e) => new Point(point.x + e.point.x, point.y + e.point.y));
 }
 
@@ -62,7 +62,7 @@ export function basicBfs(pb: PlayBoard, root: Point, depth: number): Point[] {
     const current = queue.pop();
 
     if (isGroundCell(current!.x, current!.y, pb)) {
-      const neighbors = getDirectionsForThePoint(current!)
+      const neighbors = getDirectionsForPoint(current!)
         .filter((e) => !explored.some((c) => c.x === e.x && c.y === e.y))
         .filter((e) => getDistance(e, root) <= depth);
 
