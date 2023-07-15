@@ -5,6 +5,7 @@ import { spawnActor } from './components/Actors';
 import { centerCameraOn, initCamera } from './components/Camera';
 import { combatCheck } from './components/Combat';
 import {
+  moveActorOnBoard,
   moveEntity,
   spawnEntities,
   updateEntitiesVisibility,
@@ -28,10 +29,12 @@ import {
 } from './components/Tiling';
 import { enableResize } from './components/WindowResize';
 import { creaturePresets } from './data/creaturePresets';
+import { ActorType } from './data/enums/ActorType';
 import { CombatResult } from './data/enums/CombatResult';
 import { CreatureType } from './data/enums/CreatureType';
 import { EntityType } from './data/enums/EntityType';
 import { MoveResult } from './data/enums/MoveResult';
+import { movements } from './data/movements';
 
 import { Actor } from './types/Actor';
 import { Cell } from './types/Cell';
@@ -39,6 +42,7 @@ import { WorldContainer } from './types/WorldContainer';
 
 import { flatten } from './utils/flatten';
 import { getDistance } from './utils/getDistance';
+import { isEqualPoint } from './utils/isEqualPoint';
 import { timeout } from './utils/timeout';
 
 // Create a canvas element
@@ -83,6 +87,49 @@ function resetWorld(): void {
   state.camera.addChild(state.world);
 }
 
+async function startCombat(currentCombat: PIXI.Point) {
+  const combatResult = await combatCheck(currentCombat);
+
+  if (combatResult === CombatResult.Won) {
+    const newItem = rollItem(worldLevel, 1);
+
+    state.inventory.temp.push(newItem);
+    updateTempInventory(state.inventory.temp);
+  }
+}
+
+async function moveEnemyToCell(enemy: Actor, cell: Cell): Promise<MoveResult> {
+  // enemy can't move to the player position
+  if (isEqualPoint(cell.position, state.player.position)) {
+    await startCombat(cell.position);
+  }
+  // can't move, idling
+  if (cell.hasActor) {
+    return MoveResult.Default;
+  }
+
+  moveActorOnBoard(state.world.board, cell.position, enemy.position, ActorType.Enemy);
+  moveEntity(enemy, cell.position);
+
+  return MoveResult.Default;
+}
+
+async function movePlayerToCell(cell: Cell): Promise<MoveResult> {
+  moveActorOnBoard(state.world.board, cell.position, state.player.position, ActorType.Player);
+  moveEntity(state.player, cell.position);
+
+  state.player.lastCells.unshift(cell);
+  state.player.lastCells.pop();
+
+  centerCameraOn(state.camera, state.player.sprite, state.app.screen);
+
+  if (cell.entityType === EntityType.Exit) {
+    return MoveResult.EnterDungeon;
+  }
+
+  return MoveResult.Default;
+}
+
 async function enterDungeon(level: number): Promise<void> {
   // Board setup
   let protoBoard = await generateLevel(level + 6, level + 6);
@@ -108,6 +155,7 @@ async function enterDungeon(level: number): Promise<void> {
   const playerSpawnTile = state.world.board[playerSpawnTilePoint.x][playerSpawnTilePoint.y];
 
   playerSpawnTile.hasActor = true;
+  playerSpawnTile.actorType = ActorType.Player;
 
   state.player = spawnActor(
     state.player,
@@ -115,6 +163,8 @@ async function enterDungeon(level: number): Promise<void> {
     texturePlayer,
     playerSpawnTile.position,
   );
+  // TODO: Remove, debug prop
+  state.player.movements = [movements.exit, movements.exploring, movements.random];
   state.player.sprite.visible = true;
   centerCameraOn(state.camera, state.player.sprite, state.app.screen);
 
@@ -136,6 +186,7 @@ async function enterDungeon(level: number): Promise<void> {
     if (selectedPlayerPosition.hasActor) {
       await startCombat(selectedPlayerPosition.position);
     }
+    // exit from dungeon cycle
     if (moveResult !== MoveResult.Default) {
       break;
     }
@@ -150,11 +201,18 @@ async function enterDungeon(level: number): Promise<void> {
     // basic enemies moving
     // With sorting we solve the problem where farther enemies can't move while the near ones haven't made a move yet
     for (const enemy of state.world.enemies.sort((e) => getDistance(state.player.position, e.position))) {
+      // micro optimization: don't try to find the player if the distance is too great
+      if (getDistance(enemy.position, state.player.position) > enemy.sightRange) {
+        enemy.movements = [movements.random];
+      } else {
+        enemy.movements = [movements.player, movements.random];
+      }
       const selectedMove = selectNextMove(enemy, state.world.board);
       const enemyMoveResult = await moveEnemyToCell(enemy, selectedMove);
 
-      if (enemyMoveResult === MoveResult.EnterCombat) {
-        await startCombat(enemy.position);
+      // player was killed or sth
+      if (enemyMoveResult !== MoveResult.Default) {
+        break;
       }
     }
 
@@ -169,49 +227,6 @@ async function enterDungeon(level: number): Promise<void> {
     state.camera.position.x = 0;
     state.camera.position.y = 0;
   }
-}
-
-async function startCombat(currentCombat: PIXI.Point) {
-  const combatResult = await combatCheck(currentCombat);
-
-  if (combatResult === CombatResult.Won) {
-    const newItem = rollItem(worldLevel, 1);
-
-    state.inventory.temp.push(newItem);
-    updateTempInventory(state.inventory.temp);
-  }
-}
-
-async function moveEnemyToCell(enemy: Actor, cell: Cell): Promise<MoveResult> {
-  // enemy can't move to the player position
-  if (cell.position.x === state.player.position.x && cell.position.y === state.player.position.y) {
-    return MoveResult.EnterCombat;
-  }
-  if (cell.hasActor) {
-    return MoveResult.Default;
-  }
-  state.world.board[cell.position.x][cell.position.y].hasActor = true;
-  state.world.board[enemy.position.x][enemy.position.y].hasActor = false;
-  moveEntity(enemy, cell.position);
-
-  return MoveResult.Default;
-}
-
-async function movePlayerToCell(cell: Cell): Promise<MoveResult> {
-  state.world.board[cell.position.x][cell.position.y].hasActor = true;
-  state.world.board[state.player.position.x][state.player.position.y].hasActor = false;
-
-  moveEntity(state.player, cell.position);
-  state.player.lastCells.unshift(cell);
-  state.player.lastCells.pop();
-
-  centerCameraOn(state.camera, state.player.sprite, state.app.screen);
-
-  if (cell.entityType === EntityType.Exit) {
-    return MoveResult.EnterDungeon;
-  }
-
-  return MoveResult.Default;
 }
 
 async function setup() {

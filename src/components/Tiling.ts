@@ -13,6 +13,7 @@ import { WorldContainer } from '../types/WorldContainer';
 
 import { get2dArray } from '../utils/get2dArray';
 import { getDistance } from '../utils/getDistance';
+import { isEqualPoint } from '../utils/isEqualPoint';
 
 let freeTiles: Point[] = [];
 let visibleTiles: Point[] = [];
@@ -81,7 +82,7 @@ export function tileBoard(world: WorldContainer) {
 }
 
 export function isPointVisible(point: Point) {
-  return visibleTiles.some((e) => e.x === point.x && e.y === point.y);
+  return visibleTiles.some((e) => isEqualPoint(e, point));
 }
 
 // Update tiles visibility

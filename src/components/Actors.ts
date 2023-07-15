@@ -29,7 +29,7 @@ export function spawnActor(
     hpBar,
     currentHealth: actorBase.maxHealth,
     strategy: strategies.dummy,
-    movement: movements.random,
+    movements: [movements.player, movements.random],
     lastActionTime: -1,
     lastCells: Array(5),
   };
