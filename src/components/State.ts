@@ -46,7 +46,7 @@ export const state: State = {
     hpBar: createHpBar(),
     position: new Point(0, 0),
     strategy: strategies.dummy,
-    movement: movements.random,
+    movements: [movements.random],
     lastActionTime: -1,
     lastCells: new Array(5), // array size defines how many last movements to keep
   },

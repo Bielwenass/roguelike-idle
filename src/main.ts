@@ -87,7 +87,7 @@ function resetWorld(): void {
   state.camera.addChild(state.world);
 }
 
-async function startCombat(currentCombat: PIXI.Point) {
+async function startCombat(currentCombat: PIXI.Point): Promise<CombatResult> {
   const combatResult = await combatCheck(currentCombat);
 
   if (combatResult === CombatResult.Won) {
@@ -96,12 +96,18 @@ async function startCombat(currentCombat: PIXI.Point) {
     state.inventory.temp.push(newItem);
     updateTempInventory(state.inventory.temp);
   }
+
+  return combatResult;
 }
 
 async function moveEnemyToCell(enemy: Actor, cell: Cell): Promise<MoveResult> {
   // enemy can't move to the player position
   if (isEqualPoint(cell.position, state.player.position)) {
-    await startCombat(cell.position);
+    const combatResult = await startCombat(cell.position);
+
+    if (combatResult === CombatResult.Lost) {
+      return MoveResult.PlayerDeath;
+    }
   }
   // can't move, idling
   if (cell.hasActor) {
@@ -164,7 +170,7 @@ async function enterDungeon(level: number): Promise<void> {
     playerSpawnTile.position,
   );
   // TODO: Remove, debug prop
-  state.player.movements = [movements.exit, movements.exploring, movements.random];
+  // state.player.movements = [movements.exit, movements.exploring, movements.random];
   state.player.sprite.visible = true;
   centerCameraOn(state.camera, state.player.sprite, state.app.screen);
 
@@ -184,7 +190,11 @@ async function enterDungeon(level: number): Promise<void> {
     moveResult = await movePlayerToCell(selectedPlayerPosition);
 
     if (selectedPlayerPosition.hasActor) {
-      await startCombat(selectedPlayerPosition.position);
+      const combatRes = await startCombat(selectedPlayerPosition.position);
+
+      if (combatRes === CombatResult.Lost) {
+        moveResult = MoveResult.PlayerDeath;
+      }
     }
     // exit from dungeon cycle
     if (moveResult !== MoveResult.Default) {
@@ -223,6 +233,20 @@ async function enterDungeon(level: number): Promise<void> {
 
   if (moveResult === MoveResult.EnterDungeon) {
     resetWorld();
+    await enterDungeon(worldLevel += 1);
+    state.camera.position.x = 0;
+    state.camera.position.y = 0;
+  }
+  if (moveResult === MoveResult.PlayerDeath) {
+    worldLevel = 1;
+    resetWorld();
+    state.inventory.temp.splice(0, state.inventory.temp.length / 2);
+    state.player = spawnActor(
+      state.player,
+      state.world,
+      texturePlayer,
+      playerSpawnTile.position,
+    );
     await enterDungeon(worldLevel += 1);
     state.camera.position.x = 0;
     state.camera.position.y = 0;
