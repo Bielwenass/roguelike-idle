@@ -38,6 +38,7 @@ import { Cell } from './types/Cell';
 import { WorldContainer } from './types/WorldContainer';
 
 import { flatten } from './utils/flatten';
+import { getDistance } from './utils/getDistance';
 import { timeout } from './utils/timeout';
 
 // Create a canvas element
@@ -95,6 +96,9 @@ async function enterDungeon(level: number): Promise<void> {
       tile.sprite.on('mousedown', (event) => {
         event.stopPropagation();
         movePlayerToCell(tile);
+        state.world.board = updateTilesVisibility(state.player, state.world.board);
+        state.world.entities = updateEntitiesVisibility(state.world.entities);
+        state.world.enemies = updateEntitiesVisibility(state.world.enemies) as Actor[];
       });
     }
   }
@@ -115,31 +119,61 @@ async function enterDungeon(level: number): Promise<void> {
   centerCameraOn(state.camera, state.player.sprite, state.app.screen);
 
   state.world.board = updateTilesVisibility(state.player, state.world.board);
-  state.world.enemies = spawnEnemies(level * 2 + 4);
+  state.world.enemies = spawnEnemies(level * 2 + 4 + 100);
   state.world.entities = spawnEntities(state.world);
   state.world.entities = updateEntitiesVisibility(state.world.entities);
 
   let moveResult = MoveResult.Default;
+  const combatQueue: PIXI.Point[] = [];
 
-  /* eslint-disable no-await-in-loop */
   while (isAutoMovement) {
+    /* eslint-disable no-await-in-loop */
     await timeout(5000 / state.player.speed);
 
-    moveResult = await movePlayerToCell(selectNextMove(state.player, state.world.board));
+    const selectedPlayerPosition = selectNextMove(state.player, state.world.board);
 
+    moveResult = await movePlayerToCell(selectedPlayerPosition);
+
+    if (selectedPlayerPosition.hasActor) {
+      combatQueue.push(selectedPlayerPosition.position);
+    }
     if (moveResult !== MoveResult.Default) {
       break;
     }
 
+    // process combatq here one more time ??
+
     // basic enemies moving
-    // TODO: avoid moving to the player cell or starting a combat
-    // state.world.enemies.forEach((e) => moveEntity(e, selectNextMove(e, state.world.board).position));
+    // With sorting we solve the problem where farther enemies can't move while the near ones haven't made a move yet
+    for (const enemy of state.world.enemies.sort((e) => getDistance(state.player.position, e.position))) {
+      const selectedMove = selectNextMove(enemy, state.world.board);
+      const enemyMoveResult = await moveEnemyToCell(enemy, selectedMove);
+
+      if (enemyMoveResult === MoveResult.EnterCombat) {
+        combatQueue.push(enemy.position);
+      }
+    }
+
+    // console.log('cq', combatQueue, combatQueue.length);
+    // process combat queue
+    while (combatQueue.length > 0) {
+      const currentCombat = combatQueue.pop()!;
+      const combatResult = await combatCheck(currentCombat);
+
+      if (combatResult === CombatResult.Won) {
+        const newItem = rollItem(worldLevel, 1);
+
+        state.inventory.temp.push(newItem);
+        updateTempInventory(state.inventory.temp);
+      }
+    }
 
     state.world.board = updateTilesVisibility(state.player, state.world.board);
     state.world.entities = updateEntitiesVisibility(state.world.entities);
     state.world.enemies = updateEntitiesVisibility(state.world.enemies) as Actor[];
+
+    /* eslint-enable no-await-in-loop */
   }
-  /* eslint-enable no-await-in-loop */
 
   if (moveResult === MoveResult.EnterDungeon) {
     resetWorld();
@@ -149,18 +183,23 @@ async function enterDungeon(level: number): Promise<void> {
   }
 }
 
+async function moveEnemyToCell(enemy: Actor, cell: Cell): Promise<MoveResult> {
+  // enemy can't move to the player position
+  if (cell.position.x === state.player.position.x && cell.position.y === state.player.position.y) {
+    return MoveResult.EnterCombat;
+  }
+  if (cell.hasActor) {
+    return MoveResult.Default;
+  }
+  moveEntity(enemy, cell.position);
+
+  return MoveResult.Default;
+}
+
 async function movePlayerToCell(cell: Cell): Promise<MoveResult> {
   moveEntity(state.player, cell.position);
   state.player.lastCells.unshift(cell);
   state.player.lastCells.pop();
-  const combatResult = await combatCheck();
-
-  if (combatResult === CombatResult.Won) {
-    const newItem = rollItem(worldLevel, 1);
-
-    state.inventory.temp.push(newItem);
-    updateTempInventory(state.inventory.temp);
-  }
 
   centerCameraOn(state.camera, state.player.sprite, state.app.screen);
 
