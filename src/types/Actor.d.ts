@@ -10,6 +10,11 @@ import { CombatAction } from '../data/enums/CombatAction';
 export type Strategy = (self: Actor, opponent: Actor) => CombatAction;
 export type Movement = (self: Actor, playBoard: PlayBoard) => Point;
 
+export type ChasingGoal = {
+  goal: Point,
+  turnsLeft: number
+};
+
 export interface ActorBase {
   name: string,
   type: ActorType,
@@ -28,5 +33,6 @@ export interface Actor extends ActorBase, Entity {
   strategy: Strategy,
   movements: Movement[],
   lastCells: Cell[],
+  chasingModel: ChasingGoal,
   lastActionTime: number,
 }

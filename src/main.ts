@@ -170,7 +170,7 @@ async function enterDungeon(level: number): Promise<void> {
     playerSpawnTile.position,
   );
   // TODO: Remove, debug prop
-  // state.player.movements = [movements.exit, movements.exploring, movements.random];
+  state.player.movements = [movements.exit, movements.exploring, movements.random];
   state.player.sprite.visible = true;
   centerCameraOn(state.camera, state.player.sprite, state.app.screen);
 

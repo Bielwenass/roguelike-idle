@@ -32,5 +32,8 @@ export function spawnActor(
     movements: [movements.player, movements.random],
     lastActionTime: -1,
     lastCells: Array(5),
+    chasingModel: {
+      goal: new Point(0, 0), turnsLeft: 0,
+    },
   };
 }

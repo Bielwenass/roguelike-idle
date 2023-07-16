@@ -158,7 +158,6 @@ export function findPathBfs(
   return path;
 }
 
-// not used for now but may be useful
-export function findPathForSpecificCell(pb: PlayBoard, actor: Actor, goal: Cell): Point[] {
-  return findPathBfs(pb, actor, (cell: Cell) => isEqualPoint(cell.position, goal.position));
+export function findPathForSpecificCell(pb: PlayBoard, actor: Actor, goal: Point): Point[] {
+  return findPathBfs(pb, actor, (cell: Cell) => isEqualPoint(cell.position, goal));
 }
