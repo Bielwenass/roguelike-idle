@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "lint": "eslint ./src --fix"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.0.0",

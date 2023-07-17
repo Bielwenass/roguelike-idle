@@ -24,10 +24,10 @@ const strats: MovementStrategyData = {
 
 export const movements: Record<string, Movement> = {
   random: (self, playBoard) => {
-    // try to find any possible direction
+    // Try to find any possible direction
     const availableDirections = basicDirections.filter((a) => isPossibleDirection(self, a.point, playBoard));
 
-    // try to find directions without moving backward
+    // Try to find directions without moving backward
     const notVisitedDirections = availableDirections.filter((a) => !isRecentDirection(self, a.point));
 
     if (notVisitedDirections.length > 0) {
@@ -48,11 +48,11 @@ export const movements: Record<string, Movement> = {
     const pathToPlayer = findPathBfs(pb, self, strats[MovementStrategy.Player]);
 
     if (pathToPlayer.length > 1) {
-      // update chasing model if the player is in the sight range
+      // Update chasing model if the player is in the sight range
       self.chasingModel.goal = pathToPlayer[pathToPlayer.length - 1];
       self.chasingModel.turnsLeft = 3;
     } else if (pathToPlayer.length === 0 && self.chasingModel && self.chasingModel.turnsLeft > 0) {
-      // enemy can't see the player, start chasing
+      // Enemy can't see the player, start chasing
       self.chasingModel.turnsLeft -= 1;
 
       return findPathForSpecificCell(pb, self, self.chasingModel.goal)[0] ?? self.position;

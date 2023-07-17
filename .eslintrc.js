@@ -18,6 +18,7 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-trailing-spaces': 'error',
+    'capitalized-comments': ["error", "always"],
     'no-param-reassign': ['error', { 'props': false }],
     'linebreak-style': 'off',
 

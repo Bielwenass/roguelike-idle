@@ -100,8 +100,8 @@ async function startCombat(currentCombat: PIXI.Point): Promise<CombatResult> {
   return combatResult;
 }
 
-async function moveEnemyToCell(enemy: Actor, cell: Cell): Promise<MoveResult> {
-  // enemy can't move to the player position
+async function moveEnemyToCell(enemy: Actor, cell: Cell): Promise<MoveResult.Default | MoveResult.PlayerDeath> {
+  // Enemy can't move to the player position
   if (isEqualPoint(cell.position, state.player.position)) {
     const combatResult = await startCombat(cell.position);
 
@@ -109,7 +109,7 @@ async function moveEnemyToCell(enemy: Actor, cell: Cell): Promise<MoveResult> {
       return MoveResult.PlayerDeath;
     }
   }
-  // can't move, idling
+  // Can't move, idling
   if (cell.hasActor) {
     return MoveResult.Default;
   }
@@ -196,7 +196,7 @@ async function enterDungeon(level: number): Promise<void> {
         moveResult = MoveResult.PlayerDeath;
       }
     }
-    // exit from dungeon cycle
+    // Exit from dungeon cycle
     if (moveResult !== MoveResult.Default) {
       break;
     }
@@ -205,13 +205,16 @@ async function enterDungeon(level: number): Promise<void> {
     state.world.entities = updateEntitiesVisibility(state.world.entities);
     state.world.enemies = updateEntitiesVisibility(state.world.enemies) as Actor[];
 
-    // separate player move from enemy move
+    // Separate player move from enemy move
     await timeout(2000 / state.player.speed);
 
-    // basic enemies moving
-    // With sorting we solve the problem where farther enemies can't move while the near ones haven't made a move yet
-    for (const enemy of state.world.enemies.sort((e) => getDistance(state.player.position, e.position))) {
-      // micro optimization: don't try to find the player if the distance is too great
+    // Basic enemies movement
+    // With sorting we solve the problem where farther enemies can't
+    // Move while the near ones haven't made a move yet
+    for (const enemy of state.world.enemies.sort(
+      (e) => getDistance(state.player.position, e.position),
+    )) {
+      // Micro optimization: don't try to find the player if the distance is too great
       if (getDistance(enemy.position, state.player.position) > enemy.sightRange) {
         enemy.movements = [movements.random];
       } else {
@@ -220,8 +223,8 @@ async function enterDungeon(level: number): Promise<void> {
       const selectedMove = selectNextMove(enemy, state.world.board);
       const enemyMoveResult = await moveEnemyToCell(enemy, selectedMove);
 
-      // player was killed or sth
-      if (enemyMoveResult !== MoveResult.Default) {
+      // Player was killed
+      if (enemyMoveResult !== MoveResult.PlayerDeath) {
         break;
       }
     }

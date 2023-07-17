@@ -51,7 +51,7 @@ export function getRandomDirection(availableDirections: Point[]): Point {
   return availableDirections[Math.floor(Math.random() * availableDirections.length)];
 }
 
-export function doesPointExists(pb: PlayBoard, pt: Point) {
+export function doesPointExist(pb: PlayBoard, pt: Point) {
   return pb[pt.x] !== undefined && pb[pt.x][pt.y] !== undefined;
 }
 
@@ -76,7 +76,7 @@ export function basicBfs(pb: PlayBoard, root: Point, depth: number): Point[] {
 
     if (isGroundCell(current.x, current.y, pb)) {
       const neighbors = getDirectionsForPoint(current)
-        .filter((e) => doesPointExists(pb, e))
+        .filter((e) => doesPointExist(pb, e))
         .filter((e) => !explored.some((c) => isEqualPoint(c, e)))
         .filter((e) => getDistance(e, root) <= depth);
 
@@ -96,14 +96,14 @@ export function findPathBfs(
   goalCheck: (cell: Cell) => boolean,
   ignoreSight?: boolean,
 ): Point[] {
-  // queue stores tiles we need to check
-  // also has info about a previous position
+  // Queue stores tiles we need to check
+  // Also has info about the previous position
   const queue: { pos: Point, prev: Point | null }[] = [];
 
-  // explored -- points we already checked
+  // Explored -- points we already checked
   const explored: { [key: string]: Point } = {};
 
-  // path restored based on a backtrace from the goal to the root
+  // Path restored based on a backtrace from the goal to the root
   const path: Point[] = [];
 
   const root = actor.position;
@@ -116,13 +116,13 @@ export function findPathBfs(
     prev: null,
   });
 
-  // processing queue of unexplored tiles
+  // Processing queue of unexplored tiles
   while (queue.length > 0) {
     const current = queue.pop()!;
 
     if (isGroundCell(current.pos.x, current.pos.y, pb)) {
       const neighbors = getDirectionsForPoint(current.pos)
-        .filter((e) => doesPointExists(pb, e))
+        .filter((e) => doesPointExist(pb, e))
         .filter((e) => getDistance(root, e) <= actor.sightRange || ignoreSight)
         .filter((e) => !Object.keys(explored).includes(`${e.x},${e.y}`))
         .map((e) => ({
@@ -142,7 +142,7 @@ export function findPathBfs(
     }
   }
 
-  // restore path
+  // Restore path
   strCurrentPoint = strGoalPoint;
   if (goal) {
     path.push(goal);

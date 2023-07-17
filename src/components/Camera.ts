@@ -8,7 +8,6 @@ function onDragStart(this: any, event: { data: any }) {
   // The reason for this is because of multitouch
   // We want to track the movement of this particular touch
   this.data = event.data;
-  // this.alpha = 0.5;
   this.dragging = true;
 
   this.dragPoint = {
@@ -18,7 +17,6 @@ function onDragStart(this: any, event: { data: any }) {
 }
 
 function onDragEnd(this: any): void {
-  // this.alpha = 1;
   this.dragging = false;
 
   // Set the interaction data to null

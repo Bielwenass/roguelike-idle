@@ -4,8 +4,7 @@ import { ItemType } from '../data/enums/ItemType';
 
 import { HpBar } from '../types/HpBar';
 
-// TODO: Look into later
-// const TextureCache = PIXI.utils.TextureCache
+// TODO: Look into TextureCache
 
 // Enable zIndex
 PIXI.settings.SORTABLE_CHILDREN = true;

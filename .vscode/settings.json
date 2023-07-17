@@ -1,7 +1,7 @@
 {
   // ESLint: https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint
 
-  // ESLint handles HTML and JS/TS
+  // ESLint handles JS/TS
   "eslint.validate": [
     "javascript",
     "typescript",
