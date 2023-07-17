@@ -1,5 +1,5 @@
 {
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -17,6 +17,7 @@
     "vite": "^4.4.3"
   },
   "dependencies": {
+    "fontfaceobserver": "^2.3.0",
     "pixi.js": "^7.2.4",
     "wavefunctioncollapse": "^2.1.0"
   }

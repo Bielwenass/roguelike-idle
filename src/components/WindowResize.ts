@@ -1,4 +1,4 @@
-import { Application } from 'pixi.js';
+import { Application } from '@pixi/app';
 
 export function enableResize(renderer: Application['renderer']) {
   renderer.resize(window.innerWidth, window.innerHeight);

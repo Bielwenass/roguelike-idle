@@ -5,14 +5,14 @@ import {
 } from 'pixi.js';
 
 import { spawnEntity } from './dungeon/Entities';
-import { createHpBar } from './Graphics';
+import { createHpBar } from './graphics/Graphics';
 import { movements } from '../data/movements';
 import { strategies } from '../data/strategies';
 
 import { Actor, ActorBase } from '../types/Actor';
 
 export function spawnActor(
-  actorBase: ActorBase,
+  actorBase: ActorBase | Actor,
   parent: Container,
   texture: Texture,
   position: Point = new Point(0, 0),

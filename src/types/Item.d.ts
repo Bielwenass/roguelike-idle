@@ -1,17 +1,18 @@
 import { ItemRarity } from '../data/enums/ItemRarity';
 import { ItemType } from '../data/enums/ItemType';
 
-export interface ItemBase {
+export type ItemBase = {
   attack?: number,
   attackDelay?: number,
   defense?: number,
   speed?: number,
   goldValue: number,
-}
+};
 
-export interface Item extends ItemBase {
+export type Item = ItemBase & {
   id: number,
+  name: string,
   type: ItemType,
   rarity: ItemRarity,
   level: number,
-}
+};

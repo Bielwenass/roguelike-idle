@@ -48,6 +48,7 @@ export function centerCameraOn(camera: Container, center: Sprite): void {
 export function initCamera(): Container {
   const camera = new Container();
 
+  // TODO: Rework camera dragging
   camera.eventMode = 'static';
 
   camera

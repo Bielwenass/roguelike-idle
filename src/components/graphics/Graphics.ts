@@ -1,9 +1,9 @@
 import * as PIXI from 'pixi.js';
 import { BaseTexture, Container } from 'pixi.js';
 
-import { ItemType } from '../data/enums/ItemType';
+import { ItemType } from '../../data/enums/ItemType';
 
-import { HpBar } from '../types/HpBar';
+import { HpBar } from '../../types/HpBar';
 
 // TODO: Look into TextureCache
 
@@ -11,6 +11,7 @@ import { HpBar } from '../types/HpBar';
 Container.defaultSortableChildren = true;
 // Enable sharp pixel scaling
 BaseTexture.defaultOptions.scaleMode = PIXI.SCALE_MODES.NEAREST;
+PIXI.settings.ROUND_PIXELS = true;
 
 const texturePlayer = PIXI.Texture.from('images/player.png');
 const textureSkeleton = PIXI.Texture.from('images/skeleton.png');
@@ -21,6 +22,7 @@ const textureChest = PIXI.Texture.from('images/chest.png');
 const textureUiInventoryBorder = PIXI.Texture.from('images/ui/icon_border.png');
 const textureUiInventoryBg = PIXI.Texture.from('images/ui/inventory_backdrop.png');
 const textureUiInventoryEquip = PIXI.Texture.from('images/ui/equipment_backdrop.png');
+const textureUiVaultBg = PIXI.Texture.from('images/ui/vault_backdrop.png');
 const textureIconDagger = PIXI.Texture.from('images/ui/icon_dagger.png');
 const textureIconSword = PIXI.Texture.from('images/ui/icon_sword.png');
 const textureIconGreatsword = PIXI.Texture.from('images/ui/icon_greatsword.png');
@@ -39,6 +41,7 @@ export {
   textureUiInventoryBorder,
   textureUiInventoryBg,
   textureUiInventoryEquip,
+  textureUiVaultBg,
   textureIconDagger,
   textureIconSword,
   textureIconGreatsword,

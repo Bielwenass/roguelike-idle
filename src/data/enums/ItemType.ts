@@ -1,9 +1,9 @@
 export enum ItemType {
-  Dagger = 1,
-  Sword,
-  Greatsword,
-  Helmet,
-  Chestplate,
-  Gloves,
-  Boots,
+  Dagger = 'Dagger',
+  Sword = 'Sword',
+  Greatsword = 'Greatsword',
+  Helmet = 'Helmet',
+  Chestplate = 'Chestplate',
+  Gloves = 'Gloves',
+  Boots = 'Boots',
 }

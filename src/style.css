@@ -1,9 +1,20 @@
 body {
+  height: 100vh;
+  overflow: hidden;
   padding: 0;
   margin: 0;
   color: #2c3e50;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Bitgothic;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  line-height: 0;
+}
+
+@font-face {
+  font-family: 'Bitgothic';
+  src: url(/bitmgothic.medium.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Timetwist';
+  src: url(/timetwist.regular.ttf) format('truetype');
 }

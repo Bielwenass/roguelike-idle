@@ -4,7 +4,7 @@ import { Sprite } from '@pixi/sprite';
 import { basicBfs } from './movement/MovementAlgorithm';
 import { TILE_SIZE } from '../../constants';
 import { EntityType } from '../../data/enums/EntityType';
-import { textureTile, textureWall } from '../Graphics';
+import { textureTile, textureWall } from '../graphics/Graphics';
 
 import { Actor } from '../../types/Actor';
 import { Cell } from '../../types/Cell';

@@ -1,9 +1,9 @@
+import { Application } from '@pixi/app';
 import { Container } from '@pixi/display';
 import { Point } from '@pixi/math';
 import { Sprite } from '@pixi/sprite';
-import { Application } from 'pixi.js';
 
-import { createHpBar } from './Graphics';
+import { createHpBar } from './graphics/Graphics';
 import { creaturePresets } from '../data/creaturePresets';
 import { CreatureType } from '../data/enums/CreatureType';
 import { movements } from '../data/movements';
@@ -24,11 +24,13 @@ export interface State {
   player: Actor,
   inventory: {
     vault: Item[],
-    temp: Item[],
+    backpack: Item[],
     equipped: EquippedItems,
+    gold: number,
   },
   meta: {
     lastItemId: number,
+    worldLevel: number,
   }
 }
 
@@ -52,10 +54,12 @@ export const state: State = {
   },
   inventory: {
     vault: [],
-    temp: [],
+    backpack: [],
     equipped: {} as EquippedItems,
+    gold: 0,
   },
   meta: {
     lastItemId: 1,
+    worldLevel: 1,
   },
 };

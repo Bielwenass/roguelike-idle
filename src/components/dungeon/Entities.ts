@@ -8,7 +8,7 @@ import {
 import { isPointVisible } from './Tiling';
 import { TILE_SIZE } from '../../constants';
 import { EntityType } from '../../data/enums/EntityType';
-import { textureChest, textureExit } from '../Graphics';
+import { textureExit, textureChest } from '../graphics/Graphics';
 
 import { Entity } from '../../types/Entity';
 import { WorldContainer } from '../../types/WorldContainer';

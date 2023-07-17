@@ -78,6 +78,7 @@ export function rollItem(level: number, diffMod: number): Item {
 
   return {
     id,
+    name: String(itemType),
     type: itemType,
     rarity: itemRarity,
     level,

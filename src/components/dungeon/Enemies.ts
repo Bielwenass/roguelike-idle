@@ -3,7 +3,7 @@ import { getRandomFreeTilePoint } from './Tiling';
 import { creaturePresets } from '../../data/creaturePresets';
 import { CreatureType } from '../../data/enums/CreatureType';
 import { spawnActor } from '../Actors';
-import { textureSkeleton } from '../Graphics';
+import { textureSkeleton } from '../graphics/Graphics';
 
 import { ActorBase, Actor } from '../../types/Actor';
 import { WorldContainer } from '../../types/WorldContainer';
