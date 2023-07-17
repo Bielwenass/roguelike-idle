@@ -5,15 +5,13 @@ import {
   Texture,
 } from 'pixi.js';
 
-import { textureChest, textureExit } from './Graphics';
 import { isPointVisible } from './Tiling';
-import { TILE_SIZE } from '../constants';
-import { ActorType } from '../data/enums/ActorType';
-import { EntityType } from '../data/enums/EntityType';
+import { TILE_SIZE } from '../../constants';
+import { EntityType } from '../../data/enums/EntityType';
+import { textureChest, textureExit } from '../Graphics';
 
-import { Entity } from '../types/Entity';
-import { PlayBoard } from '../types/PlayBoard';
-import { WorldContainer } from '../types/WorldContainer';
+import { Entity } from '../../types/Entity';
+import { WorldContainer } from '../../types/WorldContainer';
 
 export function updateEntitiesVisibility(entities: Entity[]) {
   return entities.map((e) => {
@@ -52,27 +50,13 @@ export function spawnEntities(world: WorldContainer): Entity[] {
   for (const cellRow of world.board) {
     for (const cell of cellRow) {
       if (cell.entityType === EntityType.Exit) {
-        world.entities.push(spawnEntity(world, textureExit, cell.position));
+        world.entities.push(spawnEntity(world, textureExit, cell.position, 0));
       }
       if (cell.entityType === EntityType.Chest) {
-        world.entities.push(spawnEntity(world, textureChest, cell.position));
+        world.entities.push(spawnEntity(world, textureChest, cell.position, 0));
       }
     }
   }
 
   return world.entities;
-}
-
-export function moveEntity(entity: Entity, point: Point): void {
-  entity.position = point;
-
-  entity.sprite.x = point.x * TILE_SIZE;
-  entity.sprite.y = point.y * TILE_SIZE;
-}
-
-export function moveActorOnBoard(pb: PlayBoard, oldPosition: Point, newPosition: Point, type: ActorType): void {
-  pb[oldPosition.x][oldPosition.y].hasActor = true;
-  pb[oldPosition.x][oldPosition.y].actorType = type;
-  pb[newPosition.x][newPosition.y].hasActor = false;
-  pb[newPosition.x][newPosition.y].actorType = ActorType.None;
 }

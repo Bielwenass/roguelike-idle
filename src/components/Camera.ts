@@ -1,5 +1,5 @@
 import { Container } from '@pixi/display';
-import { Rectangle, Sprite } from 'pixi.js';
+import { Sprite } from 'pixi.js';
 
 import { state } from './State';
 
@@ -40,15 +40,15 @@ export function getScreenCenterY(): number {
   return state.app.screen.height / 2;
 }
 
-export function centerCameraOn(camera: Container, center: Sprite, screen: Rectangle): void {
-  camera.position.x = screen.width / 2 - center.width / 2 - center.x;
-  camera.position.y = screen.height / 2 - center.height / 2 - center.y;
+export function centerCameraOn(camera: Container, center: Sprite): void {
+  camera.position.x = state.app.screen.width / 2 - center.width / 2 - center.x;
+  camera.position.y = state.app.screen.height / 2 - center.height / 2 - center.y;
 }
 
 export function initCamera(): Container {
   const camera = new Container();
 
-  camera.interactive = true;
+  camera.eventMode = 'static';
 
   camera
     .on('pointerdown', onDragStart)

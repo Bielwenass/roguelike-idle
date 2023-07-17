@@ -1,6 +1,6 @@
 import wfc from 'wavefunctioncollapse';
 
-import { get2dArray } from '../utils/get2dArray';
+import { get2dArray } from '../../utils/get2dArray';
 
 async function imageUrlToData(path: string) {
   const img = document.createElement('img');
@@ -23,7 +23,7 @@ async function imageUrlToData(path: string) {
   });
 }
 
-export async function generateLevel(width: number, height: number): Promise<number[][]> {
+export async function generateLevel(width: number, height: number = width): Promise<number[][]> {
   const imgData = await imageUrlToData('../../images/generation/rooms2.png') as ImageData;
 
   const model = new wfc.OverlappingModel(

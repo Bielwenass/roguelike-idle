@@ -1,27 +1,28 @@
-import { Point } from 'pixi.js';
+import { Point } from '@pixi/math';
 
-import { MovementAction } from '../data/enums/MovementAction';
+import { MovementAction } from '../../../data/enums/MovementAction';
 
-import { Actor } from '../types/Actor';
-import { Cell } from '../types/Cell';
-import { PlayBoard } from '../types/PlayBoard';
+import { Actor } from '../../../types/Actor';
+import { Cell } from '../../../types/Cell';
+import { PlayBoard } from '../../../types/PlayBoard';
 
-import { getDistance } from '../utils/getDistance';
-import { isEqualPoint } from '../utils/isEqualPoint';
-import { isGroundCell } from '../utils/isGroundCell';
+import { getDistance } from '../../../utils/getDistance';
+import { isEqualPoint } from '../../../utils/isEqualPoint';
+import { isGroundCell } from '../../../utils/isGroundCell';
 
 export function selectNextMove(self: Actor, playBoard: PlayBoard): Cell {
-  let newPoint = self.position;
-
   for (const movement of self.movements) {
-    newPoint = movement(self, playBoard);
+    const newPoint = movement(self, playBoard);
 
-    if (newPoint.x !== self.position.x || newPoint.y !== self.position.y) {
-      break;
+    const isSamePoint = isEqualPoint(self.position, newPoint);
+    const hasFriendlyActor = playBoard[newPoint.x][newPoint.y].actor?.type === self.type;
+
+    if (!isSamePoint && !hasFriendlyActor) {
+      return playBoard[newPoint.x][newPoint.y];
     }
   }
 
-  return playBoard[newPoint.x][newPoint.y];
+  return playBoard[self.position.x][self.position.y];
 }
 
 export const basicDirections = [

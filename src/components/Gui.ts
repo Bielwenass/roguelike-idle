@@ -109,7 +109,7 @@ function updateSlot(border: Sprite, newItem: Item | null, isEquipped: boolean): 
 
     itemSprite.position.x = 1;
     itemSprite.position.y = 1;
-    itemSprite.interactive = true;
+    itemSprite.eventMode = 'static';
     itemSprite.itemId = newItem.id;
 
     itemSprite.on('click', () => {

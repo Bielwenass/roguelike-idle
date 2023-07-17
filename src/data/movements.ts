@@ -4,7 +4,7 @@ import { MovementStrategy } from './enums/MovementStrategy';
 import {
   basicDirections, findPathBfs, findPathForSpecificCell,
   getRandomDirection, isPossibleDirection, isRecentDirection, sumPoint,
-} from '../components/Movement';
+} from '../components/dungeon/movement/MovementAlgorithm';
 
 import { Movement } from '../types/Actor';
 import { Cell } from '../types/Cell';
@@ -18,8 +18,8 @@ const strats: MovementStrategyData = {
   [MovementStrategy.Exploring]: (cell) => !cell.wasSeen,
   [MovementStrategy.Exit]: (cell) => cell.entityType === EntityType.Exit,
   [MovementStrategy.Treasure]: (cell) => cell.entityType === EntityType.Chest,
-  [MovementStrategy.Enemy]: (cell) => cell.actorType === ActorType.Enemy,
-  [MovementStrategy.Player]: (cell) => cell.actorType === ActorType.Player,
+  [MovementStrategy.Enemy]: (cell) => cell.actor?.type === ActorType.Enemy,
+  [MovementStrategy.Player]: (cell) => cell.actor?.type === ActorType.Player,
 };
 
 export const movements: Record<string, Movement> = {

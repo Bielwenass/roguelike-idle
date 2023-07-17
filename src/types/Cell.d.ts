@@ -1,15 +1,14 @@
 import { Point } from '@pixi/math';
 import { Sprite } from '@pixi/sprite';
 
-import { ActorType } from '../data/enums/ActorType';
+import { Actor } from './Actor';
 import { EntityType } from '../data/enums/EntityType';
 
 export interface Cell {
   position: Point,
   isGround: boolean,
   sprite: Sprite,
+  actor: Actor | null,
   entityType: EntityType,
-  actorType: ActorType,
   wasSeen: boolean,
-  hasActor: boolean,
 }

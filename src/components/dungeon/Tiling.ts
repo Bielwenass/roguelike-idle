@@ -1,19 +1,19 @@
 import { Point } from '@pixi/math';
 import { Sprite } from '@pixi/sprite';
 
-import { textureTile, textureWall } from './Graphics';
-import { basicBfs } from './Movement';
-import { TILE_SIZE } from '../constants';
-import { EntityType } from '../data/enums/EntityType';
+import { basicBfs } from './movement/MovementAlgorithm';
+import { TILE_SIZE } from '../../constants';
+import { EntityType } from '../../data/enums/EntityType';
+import { textureTile, textureWall } from '../Graphics';
 
-import { Actor } from '../types/Actor';
-import { Cell } from '../types/Cell';
-import { PlayBoard } from '../types/PlayBoard';
-import { WorldContainer } from '../types/WorldContainer';
+import { Actor } from '../../types/Actor';
+import { Cell } from '../../types/Cell';
+import { PlayBoard } from '../../types/PlayBoard';
+import { WorldContainer } from '../../types/WorldContainer';
 
-import { get2dArray } from '../utils/get2dArray';
-import { getDistance } from '../utils/getDistance';
-import { isEqualPoint } from '../utils/isEqualPoint';
+import { get2dArray } from '../../utils/get2dArray';
+import { getDistance } from '../../utils/getDistance';
+import { isEqualPoint } from '../../utils/isEqualPoint';
 
 let freeTiles: Point[] = [];
 let visibleTiles: Point[] = [];
@@ -36,14 +36,14 @@ export function convertToBoard(protoBoard: number[][]): PlayBoard {
         entityType: EntityType.None,
         position: new Point(x, y),
         wasSeen: false,
-        hasActor: false,
+        actor: null,
       } as Cell;
     }
   }
 
   freeTiles = resultBoard
     .flat()
-    .filter((e) => e.isGround && !e.hasActor)
+    .filter((e) => e.isGround && !e.actor)
     .map((e) => e.position);
 
   // Select the exit tile
@@ -74,7 +74,7 @@ export function tileBoard(world: WorldContainer) {
       newTile.x = x * TILE_SIZE;
       newTile.y = y * TILE_SIZE;
 
-      newTile.interactive = false;
+      newTile.eventMode = 'none';
       newTile.visible = false;
       cell.sprite = newTile;
     }
@@ -86,6 +86,7 @@ export function isPointVisible(point: Point) {
 }
 
 // Update tiles visibility
+// TODO: Factor in walls
 export function updateTilesVisibility(player: Actor, playBoard: PlayBoard): PlayBoard {
   visibleTiles = basicBfs(playBoard, player.position, player.sightRange);
 
@@ -99,10 +100,10 @@ export function updateTilesVisibility(player: Actor, playBoard: PlayBoard): Play
 
       if (dist === 1 && cell.isGround) {
         cell.sprite.tint = 0xffff88;
-        cell.sprite.interactive = true;
+        cell.sprite.eventMode = 'static';
       } else {
         cell.sprite.tint = 0xffffff;
-        cell.sprite.interactive = false;
+        cell.sprite.eventMode = 'none';
       }
     } else if (cell.wasSeen) {
       cell.sprite.alpha = 0.5;

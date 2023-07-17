@@ -4,7 +4,7 @@ import {
   Texture,
 } from 'pixi.js';
 
-import { spawnEntity } from './Entities';
+import { spawnEntity } from './dungeon/Entities';
 import { createHpBar } from './Graphics';
 import { movements } from '../data/movements';
 import { strategies } from '../data/strategies';

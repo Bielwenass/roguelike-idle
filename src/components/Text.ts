@@ -13,7 +13,7 @@ export function menuText(label: string, position = new Point(0, 0)): Text {
 
   text.x = position.x;
   text.y = position.y;
-  text.interactive = true;
+  text.eventMode = 'static';
 
   text.on('mouseover', () => {
     text.style.fill = 0xcccc00;

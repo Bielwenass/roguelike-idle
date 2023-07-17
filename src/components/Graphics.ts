@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { BaseTexture, Container } from 'pixi.js';
 
 import { ItemType } from '../data/enums/ItemType';
 
@@ -7,9 +8,9 @@ import { HpBar } from '../types/HpBar';
 // TODO: Look into TextureCache
 
 // Enable zIndex
-PIXI.settings.SORTABLE_CHILDREN = true;
-PIXI.settings.ROUND_PIXELS = true;
-PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+Container.defaultSortableChildren = true;
+// Enable sharp pixel scaling
+BaseTexture.defaultOptions.scaleMode = PIXI.SCALE_MODES.NEAREST;
 
 const texturePlayer = PIXI.Texture.from('images/player.png');
 const textureSkeleton = PIXI.Texture.from('images/skeleton.png');

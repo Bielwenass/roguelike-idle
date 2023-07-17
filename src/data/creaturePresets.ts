@@ -12,7 +12,7 @@ export const creaturePresets: Record<CreatureType, ActorBase> = {
     attackDelay: 1000,
     defense: 2,
     speed: 10,
-    sightRange: 10,
+    sightRange: 6,
   },
   [CreatureType.Skeleton]: {
     name: 'Skeleton',
