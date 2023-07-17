@@ -1,4 +1,4 @@
-import { Container } from 'pixi.js';
+import { Container, Point } from 'pixi.js';
 
 import { getScreenCenterX, getScreenCenterY } from './Camera';
 import { moveEntity } from './Entities';
@@ -109,9 +109,10 @@ export async function enterCombat(enemy: Actor): Promise<boolean> {
   return isWin;
 }
 
-export async function combatCheck(): Promise<CombatResult> {
+// Start combat at the defined position
+export async function combatCheck(combatPosition: Point): Promise<CombatResult> {
   let result = CombatResult.DidNotFight;
-  const enemyIdx = state.world.enemies.findIndex((e) => e.position === state.player.position);
+  const enemyIdx = state.world.enemies.findIndex((e) => e.position === combatPosition);
 
   if (enemyIdx !== -1) {
     result = await enterCombat(state.world.enemies[enemyIdx]) ? CombatResult.Won : CombatResult.Lost;

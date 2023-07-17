@@ -6,20 +6,18 @@ import {
 } from 'pixi.js';
 
 import { textureChest, textureExit } from './Graphics';
+import { isPointVisible } from './Tiling';
 import { TILE_SIZE } from '../constants';
+import { ActorType } from '../data/enums/ActorType';
 import { EntityType } from '../data/enums/EntityType';
 
-import { Actor } from '../types/Actor';
 import { Entity } from '../types/Entity';
+import { PlayBoard } from '../types/PlayBoard';
 import { WorldContainer } from '../types/WorldContainer';
 
-import { getDistance } from '../utils/getDistance';
-
-export function updateEntitiesVisibility(entities: Entity[], player: Actor) {
+export function updateEntitiesVisibility(entities: Entity[]) {
   return entities.map((e) => {
-    const dist = getDistance(e.position, player.position);
-
-    e.sprite.visible = dist <= player.sightRange;
+    e.sprite.visible = isPointVisible(e.position);
 
     return e;
   });
@@ -70,4 +68,11 @@ export function moveEntity(entity: Entity, point: Point): void {
 
   entity.sprite.x = point.x * TILE_SIZE;
   entity.sprite.y = point.y * TILE_SIZE;
+}
+
+export function moveActorOnBoard(pb: PlayBoard, oldPosition: Point, newPosition: Point, type: ActorType): void {
+  pb[oldPosition.x][oldPosition.y].hasActor = true;
+  pb[oldPosition.x][oldPosition.y].actorType = type;
+  pb[newPosition.x][newPosition.y].hasActor = false;
+  pb[newPosition.x][newPosition.y].actorType = ActorType.None;
 }

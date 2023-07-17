@@ -5,6 +5,7 @@ import { spawnActor } from './components/Actors';
 import { centerCameraOn, initCamera } from './components/Camera';
 import { combatCheck } from './components/Combat';
 import {
+  moveActorOnBoard,
   moveEntity,
   spawnEntities,
   updateEntitiesVisibility,
@@ -28,15 +29,20 @@ import {
 } from './components/Tiling';
 import { enableResize } from './components/WindowResize';
 import { creaturePresets } from './data/creaturePresets';
+import { ActorType } from './data/enums/ActorType';
 import { CombatResult } from './data/enums/CombatResult';
 import { CreatureType } from './data/enums/CreatureType';
 import { EntityType } from './data/enums/EntityType';
+import { MoveResult } from './data/enums/MoveResult';
+import { movements } from './data/movements';
 
 import { Actor } from './types/Actor';
 import { Cell } from './types/Cell';
 import { WorldContainer } from './types/WorldContainer';
 
 import { flatten } from './utils/flatten';
+import { getDistance } from './utils/getDistance';
+import { isEqualPoint } from './utils/isEqualPoint';
 import { timeout } from './utils/timeout';
 
 // Create a canvas element
@@ -71,7 +77,7 @@ function spawnEnemies(count: number): Actor[] {
     );
   });
 
-  return updateEntitiesVisibility(state.world.enemies, state.player) as Actor[];
+  return updateEntitiesVisibility(state.world.enemies) as Actor[];
 }
 
 function resetWorld(): void {
@@ -79,6 +85,55 @@ function resetWorld(): void {
   state.world.destroy();
   state.world = new PIXI.Container() as WorldContainer;
   state.camera.addChild(state.world);
+}
+
+async function startCombat(currentCombat: PIXI.Point): Promise<CombatResult> {
+  const combatResult = await combatCheck(currentCombat);
+
+  if (combatResult === CombatResult.Won) {
+    const newItem = rollItem(worldLevel, 1);
+
+    state.inventory.temp.push(newItem);
+    updateTempInventory(state.inventory.temp);
+  }
+
+  return combatResult;
+}
+
+async function moveEnemyToCell(enemy: Actor, cell: Cell): Promise<MoveResult> {
+  // enemy can't move to the player position
+  if (isEqualPoint(cell.position, state.player.position)) {
+    const combatResult = await startCombat(cell.position);
+
+    if (combatResult === CombatResult.Lost) {
+      return MoveResult.PlayerDeath;
+    }
+  }
+  // can't move, idling
+  if (cell.hasActor) {
+    return MoveResult.Default;
+  }
+
+  moveActorOnBoard(state.world.board, cell.position, enemy.position, ActorType.Enemy);
+  moveEntity(enemy, cell.position);
+
+  return MoveResult.Default;
+}
+
+async function movePlayerToCell(cell: Cell): Promise<MoveResult> {
+  moveActorOnBoard(state.world.board, cell.position, state.player.position, ActorType.Player);
+  moveEntity(state.player, cell.position);
+
+  state.player.lastCells.unshift(cell);
+  state.player.lastCells.pop();
+
+  centerCameraOn(state.camera, state.player.sprite, state.app.screen);
+
+  if (cell.entityType === EntityType.Exit) {
+    return MoveResult.EnterDungeon;
+  }
+
+  return MoveResult.Default;
 }
 
 async function enterDungeon(level: number): Promise<void> {
@@ -94,6 +149,9 @@ async function enterDungeon(level: number): Promise<void> {
       tile.sprite.on('mousedown', (event) => {
         event.stopPropagation();
         movePlayerToCell(tile);
+        state.world.board = updateTilesVisibility(state.player, state.world.board);
+        state.world.entities = updateEntitiesVisibility(state.world.entities);
+        state.world.enemies = updateEntitiesVisibility(state.world.enemies) as Actor[];
       });
     }
   }
@@ -103,6 +161,7 @@ async function enterDungeon(level: number): Promise<void> {
   const playerSpawnTile = state.world.board[playerSpawnTilePoint.x][playerSpawnTilePoint.y];
 
   playerSpawnTile.hasActor = true;
+  playerSpawnTile.actorType = ActorType.Player;
 
   state.player = spawnActor(
     state.player,
@@ -110,51 +169,87 @@ async function enterDungeon(level: number): Promise<void> {
     texturePlayer,
     playerSpawnTile.position,
   );
+  // TODO: Remove, debug prop
+  state.player.movements = [movements.exit, movements.exploring, movements.random];
   state.player.sprite.visible = true;
   centerCameraOn(state.camera, state.player.sprite, state.app.screen);
 
+  state.world.board = updateTilesVisibility(state.player, state.world.board);
   state.world.enemies = spawnEnemies(level * 2 + 4);
   state.world.entities = spawnEntities(state.world);
-  state.world.entities = updateEntitiesVisibility(state.world.entities, state.player);
-  state.world.board = updateTilesVisibility(state.player, state.world.board);
+  state.world.entities = updateEntitiesVisibility(state.world.entities);
 
-  if (isAutoMovement) {
-    await timeout(2000);
-    movePlayerToCell(selectNextMove(state.player, state.world.board));
+  let moveResult = MoveResult.Default;
+
+  while (isAutoMovement) {
+    /* eslint-disable no-await-in-loop */
+    await timeout(5000 / state.player.speed);
+
+    const selectedPlayerPosition = selectNextMove(state.player, state.world.board);
+
+    moveResult = await movePlayerToCell(selectedPlayerPosition);
+
+    if (selectedPlayerPosition.hasActor) {
+      const combatRes = await startCombat(selectedPlayerPosition.position);
+
+      if (combatRes === CombatResult.Lost) {
+        moveResult = MoveResult.PlayerDeath;
+      }
+    }
+    // exit from dungeon cycle
+    if (moveResult !== MoveResult.Default) {
+      break;
+    }
+
+    state.world.board = updateTilesVisibility(state.player, state.world.board);
+    state.world.entities = updateEntitiesVisibility(state.world.entities);
+    state.world.enemies = updateEntitiesVisibility(state.world.enemies) as Actor[];
+
+    // separate player move from enemy move
+    await timeout(2000 / state.player.speed);
+
+    // basic enemies moving
+    // With sorting we solve the problem where farther enemies can't move while the near ones haven't made a move yet
+    for (const enemy of state.world.enemies.sort((e) => getDistance(state.player.position, e.position))) {
+      // micro optimization: don't try to find the player if the distance is too great
+      if (getDistance(enemy.position, state.player.position) > enemy.sightRange) {
+        enemy.movements = [movements.random];
+      } else {
+        enemy.movements = [movements.player, movements.random];
+      }
+      const selectedMove = selectNextMove(enemy, state.world.board);
+      const enemyMoveResult = await moveEnemyToCell(enemy, selectedMove);
+
+      // player was killed or sth
+      if (enemyMoveResult !== MoveResult.Default) {
+        break;
+      }
+    }
+
+    state.world.enemies = updateEntitiesVisibility(state.world.enemies) as Actor[];
+
+    /* eslint-enable no-await-in-loop */
   }
-}
 
-async function movePlayerToCell(cell: Cell) {
-  moveEntity(state.player, cell.position);
-  state.player.lastCells.unshift(cell);
-  state.player.lastCells.pop();
-  const combatResult = await combatCheck();
-
-  if (combatResult === CombatResult.Won) {
-    const newItem = rollItem(worldLevel, 1);
-
-    state.inventory.temp.push(newItem);
-    updateTempInventory(state.inventory.temp);
-  }
-
-  centerCameraOn(state.camera, state.player.sprite, state.app.screen);
-
-  if (cell.entityType === EntityType.Exit) {
+  if (moveResult === MoveResult.EnterDungeon) {
     resetWorld();
-    enterDungeon(worldLevel += 1);
+    await enterDungeon(worldLevel += 1);
     state.camera.position.x = 0;
     state.camera.position.y = 0;
-
-    return;
   }
-
-  state.world.board = updateTilesVisibility(state.player, state.world.board);
-  state.world.entities = updateEntitiesVisibility(state.world.entities, state.player);
-  state.world.enemies = updateEntitiesVisibility(state.world.enemies, state.player) as Actor[];
-
-  if (isAutoMovement) {
-    await timeout(5000 / state.player.speed);
-    movePlayerToCell(selectNextMove(state.player, state.world.board));
+  if (moveResult === MoveResult.PlayerDeath) {
+    worldLevel = 1;
+    resetWorld();
+    state.inventory.temp.splice(0, state.inventory.temp.length / 2);
+    state.player = spawnActor(
+      state.player,
+      state.world,
+      texturePlayer,
+      playerSpawnTile.position,
+    );
+    await enterDungeon(worldLevel += 1);
+    state.camera.position.x = 0;
+    state.camera.position.y = 0;
   }
 }
 
