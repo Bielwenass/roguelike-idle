@@ -22,20 +22,23 @@ function updateHpBars(actors: Actor[]) {
   }
 }
 
+// Perform combat and return the winning actor
 async function combatLoop(self: Actor, opponent: Actor, delay: number): Promise<Actor> {
   return new Promise<Actor>((resolve) => {
     setTimeout(() => {
-      if (self.currentHealth <= 0) {
+      const moveOutcome = makeMove(self, opponent);
+
+      updateHpBars([moveOutcome.self, moveOutcome.opponent]);
+
+      // Battle end condition
+      if (moveOutcome.self.currentHealth <= 0) {
         return resolve(opponent);
       }
-      if (opponent.currentHealth <= 0) {
+      if (moveOutcome.opponent.currentHealth <= 0) {
         return resolve(self);
       }
 
-      const moveOutcome = makeMove(self, opponent);
-
       moveOutcome.self.lastActionTime = Date.now();
-      updateHpBars([moveOutcome.self, moveOutcome.opponent]);
 
       const attackDelaySelf = moveOutcome.self.lastActionTime + moveOutcome.self.attackDelay - Date.now();
       const attackDelayOpponent = moveOutcome.opponent.lastActionTime + moveOutcome.opponent.attackDelay - Date.now();
@@ -50,6 +53,10 @@ async function combatLoop(self: Actor, opponent: Actor, delay: number): Promise<
 }
 
 async function combatProcess(attacker: Actor, defender: Actor): Promise<Actor> {
+  // Normalize last action time for proper delay calculation
+  attacker.lastActionTime = Date.now();
+  defender.lastActionTime = Date.now();
+
   if (attacker.attackDelay <= defender.attackDelay) {
     return combatLoop(attacker, defender, attacker.attackDelay);
   }
