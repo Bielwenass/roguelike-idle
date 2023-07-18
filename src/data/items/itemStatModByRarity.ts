@@ -2,8 +2,8 @@ import { ItemRarity } from '../enums/ItemRarity';
 
 export const itemStatModByRarity: Map<ItemRarity, [number, number]> = new Map([
   [ItemRarity.Common, [1, 1.05]],
-  [ItemRarity.Uncommon, [1.05, 1.12]],
-  [ItemRarity.Rare, [1.12, 1.2]],
-  [ItemRarity.Epic, [1.2, 1.35]],
-  [ItemRarity.Legendary, [1.35, 1.7]],
+  [ItemRarity.Uncommon, [1.1, 1.25]],
+  [ItemRarity.Rare, [1.3, 1.45]],
+  [ItemRarity.Epic, [1.45, 1.55]],
+  [ItemRarity.Legendary, [1.6, 2]],
 ]);
