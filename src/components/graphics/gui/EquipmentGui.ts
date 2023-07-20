@@ -1,4 +1,4 @@
-import { Point } from '@pixi/math';
+import { Point } from '@pixi/core';
 
 import { InventorySlot } from './InventorySlot';
 import { StorageGui } from './StorageGui';
@@ -13,7 +13,7 @@ export class EquipmentGui extends StorageGui {
     this.offset = new Point(-472, 0);
   }
 
-  public fillSlots(): void {
+  public override fillSlots(): void {
     const slotPositions = [
       new Point(5, 16),
       new Point(16, 5),

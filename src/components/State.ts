@@ -1,6 +1,6 @@
 import { Application } from '@pixi/app';
+import { Point } from '@pixi/core';
 import { Container } from '@pixi/display';
-import { Point } from '@pixi/math';
 import { Sprite } from '@pixi/sprite';
 
 import { createHpBar } from './graphics/Graphics';

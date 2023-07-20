@@ -1,6 +1,5 @@
-import { Container } from '@pixi/display';
-
-import { Actor } from './Actor';
+import type { Actor } from './Actor';
+import type { Container } from '@pixi/display';
 
 export interface CombatContainer extends Container {
   attacker: Actor,

@@ -3,9 +3,10 @@ import { Container } from '@pixi/display';
 import { EquipmentGui } from './EquipmentGui';
 import { inventoryGui } from './InventoryGui';
 import { SelectedSlot } from './SelectedSlot';
-import { StorageGui } from './StorageGui';
 import { VaultGui } from './VaultGui';
 import { state } from '../../State';
+
+import type { StorageGui } from './StorageGui';
 
 export class Gui extends Container {
   private static instance: Gui;

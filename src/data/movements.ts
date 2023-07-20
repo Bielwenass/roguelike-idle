@@ -6,8 +6,8 @@ import {
   getRandomDirection, isPossibleDirection, isRecentDirection, sumPoint,
 } from '../components/dungeon/movement/MovementAlgorithm';
 
-import { Movement } from '../types/Actor';
-import { Cell } from '../types/Cell';
+import type { Movement } from '../types/Actor';
+import type { Cell } from '../types/Cell';
 
 type MovementStrategyData = {
   [key: number]: (cell: Cell) => boolean

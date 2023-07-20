@@ -6,7 +6,7 @@ import { getItemIcon, textureUiInventoryBorder } from '../Graphics';
 import type { Item } from '../../../types/Item';
 import type { ItemSprite } from '../../../types/ItemSprite';
 
-import type { Point } from '@pixi/math';
+import type { Point } from '@pixi/core';
 
 export class InventorySlot extends Sprite {
   public itemSprite: ItemSprite | null = null;

@@ -4,7 +4,7 @@ import { ItemType } from '../data/enums/ItemType';
 import { itemPresets } from '../data/items/itemPresets';
 import { itemStatModByRarity } from '../data/items/itemStatModByRarity';
 
-import { Item, ItemBase } from '../types/Item';
+import type { Item, ItemBase } from '../types/Item';
 
 function rollRarity(diffMod: number): ItemRarity {
   const rarityNum = Math.random();

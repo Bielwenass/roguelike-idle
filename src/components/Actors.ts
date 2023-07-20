@@ -1,15 +1,13 @@
-import {
-  Container,
-  Point,
-  Texture,
-} from 'pixi.js';
+import { Point, type Texture } from '@pixi/core';
 
 import { spawnEntity } from './dungeon/Entities';
 import { createHpBar } from './graphics/Graphics';
 import { movements } from '../data/movements';
 import { strategies } from '../data/strategies';
 
-import { Actor, ActorBase } from '../types/Actor';
+import type { Actor, ActorBase } from '../types/Actor';
+
+import type { Container } from '@pixi/display';
 
 export function spawnActor(
   actorBase: ActorBase | Actor,

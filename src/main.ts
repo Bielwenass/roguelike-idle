@@ -1,5 +1,10 @@
 import './style.css';
 
+// Need the event system to be included in the bundle for the events to work
+// @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { EventSystem } from '@pixi/events';
+
 import { initCamera } from './components/Camera';
 import { Gui } from './components/graphics/gui/Gui';
 import { state } from './components/State';

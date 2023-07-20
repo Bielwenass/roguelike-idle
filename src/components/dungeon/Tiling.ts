@@ -1,4 +1,4 @@
-import { Point } from '@pixi/math';
+import { Point } from '@pixi/core';
 import { Sprite } from '@pixi/sprite';
 
 import { basicBfs } from './movement/MovementAlgorithm';
@@ -6,10 +6,10 @@ import { TILE_SIZE } from '../../constants';
 import { EntityType } from '../../data/enums/EntityType';
 import { textureTile, textureWall } from '../graphics/Graphics';
 
-import { Actor } from '../../types/Actor';
-import { Cell } from '../../types/Cell';
-import { PlayBoard } from '../../types/PlayBoard';
-import { WorldContainer } from '../../types/WorldContainer';
+import type { Actor } from '../../types/Actor';
+import type { Cell } from '../../types/Cell';
+import type { PlayBoard } from '../../types/PlayBoard';
+import type { WorldContainer } from '../../types/WorldContainer';
 
 import { get2dArray } from '../../utils/get2dArray';
 import { getDistance } from '../../utils/getDistance';

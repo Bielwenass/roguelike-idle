@@ -1,11 +1,10 @@
-import { Point, Texture } from 'pixi.js';
-
-import { Cell } from './Cell';
-import { Entity } from './Entity';
-import { HpBar } from './HpBar';
-import { PlayBoard } from './PlayBoard';
-import { ActorType } from '../data/enums/ActorType';
-import { CombatAction } from '../data/enums/CombatAction';
+import type { Cell } from './Cell';
+import type { Entity } from './Entity';
+import type { HpBar } from './HpBar';
+import type { PlayBoard } from './PlayBoard';
+import type { ActorType } from '../data/enums/ActorType';
+import type { CombatAction } from '../data/enums/CombatAction';
+import type { Point, Texture } from 'pixi.js';
 
 export type Strategy = (self: Actor, opponent: Actor) => CombatAction;
 export type Movement = (self: Actor, playBoard: PlayBoard) => Point;

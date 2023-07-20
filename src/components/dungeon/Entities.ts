@@ -1,17 +1,16 @@
-import {
-  Container,
-  Point,
-  Sprite,
-  Texture,
-} from 'pixi.js';
+import { Point } from '@pixi/core';
+import { Sprite } from '@pixi/sprite';
 
 import { isPointVisible } from './Tiling';
 import { TILE_SIZE } from '../../constants';
 import { EntityType } from '../../data/enums/EntityType';
 import { textureExit, textureChest } from '../graphics/Graphics';
 
-import { Entity } from '../../types/Entity';
-import { WorldContainer } from '../../types/WorldContainer';
+import type { Entity } from '../../types/Entity';
+import type { WorldContainer } from '../../types/WorldContainer';
+
+import type { Texture } from '@pixi/core';
+import type { Container } from '@pixi/display';
 
 export function updateEntitiesVisibility(entities: Entity[]) {
   return entities.map((e) => {

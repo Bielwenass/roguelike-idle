@@ -1,5 +1,7 @@
-import { Point } from '@pixi/math';
-import { Text, TextStyle } from '@pixi/text';
+import { Point } from '@pixi/core';
+import { Text } from '@pixi/text';
+
+import type { TextStyle } from '@pixi/text';
 
 const textStyles: Record<string, TextStyle> = {
   menu: {

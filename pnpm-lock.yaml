@@ -8,16 +8,25 @@ dependencies:
   '@pixi/app':
     specifier: ^7.2.4
     version: 7.2.4(@pixi/core@7.2.4)(@pixi/display@7.2.4)
+  '@pixi/constants':
+    specifier: ^7.2.4
+    version: 7.2.4
   '@pixi/core':
     specifier: ^7.2.4
     version: 7.2.4
   '@pixi/display':
     specifier: ^7.2.4
     version: 7.2.4(@pixi/core@7.2.4)
+  '@pixi/events':
+    specifier: ^7.2.4
+    version: 7.2.4(@pixi/core@7.2.4)(@pixi/display@7.2.4)
+  '@pixi/filter-color-matrix':
+    specifier: ^7.2.4
+    version: 7.2.4(@pixi/core@7.2.4)
   '@pixi/graphics':
     specifier: ^7.2.4
     version: 7.2.4(@pixi/core@7.2.4)(@pixi/display@7.2.4)(@pixi/sprite@7.2.4)
-  '@pixi/math':
+  '@pixi/settings':
     specifier: ^7.2.4
     version: 7.2.4
   '@pixi/sprite':
@@ -402,8 +411,26 @@ packages:
       '@pixi/core': 7.2.4
     dev: false
 
+  /@pixi/events@7.2.4(@pixi/core@7.2.4)(@pixi/display@7.2.4):
+    resolution: {integrity: sha512-/JtmoB98fzIU8giN9xvlRvmvOi6u4MaD2DnKNOMHkQ1MBraj3pmrXM9fZ0JbNzi+324GraAAY76QidgHjIYoYQ==}
+    peerDependencies:
+      '@pixi/core': 7.2.4
+      '@pixi/display': 7.2.4
+    dependencies:
+      '@pixi/core': 7.2.4
+      '@pixi/display': 7.2.4(@pixi/core@7.2.4)
+    dev: false
+
   /@pixi/extensions@7.2.4:
     resolution: {integrity: sha512-Mnqv9scbL1ARD3QFKfOWs2aSVJJfP1dL8g5UiqGImYO3rZbz/9QCzXOeMVIZ5n3iaRyKMNhFFr84/zUja2H7Dw==}
+    dev: false
+
+  /@pixi/filter-color-matrix@7.2.4(@pixi/core@7.2.4):
+    resolution: {integrity: sha512-DFtayybYXoUh73eHUFRK5REbi1t3FZuVUnaQTj+euHKF9L7EaYc3Q9wctpx1WPRcwkqEX50M4SNFhxpA7Pxtaw==}
+    peerDependencies:
+      '@pixi/core': 7.2.4
+    dependencies:
+      '@pixi/core': 7.2.4
     dev: false
 
   /@pixi/graphics@7.2.4(@pixi/core@7.2.4)(@pixi/display@7.2.4)(@pixi/sprite@7.2.4):

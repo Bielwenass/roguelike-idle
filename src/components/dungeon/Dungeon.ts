@@ -26,11 +26,12 @@ import { rollItem } from '../ItemGeneration';
 import { state } from '../State';
 import { enterTown } from '../Town';
 
-import { getDistance } from '../../utils/getDistance';
-import { timeout } from '../../utils/timeout';
 import type { Actor } from 'src/types/Actor';
 import type { Cell } from 'src/types/Cell';
 import type { WorldContainer } from 'src/types/WorldContainer';
+
+import { getDistance } from '../../utils/getDistance';
+import { timeout } from '../../utils/timeout';
 
 // If yes, start combat
 export async function combatCheck(movingActor: Actor, cell: Cell): Promise<CombatResult> {

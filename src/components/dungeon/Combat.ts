@@ -5,8 +5,8 @@ import { combatActionEffects } from '../../data/combatActionEffects';
 import { getScreenCenterX, getScreenCenterY } from '../Camera';
 import { state } from '../State';
 
-import { Actor } from '../../types/Actor';
-import { CombatContainer } from '../../types/CombatContainer';
+import type { Actor } from '../../types/Actor';
+import type { CombatContainer } from '../../types/CombatContainer';
 
 import { timeout } from '../../utils/timeout';
 

@@ -1,5 +1,5 @@
+import { Point } from '@pixi/core';
 import { Container } from '@pixi/display';
-import { Point } from '@pixi/math';
 
 import { ItemPreview } from './ItemPreview';
 import { SelectedSlot } from './SelectedSlot';
@@ -14,8 +14,6 @@ import type { ItemSprite } from '../../../types/ItemSprite';
 import type { Text } from '@pixi/text';
 
 export class VaultGui extends StorageGui {
-  public selectedSlot: Container;
-
   private preview?: ItemPreview;
 
   private sort: (a: Item, b: Item) => number;
@@ -31,7 +29,7 @@ export class VaultGui extends StorageGui {
     this.addChild(...this.initSortLabels());
   }
 
-  public updateSlots(): void {
+  public override updateSlots(): void {
     const filteredContent = this.content.filter(this.filter);
     const sortedContent = filteredContent.sort(this.sort);
 
@@ -39,7 +37,7 @@ export class VaultGui extends StorageGui {
       slot.onClick = () => {
         SelectedSlot.select(slot);
       };
-      slot.setItem(sortedContent[slotIdx]);
+      slot.setItem(sortedContent[slotIdx] ?? null);
     }
   }
 
