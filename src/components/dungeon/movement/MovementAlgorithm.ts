@@ -64,11 +64,52 @@ export function isRecentDirection(actor: Actor, relPoint: Point): boolean {
   return actor.lastCells.some((e) => isEqualPoint(e.position, sumPoint(actor.position, relPoint)));
 }
 
+// Calculates whether point 0 can see point 1
+// https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+function arePointsOnSameLine(p0: Point, p1: Point, obstacles: Point[]) {
+  if (obstacles.length === 0) {
+    return true;
+  }
+  let x0 = p0.x;
+  let y0 = p0.y;
+  const x1 = p1.x;
+  const y1 = p1.y;
+
+  const Δx = Math.abs(x1 - x0);
+  const sx = (x0 < x1) ? 1 : -1;
+
+  const Δy = -Math.abs(y1 - y0);
+  const sy = (y0 < y1) ? 1 : -1;
+
+  let diff = Δx + Δy;
+
+  while (x0 !== x1 || y0 !== y1) {
+    const e2 = 2 * diff;
+
+    if (e2 < Δx) {
+      diff += Δx;
+      y0 += sy;
+    }
+    if (e2 > Δy) {
+      diff += Δy;
+      x0 += sx;
+    }
+    const curPoint = new Point(x0, y0);
+
+    if (obstacles.some((e) => isEqualPoint(curPoint, e))) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 // Breadth-first Search
 // Can be used to overview a tiles in a sight range
 export function basicBfs(pb: PlayBoard, root: Point, depth: number): Point[] {
   const queue: Point[] = [];
   const explored: Point[] = [];
+  const obstacles: Point[] = [];
 
   queue.push(root);
 
@@ -79,9 +120,12 @@ export function basicBfs(pb: PlayBoard, root: Point, depth: number): Point[] {
       const neighbors = getDirectionsForPoint(current)
         .filter((e) => doesPointExist(pb, e))
         .filter((e) => !explored.some((c) => isEqualPoint(c, e)))
-        .filter((e) => getDistance(e, root) <= depth);
+        .filter((e) => getDistance(e, root) <= depth)
+        .filter((e) => arePointsOnSameLine(root, e, obstacles));
 
       queue.unshift(...neighbors);
+    } else {
+      obstacles.push(current);
     }
     explored.push(current);
   }
