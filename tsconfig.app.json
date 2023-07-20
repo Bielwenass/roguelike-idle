@@ -22,5 +22,22 @@
       "DOM",
       "DOM.iterable"
     ],
+    "paths": {
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@data/*": [
+        "src/data/*"
+      ],
+      "@gui/*": [
+        "src/components/graphics/gui/*"
+      ],
+      "@formulas/*": [
+        "src/components/formulas/*"
+      ],
+      "@dungeon/*": [
+        "src/components/dungeon/*"
+      ]
+    }
   }
 }
