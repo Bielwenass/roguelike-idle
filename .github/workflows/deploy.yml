@@ -1,0 +1,36 @@
+name: "Deploy"
+on:
+  # push:
+  #   branches:
+  #     - main
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 'latest'
+    - name: Build Project
+      run: |
+        pnpm i --frozen-lockfile
+        pnpm run build
+    - name: Deploy GitHub Pages
+      run: |
+        git worktree add gh-pages gh-pages
+        git config user.name "Deploy from CI"
+        git config user.email ""
+        cd gh-pages
+        # Delete the ref to avoid keeping history.
+        git update-ref -d refs/heads/gh-pages
+        rm -rf *
+        mv ../dist/* .
+        # mv ../CNAME ./
+        git add .
+        git commit -m "Deploy $GITHUB_SHA to gh-pages"
+        git push --force
