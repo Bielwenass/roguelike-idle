@@ -4,6 +4,7 @@ import { Container } from '@pixi/display';
 import { ItemPreview } from './ItemPreview';
 import { SelectedSlot } from './SelectedSlot';
 import { StorageGui } from './StorageGui';
+import { itemFilter } from '../../../data/items/itemFilter';
 import { itemSort } from '../../../data/items/itemSort';
 import { drawText } from '../../Text';
 import { textureUiVaultBg } from '../Graphics';
@@ -27,6 +28,7 @@ export class VaultGui extends StorageGui {
     this.preview = new Container();
     this.offset = new Point(128, 0);
     this.addChild(...this.initSortLabels());
+    this.addChild(...this.initFilterLabels());
   }
 
   public override updateSlots(): void {
@@ -53,19 +55,39 @@ export class VaultGui extends StorageGui {
   }
 
   private initSortLabels(): Text[] {
-    let labelX = 12;
-
     const labels = itemSort.map((sortData) => {
-      const text = drawText(sortData.label, 'inventory', new Point(labelX, 3), true);
-      const textOffset = 6 - text.width / 2 / 5;
+      const text = drawText(sortData.label, 'inventory', sortData.position, true);
+      // Divide by 5 to account for scale
+      const textOffset = -text.width / 2 / 5;
 
       text.x += textOffset;
       text.scale = new Point(0.2, 0.2);
-      labelX += 13;
 
       text.on('click', () => {
-        this.sort = sortData.comparison;
+        this.sort = sortData.func;
         this.updateSlots();
+        SelectedSlot.update();
+      });
+
+      return text;
+    });
+
+    return labels;
+  }
+
+  private initFilterLabels(): Text[] {
+    const labels = itemFilter.map((filterData) => {
+      const text = drawText(filterData.label, 'inventory', filterData.position, true);
+      // Divide by 5 to account for scale
+      const textOffset = -text.width / 2 / 5;
+
+      text.x += textOffset;
+      text.scale = new Point(0.2, 0.2);
+
+      text.on('click', () => {
+        this.filter = filterData.func;
+        this.updateSlots();
+        SelectedSlot.update();
       });
 
       return text;
