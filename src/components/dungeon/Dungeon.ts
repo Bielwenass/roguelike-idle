@@ -21,18 +21,16 @@ import { movements } from '../../data/movements';
 import { spawnActor } from '../Actors';
 import { centerCameraOn } from '../Camera';
 import { texturePlayer } from '../graphics/Graphics';
-import { updateBackpackGui } from '../graphics/gui/InventoryGui';
-import { stashToVault } from '../Inventory';
+import { addItem, stashToVault } from '../Inventory';
 import { rollItem } from '../ItemGeneration';
 import { state } from '../State';
 import { enterTown } from '../Town';
 
-import { Actor } from '../../types/Actor';
-import { Cell } from '../../types/Cell';
-import { WorldContainer } from '../../types/WorldContainer';
-
 import { getDistance } from '../../utils/getDistance';
 import { timeout } from '../../utils/timeout';
+import type { Actor } from 'src/types/Actor';
+import type { Cell } from 'src/types/Cell';
+import type { WorldContainer } from 'src/types/WorldContainer';
 
 // If yes, start combat
 export async function combatCheck(movingActor: Actor, cell: Cell): Promise<CombatResult> {
@@ -61,8 +59,7 @@ function processCombatResult(combatResult: CombatResult, enemy: Actor | null): b
 
     const newItem = rollItem(state.meta.worldLevel, 1);
 
-    state.inventory.backpack.push(newItem);
-    updateBackpackGui(state.inventory.backpack);
+    addItem(newItem);
   }
 
   return false;
@@ -146,8 +143,6 @@ export async function enterDungeon(level: number): Promise<void> {
   // Player setup
   const playerSpawnTilePoint = getRandomFreeTilePoint();
   const playerSpawnTile = state.world.board[playerSpawnTilePoint.x][playerSpawnTilePoint.y];
-
-  console.log(state.player);
 
   state.player = {
     ...spawnActor(

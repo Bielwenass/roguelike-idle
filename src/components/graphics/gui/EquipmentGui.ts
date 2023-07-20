@@ -1,50 +1,27 @@
-import { Application } from '@pixi/app';
 import { Point } from '@pixi/math';
-import { Sprite } from '@pixi/sprite';
 
-import { getInventoryBorder, updateSlot } from './InventoryGui';
-import { ItemSlot } from '../../../data/enums/ItemSlot';
+import { InventorySlot } from './InventorySlot';
+import { StorageGui } from './StorageGui';
 import { textureUiInventoryEquip } from '../Graphics';
 
-import { EquippedItems } from '../../../types/EquippedItems';
+import type { Item } from '../../../types/Item';
 
-import { centerOnScreen } from '../../../utils/centerOnScreen';
+export class EquipmentGui extends StorageGui {
+  constructor(items: Item[]) {
+    super(textureUiInventoryEquip, new Point(210, 210), 80, new Point(14, 16), items);
 
-type EquipmentGui = Sprite & {
-  [key in ItemSlot]: Sprite
-};
-
-function initEquipmentGui() {
-  const equipmentGui = new Sprite(textureUiInventoryEquip) as EquipmentGui;
-
-  equipmentGui.width = 210;
-  equipmentGui.height = 210;
-  equipmentGui.zIndex = 10;
-  equipmentGui.visible = false;
-
-  equipmentGui[ItemSlot.Weapon] = equipmentGui.addChild(getInventoryBorder(new Point(5, 16)));
-  equipmentGui[ItemSlot.Helmet] = equipmentGui.addChild(getInventoryBorder(new Point(16, 5)));
-  equipmentGui[ItemSlot.Chestplate] = equipmentGui.addChild(getInventoryBorder(new Point(16, 16)));
-  equipmentGui[ItemSlot.Gloves] = equipmentGui.addChild(getInventoryBorder(new Point(27, 16)));
-  equipmentGui[ItemSlot.Boots] = equipmentGui.addChild(getInventoryBorder(new Point(16, 27)));
-
-  return equipmentGui;
-}
-
-export const equipmentGui = initEquipmentGui();
-
-export function toggleEquipmentGui(flag?: boolean) {
-  equipmentGui.visible = flag ?? !equipmentGui.visible;
-}
-
-export function updateEquipmentGui(
-  equipment: EquippedItems,
-) {
-  for (const [slot, item] of Object.entries(equipment)) {
-    updateSlot(equipmentGui[slot as keyof typeof ItemSlot], item);
+    this.offset = new Point(-472, 0);
   }
-}
 
-export function enableResizeEquipment(renderer: Application['renderer']) {
-  renderer.on('resize', () => centerOnScreen(equipmentGui, new Point(-472, 0)));
+  public fillSlots(): void {
+    const slotPositions = [
+      new Point(5, 16),
+      new Point(16, 5),
+      new Point(16, 16),
+      new Point(27, 16),
+      new Point(16, 27),
+    ];
+
+    this.slots = slotPositions.map((pos) => this.addChild(new InventorySlot(pos)));
+  }
 }

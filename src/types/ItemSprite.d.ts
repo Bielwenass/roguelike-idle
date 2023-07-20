@@ -1,5 +1,7 @@
 import { Sprite } from '@pixi/sprite';
 
+import { Item } from './Item';
+
 interface ItemSprite extends Sprite {
-  itemId: number;
+  item: Item;
 }

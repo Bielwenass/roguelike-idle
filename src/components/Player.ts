@@ -1,10 +1,10 @@
 import { creaturePresets } from '../data/creaturePresets';
 import { CreatureType } from '../data/enums/CreatureType';
 
-import { Actor } from '../types/Actor';
-import { EquippedItems } from '../types/EquippedItems';
+import type { Actor } from '../types/Actor';
+import type { Item } from '../types/Item';
 
-export function calculateStats(player: Actor, equipment: EquippedItems): Actor {
+export function calculateStats(player: Actor, equipment: (Item | null)[]): Actor {
   const playerBase = creaturePresets[CreatureType.Player];
 
   player.attack = playerBase.attack;
@@ -12,7 +12,7 @@ export function calculateStats(player: Actor, equipment: EquippedItems): Actor {
   player.defense = playerBase.defense;
   player.speed = playerBase.speed;
 
-  for (const item of Object.values(equipment)) {
+  for (const item of equipment) {
     if (item?.attack) {
       player.attack += item.attack;
     }

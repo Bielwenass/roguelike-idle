@@ -1,15 +1,40 @@
 import { Container } from '@pixi/display';
 
-import { equipmentGui } from './EquipmentGui';
+import { EquipmentGui } from './EquipmentGui';
 import { inventoryGui } from './InventoryGui';
-import { vaultGui } from './VaultGui';
+import { SelectedSlot } from './SelectedSlot';
+import { StorageGui } from './StorageGui';
+import { VaultGui } from './VaultGui';
+import { state } from '../../State';
 
-export function initGui(): Container {
-  const gui = new Container();
+export class Gui extends Container {
+  private static instance: Gui;
 
-  gui.addChild(equipmentGui);
-  gui.addChild(vaultGui);
-  gui.addChild(inventoryGui);
+  public static equipment: EquipmentGui;
 
-  return gui;
+  public static vault: VaultGui;
+
+  public static backpack: StorageGui;
+
+  private constructor() {
+    super();
+
+    Gui.instance = this;
+    Gui.equipment = this.addChild(new EquipmentGui(state.inventory.equipped));
+    Gui.vault = this.addChild(new VaultGui(state.inventory.vault));
+    Gui.backpack = this.addChild(inventoryGui);
+    SelectedSlot.vaultGui = Gui.vault;
+
+    Gui.backpack.enableResize(state.app.renderer);
+    Gui.vault.enableResize(state.app.renderer);
+    Gui.equipment.enableResize(state.app.renderer);
+  }
+
+  public static getInstance() {
+    if (!Gui.instance) {
+      Gui.instance = new Gui();
+    }
+
+    return Gui.instance;
+  }
 }

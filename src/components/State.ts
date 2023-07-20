@@ -9,11 +9,10 @@ import { CreatureType } from '../data/enums/CreatureType';
 import { movements } from '../data/movements';
 import { strategies } from '../data/strategies';
 
-import { Actor } from '../types/Actor';
-import { CombatContainer } from '../types/CombatContainer';
-import { EquippedItems } from '../types/EquippedItems';
-import { Item } from '../types/Item';
-import { WorldContainer } from '../types/WorldContainer';
+import type { Actor } from '../types/Actor';
+import type { CombatContainer } from '../types/CombatContainer';
+import type { Item } from '../types/Item';
+import type { WorldContainer } from '../types/WorldContainer';
 
 export interface State {
   app: Application<HTMLCanvasElement>,
@@ -25,7 +24,7 @@ export interface State {
   inventory: {
     vault: Item[],
     backpack: Item[],
-    equipped: EquippedItems,
+    equipped: (Item | null)[],
     gold: number,
   },
   meta: {
@@ -55,11 +54,11 @@ export const state: State = {
   inventory: {
     vault: [],
     backpack: [],
-    equipped: {} as EquippedItems,
+    equipped: [],
     gold: 0,
   },
   meta: {
-    lastItemId: 1,
+    lastItemId: 0,
     worldLevel: 1,
   },
 };

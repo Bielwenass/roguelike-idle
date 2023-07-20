@@ -1,29 +1,52 @@
+import { Gui } from './graphics/gui/Gui';
+import { SelectedSlot } from './graphics/gui/SelectedSlot';
 import { calculateStats } from './Player';
 import { state } from './State';
 import { itemSlotByType } from '../data/items/itemSlotByType';
 
-import { Item } from '../types/Item';
+import type { Item } from '../types/Item';
+
+export function addItem(item: Item): void {
+  // TODO: Limit inventory sizes
+  state.inventory.backpack.push(item);
+  Gui.backpack.updateSlots();
+}
+
+export function isEquipped(item: Item): boolean {
+  return state.inventory.equipped[itemSlotByType[item.type]] === item;
+}
 
 export function unequipItem(item: Item | null): void {
   if (!item) return;
 
-  const slot = itemSlotByType[item.type];
+  if (isEquipped(item)) {
+    const slot = itemSlotByType[item.type];
 
-  if (state.inventory.equipped[slot]) {
     state.inventory.vault.push(item);
     state.inventory.equipped[slot] = null;
+    Gui.vault.updateSlots();
+    Gui.equipment.updateSlots();
+    state.player = calculateStats(state.player, state.inventory.equipped);
   }
-  state.player = calculateStats(state.player, state.inventory.equipped);
 }
 
 export function equipItem(item: Item): void {
-  const slot = itemSlotByType[item.type];
+  const vaultIdx = state.inventory.vault.indexOf(item);
 
-  unequipItem(state.inventory.equipped[slot]);
-  state.inventory.equipped[slot] = item;
-  // TODO: Optimize
-  state.inventory.vault = state.inventory.vault.filter((e) => e.id !== item.id);
-  state.player = calculateStats(state.player, state.inventory.equipped);
+  if (vaultIdx >= 0) {
+    const slot = itemSlotByType[item.type];
+
+    unequipItem(state.inventory.equipped[slot]);
+    state.inventory.equipped[slot] = item;
+
+    state.inventory.vault.splice(state.inventory.vault.indexOf(item), 1);
+
+    Gui.vault.updateSlots();
+    Gui.equipment.updateSlots();
+    SelectedSlot.update();
+
+    state.player = calculateStats(state.player, state.inventory.equipped);
+  }
 }
 
 export function stashToVault(): Item[] {
@@ -31,13 +54,20 @@ export function stashToVault(): Item[] {
 
   state.inventory.vault.push(...itemsToStash);
   state.inventory.backpack = [];
+  Gui.backpack.updateSlots();
+  Gui.vault.updateSlots();
 
   return itemsToStash;
 }
 
 export function sellItem(item: Item): void {
-  // TODO: Optimize
-  state.inventory.vault = state.inventory.vault.filter((e) => e.id !== item.id);
+  const vaultIdx = state.inventory.vault.indexOf(item);
 
-  state.inventory.gold += item.goldValue;
+  if (vaultIdx >= 0) {
+    state.inventory.vault.splice(state.inventory.vault.indexOf(item), 1);
+
+    state.inventory.gold += item.goldValue;
+    Gui.vault.updateSlots();
+    SelectedSlot.update();
+  }
 }

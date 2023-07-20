@@ -1,8 +1,7 @@
 import { Container, Point } from 'pixi.js';
 
 import { enterDungeon } from './dungeon/Dungeon';
-import { toggleEquipmentGui } from './graphics/gui/EquipmentGui';
-import { toggleVaultGui, updateVaultGui } from './graphics/gui/VaultGui';
+import { Gui } from './graphics/gui/Gui';
 import { state } from './State';
 import { drawText } from './Text';
 
@@ -17,15 +16,14 @@ export function enterTown(camera: Container) {
 
   toDungeon.on('click', () => {
     mainScreen.destroy();
-    toggleVaultGui(false);
-    toggleEquipmentGui(false);
+    Gui.vault.toggle(false);
+    Gui.equipment.toggle(false);
     enterDungeon(state.meta.worldLevel);
   });
 
   toEquipment.on('click', () => {
-    toggleVaultGui();
-    updateVaultGui(state.inventory.vault);
-    toggleEquipmentGui();
+    Gui.vault.toggle();
+    Gui.equipment.toggle();
   });
 
   camera.addChild(mainScreen);

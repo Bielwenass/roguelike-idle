@@ -1,12 +1,11 @@
-import { ItemSlot } from '../enums/ItemSlot';
 import { ItemType } from '../enums/ItemType';
 
-export const itemSlotByType: Record<ItemType, ItemSlot> = {
-  [ItemType.Dagger]: ItemSlot.Weapon,
-  [ItemType.Sword]: ItemSlot.Weapon,
-  [ItemType.Greatsword]: ItemSlot.Weapon,
-  [ItemType.Helmet]: ItemSlot.Helmet,
-  [ItemType.Chestplate]: ItemSlot.Chestplate,
-  [ItemType.Gloves]: ItemSlot.Gloves,
-  [ItemType.Boots]: ItemSlot.Boots,
+export const itemSlotByType: Record<ItemType, number> = {
+  [ItemType.Dagger]: 0,
+  [ItemType.Sword]: 0,
+  [ItemType.Greatsword]: 0,
+  [ItemType.Helmet]: 1,
+  [ItemType.Chestplate]: 2,
+  [ItemType.Gloves]: 3,
+  [ItemType.Boots]: 4,
 };

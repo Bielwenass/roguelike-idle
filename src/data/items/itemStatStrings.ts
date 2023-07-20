@@ -1,34 +1,34 @@
 export const itemStatStrings = {
   type: {
     label: 'Type',
-    getValue: (raw: string) => raw,
+    getValue: (raw: unknown | string) => String(raw),
   },
   rarity: {
     label: 'Rarity',
-    getValue: (raw: string) => raw,
+    getValue: (raw: unknown | string) => String(raw),
   },
   level: {
     label: 'Item Level',
-    getValue: (raw: number) => String(raw),
+    getValue: (raw: unknown | number) => String(raw),
   },
   attack: {
     label: 'Attack',
-    getValue: (raw: number) => `+${raw}`,
+    getValue: (raw: unknown | number) => `+${raw}`,
   },
   attackDelay: {
     label: 'Attack Speed',
-    getValue: (raw: number) => `${1000 / raw}/s`,
+    getValue: (raw: unknown | number) => `${1000 / Number(raw)}/s`,
   },
   defense: {
     label: 'Defense',
-    getValue: (raw: number) => `+${raw}`,
+    getValue: (raw: unknown | number) => `+${raw}`,
   },
   speed: {
     label: 'Speed',
-    getValue: (raw: number) => `+${raw}`,
+    getValue: (raw: unknown | number) => `+${raw}`,
   },
   goldValue: {
     label: 'Gold Value',
-    getValue: (raw: number) => String(raw),
+    getValue: (raw: unknown | number) => String(raw),
   },
 };
