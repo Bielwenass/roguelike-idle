@@ -1,6 +1,8 @@
 // Check if we need to start combat to get to the given cell
 
 import { Container } from '@pixi/display';
+import { getDistance } from '@utils/getDistance';
+import { timeout } from '@utils/timeout';
 
 import { enterCombat } from './Combat';
 import { spawnEnemies } from './Enemies';
@@ -29,9 +31,6 @@ import { enterTown } from '../Town';
 import type { Actor } from 'src/types/Actor';
 import type { Cell } from 'src/types/Cell';
 import type { WorldContainer } from 'src/types/WorldContainer';
-
-import { getDistance } from '../../utils/getDistance';
-import { timeout } from '../../utils/timeout';
 
 // If yes, start combat
 export async function combatCheck(movingActor: Actor, cell: Cell): Promise<CombatResult> {

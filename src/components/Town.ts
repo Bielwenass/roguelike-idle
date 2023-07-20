@@ -1,8 +1,8 @@
+import { enterDungeon } from '@dungeon/Dungeon';
+import { Gui } from '@gui/Gui';
 import { Point } from '@pixi/core';
 import { Container } from '@pixi/display';
 
-import { enterDungeon } from './dungeon/Dungeon';
-import { Gui } from './graphics/gui/Gui';
 import { state } from './State';
 import { drawText } from './Text';
 

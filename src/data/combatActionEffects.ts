@@ -1,5 +1,6 @@
+import { getDamage } from '@formulas/Attack';
+
 import { CombatAction } from './enums/CombatAction';
-import { getDamage } from '../components/formulas/Attack';
 
 import type { Actor } from '../types/Actor';
 

@@ -1,17 +1,16 @@
 import './style.css';
 
+import { Gui } from '@gui/Gui';
 // Need the event system to be included in the bundle for the events to work
 // @ts-expect-error
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { EventSystem } from '@pixi/events';
+import { loadFonts } from '@utils/awaitFonts';
 
 import { initCamera } from './components/Camera';
-import { Gui } from './components/graphics/gui/Gui';
 import { state } from './components/State';
 import { enterTown } from './components/Town';
 import { enableResize } from './components/WindowResize';
-
-import { loadFonts } from './utils/awaitFonts';
 
 async function setup() {
   // Create a canvas element

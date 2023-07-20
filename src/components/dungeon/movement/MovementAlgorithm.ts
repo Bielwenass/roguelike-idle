@@ -1,14 +1,13 @@
 import { Point } from '@pixi/core';
+import { getDistance } from '@utils/getDistance';
+import { isEqualPoint } from '@utils/isEqualPoint';
+import { isGroundCell } from '@utils/isGroundCell';
 
 import { MovementAction } from '../../../data/enums/MovementAction';
 
 import type { Actor } from '../../../types/Actor';
 import type { Cell } from '../../../types/Cell';
 import type { PlayBoard } from '../../../types/PlayBoard';
-
-import { getDistance } from '../../../utils/getDistance';
-import { isEqualPoint } from '../../../utils/isEqualPoint';
-import { isGroundCell } from '../../../utils/isGroundCell';
 
 export function selectNextMove(self: Actor, playBoard: PlayBoard): Cell {
   for (const movement of self.movements) {

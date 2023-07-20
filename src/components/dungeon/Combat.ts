@@ -1,4 +1,5 @@
 import { Container } from '@pixi/display';
+import { timeout } from '@utils/timeout';
 
 import { TILE_SIZE } from '../../constants';
 import { combatActionEffects } from '../../data/combatActionEffects';
@@ -7,8 +8,6 @@ import { state } from '../State';
 
 import type { Actor } from '../../types/Actor';
 import type { CombatContainer } from '../../types/CombatContainer';
-
-import { timeout } from '../../utils/timeout';
 
 function makeMove(self: Actor, opponent: Actor): { self: Actor, opponent: Actor } {
   const chosenAction = self.strategy(self, opponent);

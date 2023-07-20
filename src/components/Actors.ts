@@ -1,6 +1,6 @@
+import { spawnEntity } from '@dungeon/Entities';
 import { Point, type Texture } from '@pixi/core';
 
-import { spawnEntity } from './dungeon/Entities';
 import { createHpBar } from './graphics/Graphics';
 import { movements } from '../data/movements';
 import { strategies } from '../data/strategies';

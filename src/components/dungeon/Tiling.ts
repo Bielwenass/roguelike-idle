@@ -1,5 +1,8 @@
 import { Point } from '@pixi/core';
 import { Sprite } from '@pixi/sprite';
+import { get2dArray } from '@utils/get2dArray';
+import { getDistance } from '@utils/getDistance';
+import { isEqualPoint } from '@utils/isEqualPoint';
 
 import { basicBfs } from './movement/MovementAlgorithm';
 import { TILE_SIZE } from '../../constants';
@@ -10,10 +13,6 @@ import type { Actor } from '../../types/Actor';
 import type { Cell } from '../../types/Cell';
 import type { PlayBoard } from '../../types/PlayBoard';
 import type { WorldContainer } from '../../types/WorldContainer';
-
-import { get2dArray } from '../../utils/get2dArray';
-import { getDistance } from '../../utils/getDistance';
-import { isEqualPoint } from '../../utils/isEqualPoint';
 
 let freeTiles: Point[] = [];
 let visibleTiles: Point[] = [];
