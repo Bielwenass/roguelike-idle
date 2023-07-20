@@ -1,3 +1,7 @@
+/* eslint-env node */
+require('@rushstack/eslint-patch/modern-module-resolution');
+
+/** @type {import('eslint').ESLint.ConfigData} */
 module.exports = {
   root: true,
   env: {
@@ -5,24 +9,33 @@ module.exports = {
   },
   extends: [
     'airbnb-base',
-    'airbnb-typescript/base'
+    'airbnb-typescript/base',
   ],
   parserOptions: {
     ecmaVersion: 'latest',
     ecmaFeatures: {
       useStrict: true,
     },
-    project: ['./tsconfig.json']
+    project: ['./tsconfig.app.json'],
   },
   plugins: [
-    "@typescript-eslint"
+    '@typescript-eslint',
   ],
   rules: {
+    'import/extensions': [
+      'error',
+      'never',
+      {
+        ts: 'never',
+      },
+    ],
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-trailing-spaces': 'error',
-    'capitalized-comments': ["error", "always"],
-    'no-param-reassign': ['error', { 'props': false }],
+    'capitalized-comments': ['error', 'always'],
+    'no-param-reassign': ['error', {
+      props: false,
+    }],
     'linebreak-style': 'off',
 
     // Max 120 symbols per line
@@ -88,30 +101,30 @@ module.exports = {
     'import/order': ['error', {
       groups: [
         // 1. node "builtin" modules
-        // ex: 'fs', 'path'
+        // Ex: 'fs', 'path'
         'builtin',
 
         // 2. "external" modules
-        // ex: 'axios', 'lodash'
+        // Ex: 'axios', 'lodash'
         'external',
 
         // 3. "internal" modules
-        // ex: 'src/foo'
+        // Ex: 'src/foo'
         'internal',
 
         // 4. modules from a "parent" directory
-        // ex: '../foo', '../../foo/qux'
+        // Ex: '../foo', '../../foo/qux'
         // AND
         // "sibling" modules from the same or a sibling's directory
-        // ex: './bar', './bar/baz'
+        // Ex: './bar', './bar/baz'
         ['sibling', 'parent'],
 
         // 5. "index" of the current directory
-        // ex: './'
+        // Ex: './'
         'index',
 
         // 6. "type" imports
-        // ex: import type { Foo } from 'foo'
+        // Ex: import type { Foo } from 'foo'
         'type',
       ],
       pathGroups: [
@@ -157,6 +170,8 @@ module.exports = {
         caseInsensitive: true,
       },
     }],
+
+    '@typescript-eslint/consistent-type-imports': 'error',
 
     // https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-extraneous-dependencies.md
     'import/no-extraneous-dependencies': 'off',

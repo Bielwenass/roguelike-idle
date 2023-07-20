@@ -1,0 +1,26 @@
+{
+  "extends": "@tsconfig/strictest/tsconfig.json",
+  "include": [
+    "src/**/*",
+    ".eslintrc.cjs",
+    "vite.config.ts"
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "sourceMap": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": [
+      "vite/client"
+    ],
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.iterable"
+    ],
+  }
+}
