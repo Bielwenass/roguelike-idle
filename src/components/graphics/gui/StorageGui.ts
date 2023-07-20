@@ -5,10 +5,9 @@ import { centerOnScreen } from '@utils/centerOnScreen';
 import { InventorySlot } from './InventorySlot';
 import { SelectedSlot } from './SelectedSlot';
 
-import type { Item } from '../../../types/Item';
-
 import type { Application } from '@pixi/app';
 import type { Texture } from '@pixi/core';
+import type { Item } from '@type/Item';
 
 export class StorageGui extends Sprite {
   protected slots: ReadonlyArray<InventorySlot> = [];

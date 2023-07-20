@@ -1,13 +1,12 @@
 import { TILE_SIZE } from '../../../constants';
 import { centerCameraOn } from '../../Camera';
 
-import type { Actor } from '../../../types/Actor';
-import type { Cell } from '../../../types/Cell';
-import type { Entity } from '../../../types/Entity';
-import type { PlayBoard } from '../../../types/PlayBoard';
-
 import type { Point } from '@pixi/core';
 import type { Container } from '@pixi/display';
+import type { Actor } from '@type/Actor';
+import type { Cell } from '@type/Cell';
+import type { Entity } from '@type/Entity';
+import type { PlayBoard } from '@type/PlayBoard';
 
 export function moveEntity(entity: Entity, point: Point): void {
   entity.position = point;

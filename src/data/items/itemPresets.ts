@@ -1,6 +1,6 @@
 import { ItemType } from '../enums/ItemType';
 
-import type { ItemBase } from '../../types/Item';
+import type { ItemBase } from '@type/Item';
 
 export const itemPresets: Record<ItemType, ItemBase> = {
   [ItemType.Dagger]: {

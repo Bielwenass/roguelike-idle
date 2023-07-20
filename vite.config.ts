@@ -11,6 +11,7 @@ export default defineConfig({
       '@gui/': fileURLToPath(new URL('./src/components/graphics/gui/*', import.meta.url)),
       '@formulas/': fileURLToPath(new URL('./src/components/formulas/*', import.meta.url)),
       '@dungeon/': fileURLToPath(new URL('./src/components/dungeon/*', import.meta.url)),
+      '@type/': fileURLToPath(new URL('./src/types/*', import.meta.url)),
     },
   },
 });

@@ -1,4 +1,5 @@
-import type { Point, Sprite } from 'pixi.js';
+import type { Point } from '@pixi/core';
+import type { Sprite } from '@pixi/sprite';
 
 export interface Entity {
   position: Point,

@@ -1,10 +1,11 @@
-import { state } from './State';
-import { ItemRarity } from '../data/enums/ItemRarity';
-import { ItemType } from '../data/enums/ItemType';
-import { itemPresets } from '../data/items/itemPresets';
-import { itemStatModByRarity } from '../data/items/itemStatModByRarity';
+import { ItemRarity } from '@data/enums/ItemRarity';
+import { ItemType } from '@data/enums/ItemType';
+import { itemPresets } from '@data/items/itemPresets';
+import { itemStatModByRarity } from '@data/items/itemStatModByRarity';
 
-import type { Item, ItemBase } from '../types/Item';
+import { state } from './State';
+
+import type { Item, ItemBase } from '@type/Item';
 
 function rollRarity(diffMod: number): ItemRarity {
   const rarityNum = Math.random();

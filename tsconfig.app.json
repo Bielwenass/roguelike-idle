@@ -37,6 +37,9 @@
       ],
       "@dungeon/*": [
         "src/components/dungeon/*"
+      ],
+      "@type/*": [
+        "src/types/*"
       ]
     }
   }

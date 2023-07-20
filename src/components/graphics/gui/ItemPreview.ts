@@ -1,15 +1,15 @@
+import { itemFrameTint } from '@data/items/ItemFrameTint';
+import { itemStatStrings } from '@data/items/itemStatStrings';
 import { Point } from '@pixi/core';
 import { Container } from '@pixi/display';
 
 import { InventorySlot } from './InventorySlot';
-import { itemFrameTint } from '../../../data/items/ItemFrameTint';
-import { itemStatStrings } from '../../../data/items/itemStatStrings';
 import {
   equipItem, isEquipped, sellItem, unequipItem,
 } from '../../Inventory';
 import { drawText } from '../../Text';
 
-import type { ItemSprite } from '../../../types/ItemSprite';
+import type { ItemSprite } from '@type/ItemSprite';
 
 export class ItemPreview extends Container {
   constructor(itemSprite: ItemSprite) {

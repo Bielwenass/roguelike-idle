@@ -2,7 +2,7 @@ import { getDamage } from '@formulas/Attack';
 
 import { CombatAction } from './enums/CombatAction';
 
-import type { Actor } from '../types/Actor';
+import type { Actor } from '@type/Actor';
 
 export const combatActionEffects = {
   [CombatAction.Attack]: (self: Actor, opponent: Actor) => ({

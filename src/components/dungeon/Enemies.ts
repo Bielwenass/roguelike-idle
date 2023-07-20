@@ -1,12 +1,13 @@
+import { creaturePresets } from '@data/creaturePresets';
+import { CreatureType } from '@data/enums/CreatureType';
+
 import { updateEntitiesVisibility } from './Entities';
 import { getRandomFreeTilePoint } from './Tiling';
-import { creaturePresets } from '../../data/creaturePresets';
-import { CreatureType } from '../../data/enums/CreatureType';
 import { spawnActor } from '../Actors';
 import { textureSkeleton } from '../graphics/Graphics';
 
-import type { ActorBase, Actor } from '../../types/Actor';
-import type { WorldContainer } from '../../types/WorldContainer';
+import type { ActorBase, Actor } from '@type/Actor';
+import type { WorldContainer } from '@type/WorldContainer';
 
 export function scaleEnemy(enemy: ActorBase, level: number): ActorBase {
   return {

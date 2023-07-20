@@ -1,12 +1,11 @@
+import { ItemType } from '@data/enums/ItemType';
 import { SCALE_MODES } from '@pixi/constants';
 import { BaseTexture, Texture } from '@pixi/core';
 import { Container } from '@pixi/display';
 import { Graphics } from '@pixi/graphics';
 import { settings } from '@pixi/settings';
 
-import { ItemType } from '../../data/enums/ItemType';
-
-import type { HpBar } from '../../types/HpBar';
+import type { HpBar } from '@type/HpBar';
 
 // TODO: Look into TextureCache
 
