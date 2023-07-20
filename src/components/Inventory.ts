@@ -26,6 +26,7 @@ export function unequipItem(item: Item | null): void {
     state.inventory.equipped[slot] = null;
     Gui.vault.updateSlots();
     Gui.equipment.updateSlots();
+    SelectedSlot.update();
     state.player = calculateStats(state.player, state.inventory.equipped);
   }
 }
@@ -36,7 +37,7 @@ export function equipItem(item: Item): void {
   if (vaultIdx >= 0) {
     const slot = itemSlotByType[item.type];
 
-    unequipItem(state.inventory.equipped[slot]);
+    unequipItem(state.inventory.equipped[slot] ?? null);
     state.inventory.equipped[slot] = item;
 
     state.inventory.vault.splice(state.inventory.vault.indexOf(item), 1);
