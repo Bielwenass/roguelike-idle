@@ -1,12 +1,11 @@
+import { itemFrameTint } from '@data/items/ItemFrameTint';
 import { Sprite } from '@pixi/sprite';
 
-import { itemFrameTint } from '../../../data/items/ItemFrameTint';
 import { getItemIcon, textureUiInventoryBorder } from '../Graphics';
 
-import type { Item } from '../../../types/Item';
-import type { ItemSprite } from '../../../types/ItemSprite';
-
 import type { Point } from '@pixi/core';
+import type { Item } from '@type/Item';
+import type { ItemSprite } from '@type/ItemSprite';
 
 export class InventorySlot extends Sprite {
   public itemSprite: ItemSprite | null = null;

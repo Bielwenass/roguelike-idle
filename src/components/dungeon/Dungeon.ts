@@ -1,6 +1,13 @@
 // Check if we need to start combat to get to the given cell
 
+import { ActorType } from '@data/enums/ActorType';
+import { CombatResult } from '@data/enums/CombatResult';
+import { DungeonResult } from '@data/enums/DungeonResult';
+import { EntityType } from '@data/enums/EntityType';
+import { movements } from '@data/movements';
 import { Container } from '@pixi/display';
+import { getDistance } from '@utils/getDistance';
+import { timeout } from '@utils/timeout';
 
 import { enterCombat } from './Combat';
 import { spawnEnemies } from './Enemies';
@@ -13,11 +20,6 @@ import { selectNextMove } from './movement/MovementAlgorithm';
 import {
   updateTilesVisibility, convertToBoard, tileBoard, getRandomFreeTilePoint,
 } from './Tiling';
-import { ActorType } from '../../data/enums/ActorType';
-import { CombatResult } from '../../data/enums/CombatResult';
-import { DungeonResult } from '../../data/enums/DungeonResult';
-import { EntityType } from '../../data/enums/EntityType';
-import { movements } from '../../data/movements';
 import { spawnActor } from '../Actors';
 import { centerCameraOn } from '../Camera';
 import { texturePlayer } from '../graphics/Graphics';
@@ -28,12 +30,9 @@ import { rollItem } from '../ItemGeneration';
 import { state } from '../State';
 import { enterTown } from '../Town';
 
-import type { Actor } from 'src/types/Actor';
-import type { Cell } from 'src/types/Cell';
-import type { WorldContainer } from 'src/types/WorldContainer';
-
-import { getDistance } from '../../utils/getDistance';
-import { timeout } from '../../utils/timeout';
+import type { Actor } from '@type/Actor';
+import type { Cell } from '@type/Cell';
+import type { WorldContainer } from '@type/WorldContainer';
 
 // If yes, start combat
 export async function combatCheck(movingActor: Actor, cell: Cell): Promise<CombatResult> {

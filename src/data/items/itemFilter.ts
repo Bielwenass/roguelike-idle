@@ -2,7 +2,7 @@ import { Point } from '@pixi/core';
 
 import { itemSlotByType } from './itemSlotByType';
 
-import type { Item } from '../../types/Item';
+import type { Item } from '@type/Item';
 
 export const itemFilter = [
   {

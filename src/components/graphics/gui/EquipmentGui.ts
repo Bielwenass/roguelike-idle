@@ -4,7 +4,7 @@ import { InventorySlot } from './InventorySlot';
 import { StorageGui } from './StorageGui';
 import { textureUiInventoryEquip } from '../Graphics';
 
-import type { Item } from '../../../types/Item';
+import type { Item } from '@type/Item';
 
 export class EquipmentGui extends StorageGui {
   constructor(items: Item[]) {

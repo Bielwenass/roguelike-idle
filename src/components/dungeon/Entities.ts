@@ -1,16 +1,15 @@
+import { EntityType } from '@data/enums/EntityType';
 import { Point } from '@pixi/core';
 import { Sprite } from '@pixi/sprite';
 
 import { isPointVisible } from './Tiling';
 import { TILE_SIZE } from '../../constants';
-import { EntityType } from '../../data/enums/EntityType';
 import { textureExit, textureChest } from '../graphics/Graphics';
-
-import type { Entity } from '../../types/Entity';
-import type { WorldContainer } from '../../types/WorldContainer';
 
 import type { Texture } from '@pixi/core';
 import type { Container } from '@pixi/display';
+import type { Entity } from '@type/Entity';
+import type { WorldContainer } from '@type/WorldContainer';
 
 export function updateEntitiesVisibility(entities: Entity[]) {
   return entities.map((e) => {

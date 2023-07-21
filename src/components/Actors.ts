@@ -1,13 +1,12 @@
+import { movements } from '@data/movements';
+import { strategies } from '@data/strategies';
+import { spawnEntity } from '@dungeon/Entities';
 import { Point, type Texture } from '@pixi/core';
 
-import { spawnEntity } from './dungeon/Entities';
 import { createHpBar } from './graphics/Graphics';
-import { movements } from '../data/movements';
-import { strategies } from '../data/strategies';
-
-import type { Actor, ActorBase } from '../types/Actor';
 
 import type { Container } from '@pixi/display';
+import type { Actor, ActorBase } from '@type/Actor';
 
 export function spawnActor(
   actorBase: ActorBase | Actor,

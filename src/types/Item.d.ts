@@ -1,5 +1,5 @@
-import type { ItemRarity } from '../data/enums/ItemRarity';
-import type { ItemType } from '../data/enums/ItemType';
+import type { ItemRarity } from '@data/enums/ItemRarity';
+import type { ItemType } from '@data/enums/ItemType';
 
 export type ItemBase = {
   attack?: number,

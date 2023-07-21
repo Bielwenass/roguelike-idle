@@ -1,7 +1,8 @@
-import { CombatAction } from './enums/CombatAction';
-import { getDamage } from '../components/formulas/Attack';
+import { getDamage } from '@formulas/Attack';
 
-import type { Actor } from '../types/Actor';
+import { CombatAction } from './enums/CombatAction';
+
+import type { Actor } from '@type/Actor';
 
 export const combatActionEffects = {
   [CombatAction.Attack]: (self: Actor, opponent: Actor) => ({

@@ -1,10 +1,11 @@
-import { Gui } from './graphics/gui/Gui';
-import { SelectedSlot } from './graphics/gui/SelectedSlot';
+import { itemSlotByType } from '@data/items/itemSlotByType';
+import { Gui } from '@gui/Gui';
+import { SelectedSlot } from '@gui/SelectedSlot';
+
 import { calculateStats } from './Player';
 import { state } from './State';
-import { itemSlotByType } from '../data/items/itemSlotByType';
 
-import type { Item } from '../types/Item';
+import type { Item } from '@type/Item';
 
 export function addToBackpack(item: Item): void {
   // TODO: Limit inventory sizes

@@ -1,13 +1,14 @@
-import { ActorType } from './enums/ActorType';
-import { EntityType } from './enums/EntityType';
-import { MovementStrategy } from './enums/MovementStrategy';
 import {
   basicDirections, findPathBfs, findPathForSpecificCell,
   getRandomDirection, isPossibleDirection, isRecentDirection, sumPoint,
-} from '../components/dungeon/movement/MovementAlgorithm';
+} from '@dungeon/movement/MovementAlgorithm';
 
-import type { Movement } from '../types/Actor';
-import type { Cell } from '../types/Cell';
+import { ActorType } from './enums/ActorType';
+import { EntityType } from './enums/EntityType';
+import { MovementStrategy } from './enums/MovementStrategy';
+
+import type { Movement } from '@type/Actor';
+import type { Cell } from '@type/Cell';
 
 type MovementStrategyData = {
   [key: number]: (cell: Cell) => boolean

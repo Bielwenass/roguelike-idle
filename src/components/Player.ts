@@ -1,8 +1,8 @@
-import { creaturePresets } from '../data/creaturePresets';
-import { CreatureType } from '../data/enums/CreatureType';
+import { creaturePresets } from '@data/creaturePresets';
+import { CreatureType } from '@data/enums/CreatureType';
 
-import type { Actor } from '../types/Actor';
-import type { Item } from '../types/Item';
+import type { Actor } from '@type/Actor';
+import type { Item } from '@type/Item';
 
 export function calculateStats(player: Actor, equipment: (Item | null)[]): Actor {
   const playerBase = creaturePresets[CreatureType.Player];

@@ -1,18 +1,17 @@
+import { itemFilter } from '@data/items/itemFilter';
+import { itemSort } from '@data/items/itemSort';
 import { Point } from '@pixi/core';
 import { Container } from '@pixi/display';
 
 import { ItemPreview } from './ItemPreview';
 import { SelectedSlot } from './SelectedSlot';
 import { StorageGui } from './StorageGui';
-import { itemFilter } from '../../../data/items/itemFilter';
-import { itemSort } from '../../../data/items/itemSort';
 import { drawText } from '../../Text';
 import { textureUiVaultBg } from '../Graphics';
 
-import type { Item } from '../../../types/Item';
-import type { ItemSprite } from '../../../types/ItemSprite';
-
 import type { Text } from '@pixi/text';
+import type { Item } from '@type/Item';
+import type { ItemSprite } from '@type/ItemSprite';
 
 export class VaultGui extends StorageGui {
   private preview?: ItemPreview;

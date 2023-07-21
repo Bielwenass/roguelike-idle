@@ -1,18 +1,18 @@
+import { creaturePresets } from '@data/creaturePresets';
+import { CreatureType } from '@data/enums/CreatureType';
+import { movements } from '@data/movements';
+import { strategies } from '@data/strategies';
 import { Application } from '@pixi/app';
 import { Point } from '@pixi/core';
 import { Container } from '@pixi/display';
 import { Sprite } from '@pixi/sprite';
 
 import { createHpBar } from './graphics/Graphics';
-import { creaturePresets } from '../data/creaturePresets';
-import { CreatureType } from '../data/enums/CreatureType';
-import { movements } from '../data/movements';
-import { strategies } from '../data/strategies';
 
-import type { Actor } from '../types/Actor';
-import type { CombatContainer } from '../types/CombatContainer';
-import type { Item } from '../types/Item';
-import type { WorldContainer } from '../types/WorldContainer';
+import type { Actor } from '@type/Actor';
+import type { CombatContainer } from '@type/CombatContainer';
+import type { Item } from '@type/Item';
+import type { WorldContainer } from '@type/WorldContainer';
 
 export interface State {
   app: Application<HTMLCanvasElement>,

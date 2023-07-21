@@ -1,6 +1,5 @@
+import { get2dArray } from '@utils/get2dArray';
 import wfc from 'wavefunctioncollapse';
-
-import { get2dArray } from '../../utils/get2dArray';
 
 async function imageUrlToData(path: string) {
   const img = document.createElement('img');

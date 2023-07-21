@@ -1,19 +1,18 @@
+import { EntityType } from '@data/enums/EntityType';
 import { Point } from '@pixi/core';
 import { Sprite } from '@pixi/sprite';
+import { get2dArray } from '@utils/get2dArray';
+import { getDistance } from '@utils/getDistance';
+import { isEqualPoint } from '@utils/isEqualPoint';
 
 import { basicBfs } from './movement/MovementAlgorithm';
 import { TILE_SIZE } from '../../constants';
-import { EntityType } from '../../data/enums/EntityType';
 import { textureTile, textureWall } from '../graphics/Graphics';
 
-import type { Actor } from '../../types/Actor';
-import type { Cell } from '../../types/Cell';
-import type { PlayBoard } from '../../types/PlayBoard';
-import type { WorldContainer } from '../../types/WorldContainer';
-
-import { get2dArray } from '../../utils/get2dArray';
-import { getDistance } from '../../utils/getDistance';
-import { isEqualPoint } from '../../utils/isEqualPoint';
+import type { Actor } from '@type/Actor';
+import type { Cell } from '@type/Cell';
+import type { PlayBoard } from '@type/PlayBoard';
+import type { WorldContainer } from '@type/WorldContainer';
 
 let freeTiles: Point[] = [];
 let visibleTiles: Point[] = [];
