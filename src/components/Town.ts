@@ -3,6 +3,7 @@ import { Container } from '@pixi/display';
 
 import { enterDungeon } from './dungeon/Dungeon';
 import { Gui } from './graphics/gui/Gui';
+import { SelectedSlot } from './graphics/gui/SelectedSlot';
 import { state } from './State';
 import { drawText } from './Text';
 
@@ -24,6 +25,10 @@ export function enterTown(camera: Container) {
 
   toEquipment.on('click', () => {
     Gui.vault.toggle();
+
+    // Clear item preview
+    Gui.vault.previewItem(null);
+    SelectedSlot.clear();
     Gui.equipment.toggle();
   });
 

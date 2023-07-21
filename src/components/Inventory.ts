@@ -6,7 +6,7 @@ import { itemSlotByType } from '../data/items/itemSlotByType';
 
 import type { Item } from '../types/Item';
 
-export function addItem(item: Item): void {
+export function addToBackpack(item: Item): void {
   // TODO: Limit inventory sizes
   state.inventory.backpack.push(item);
   Gui.backpack.updateSlots();
@@ -50,11 +50,19 @@ export function equipItem(item: Item): void {
   }
 }
 
+// Mutate the array to lose the second half of the items
+export function loseItemsOnDeath(items: Item[]): void {
+  items.splice(Math.floor(items.length / 2), items.length);
+}
+
+// Transfer items from backpack to vault
 export function stashToVault(): Item[] {
   const itemsToStash = state.inventory.backpack;
 
   state.inventory.vault.push(...itemsToStash);
-  state.inventory.backpack = [];
+
+  // Clear the backpack
+  state.inventory.backpack.length = 0;
   Gui.backpack.updateSlots();
   Gui.vault.updateSlots();
 
