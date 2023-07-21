@@ -1,3 +1,5 @@
+import { pointToCell } from '@utils/board/pointToCell';
+
 import { TILE_SIZE } from '../../../constants';
 import { centerCameraOn } from '../../Camera';
 
@@ -14,10 +16,9 @@ export function moveEntity(entity: Entity, point: Point): void {
   entity.sprite.x = point.x * TILE_SIZE;
   entity.sprite.y = point.y * TILE_SIZE;
 }
-
 export function moveActor(actor: Actor, newPosition: Point, pb: PlayBoard): void {
-  pb[actor.position.x][actor.position.y].actor = null;
-  pb[newPosition.x][newPosition.y].actor = actor;
+  pointToCell(actor.position, pb).actor = null;
+  pointToCell(newPosition, pb).actor = actor;
   moveEntity(actor, newPosition);
 }
 

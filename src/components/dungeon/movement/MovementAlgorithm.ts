@@ -1,8 +1,11 @@
 import { MovementAction } from '@data/enums/MovementAction';
 import { Point } from '@pixi/core';
+import { doesPointExist } from '@utils/board/doesPointExist';
+import { isGroundCell } from '@utils/board/isGroundCell';
+import { pointToCell } from '@utils/board/pointToCell';
 import { getDistance } from '@utils/getDistance';
 import { isEqualPoint } from '@utils/isEqualPoint';
-import { isGroundCell } from '@utils/isGroundCell';
+import { sumPoints } from '@utils/sumPoints';
 
 import type { Actor } from '@type/Actor';
 import type { Cell } from '@type/Cell';
@@ -13,14 +16,14 @@ export function selectNextMove(self: Actor, playBoard: PlayBoard): Cell {
     const newPoint = movement(self, playBoard);
 
     const isSamePoint = isEqualPoint(self.position, newPoint);
-    const hasFriendlyActor = playBoard[newPoint.x][newPoint.y].actor?.type === self.type;
+    const hasFriendlyActor = pointToCell(newPoint, playBoard).actor?.type === self.type;
 
     if (!isSamePoint && !hasFriendlyActor) {
-      return playBoard[newPoint.x][newPoint.y];
+      return pointToCell(newPoint, playBoard);
     }
   }
 
-  return playBoard[self.position.x][self.position.y];
+  return pointToCell(self.position, playBoard);
 }
 
 export const basicDirections = [
@@ -38,28 +41,16 @@ export const basicDirections = [
   },
 ];
 
-export function sumPoint(point1: Point, point2: Point): Point {
-  return new Point(point1.x + point2.x, point1.y + point2.y);
-}
-
 export function getDirectionsForPoint(point: Point): Point[] {
   return basicDirections.map((e) => new Point(point.x + e.point.x, point.y + e.point.y));
 }
 
 export function getRandomDirection(availableDirections: Point[]): Point {
-  return availableDirections[Math.floor(Math.random() * availableDirections.length)];
-}
-
-export function doesPointExist(pb: PlayBoard, pt: Point) {
-  return pb[pt.x] !== undefined && pb[pt.x][pt.y] !== undefined;
-}
-
-export function isPossibleDirection(actor: Actor, point: Point, playBoard: PlayBoard): boolean {
-  return isGroundCell(actor.position.x + point.x, actor.position.y + point.y, playBoard);
+  return availableDirections[Math.floor(Math.random() * availableDirections.length)]!;
 }
 
 export function isRecentDirection(actor: Actor, relPoint: Point): boolean {
-  return actor.lastCells.some((e) => isEqualPoint(e.position, sumPoint(actor.position, relPoint)));
+  return actor.lastCells.some((e) => isEqualPoint(e.position, sumPoints(actor.position, relPoint)));
 }
 
 // Calculates whether point 0 can see point 1
@@ -114,9 +105,9 @@ export function basicBfs(pb: PlayBoard, root: Point, depth: number): Point[] {
   while (queue.length > 0) {
     const current = queue.pop()!;
 
-    if (isGroundCell(current.x, current.y, pb)) {
+    if (isGroundCell(current, pb)) {
       const neighbors = getDirectionsForPoint(current)
-        .filter((e) => doesPointExist(pb, e))
+        .filter((e) => doesPointExist(e, pb))
         .filter((e) => !explored.some((c) => isEqualPoint(c, e)))
         .filter((e) => getDistance(e, root) <= depth)
         .filter((e) => arePointsOnSameLine(root, e, obstacles));
@@ -163,9 +154,9 @@ export function findPathBfs(
   while (queue.length > 0) {
     const current = queue.pop()!;
 
-    if (isGroundCell(current.pos.x, current.pos.y, pb)) {
+    if (isGroundCell(current.pos, pb)) {
       const neighbors = getDirectionsForPoint(current.pos)
-        .filter((e) => doesPointExist(pb, e))
+        .filter((e) => doesPointExist(e, pb))
         .filter((e) => getDistance(root, e) <= actor.sightRange || ignoreSight)
         .filter((e) => !Object.keys(explored).includes(`${e.x},${e.y}`))
         .map((e) => ({

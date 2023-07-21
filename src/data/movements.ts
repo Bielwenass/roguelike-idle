@@ -1,7 +1,9 @@
 import {
   basicDirections, findPathBfs, findPathForSpecificCell,
-  getRandomDirection, isPossibleDirection, isRecentDirection, sumPoint,
+  getRandomDirection, isRecentDirection,
 } from '@dungeon/movement/MovementAlgorithm';
+import { isValidDirection } from '@utils/board/isValidDirection';
+import { sumPoints } from '@utils/sumPoints';
 
 import { ActorType } from './enums/ActorType';
 import { EntityType } from './enums/EntityType';
@@ -26,20 +28,21 @@ const strats: MovementStrategyData = {
 export const movements: Record<string, Movement> = {
   random: (self, playBoard) => {
     // Try to find any possible direction
-    const availableDirections = basicDirections.filter((a) => isPossibleDirection(self, a.point, playBoard));
+    const availableDirections = basicDirections
+      .filter((a) => isValidDirection(self.position, a.point, playBoard));
 
     // Try to find directions without moving backward
     const notVisitedDirections = availableDirections.filter((a) => !isRecentDirection(self, a.point));
 
     if (notVisitedDirections.length > 0) {
-      return getRandomDirection(notVisitedDirections.map((a) => sumPoint(a.point, self.position)));
+      return getRandomDirection(notVisitedDirections.map((a) => sumPoints(a.point, self.position)));
     }
 
     if (availableDirections.length === 0) {
       return self.position;
     }
 
-    return getRandomDirection(availableDirections.map((a) => sumPoint(a.point, self.position)));
+    return getRandomDirection(availableDirections.map((a) => sumPoints(a.point, self.position)));
   },
   exploring: (self, pb) => findPathBfs(pb, self, strats[MovementStrategy.Exploring], true)[0] ?? self.position,
   exit: (self, pb) => findPathBfs(pb, self, strats[MovementStrategy.Exit])[0] ?? self.position,
