@@ -1,5 +1,3 @@
-// Check if we need to start combat to get to the given cell
-
 import { ActorType } from '@data/enums/ActorType';
 import { CombatResult } from '@data/enums/CombatResult';
 import { DungeonResult } from '@data/enums/DungeonResult';
