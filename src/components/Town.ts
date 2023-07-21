@@ -16,6 +16,8 @@ export function enterTown(camera: Container) {
   // TODO: Market
   // MainScreen.addChild(drawText('Market', 'menu', new Point(100, 300), true));
 
+  mainScreen.addChild(drawText('Please note that this is a very early demo. We\'re still working on core mechanics and balancing.', 'inventoryPale', new Point(100, 700)));
+
   toDungeon.on('click', () => {
     mainScreen.destroy();
     Gui.vault.toggle(false);

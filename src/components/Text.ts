@@ -19,6 +19,13 @@ const textStyles: Record<string, TextStyle> = {
     fill: 0xcccccc,
     align: 'center',
   } as TextStyle,
+  inventoryPale: {
+    fontFamily: 'Timetwist',
+    padding: 2,
+    fontSize: 14,
+    fill: 0x555555,
+    align: 'center',
+  } as TextStyle,
 };
 
 export function drawText(
