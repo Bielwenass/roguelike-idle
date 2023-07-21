@@ -55,10 +55,7 @@ export function isRecentDirection(actor: Actor, relPoint: Point): boolean {
 
 // Calculates whether point 0 can see point 1
 // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-function arePointsOnSameLine(p0: Point, p1: Point, obstacles: Point[]) {
-  if (obstacles.length === 0) {
-    return true;
-  }
+function arePointsOnSameLine(p0: Point, p1: Point, pb: PlayBoard) {
   let x0 = p0.x;
   let y0 = p0.y;
   const x1 = p1.x;
@@ -71,8 +68,9 @@ function arePointsOnSameLine(p0: Point, p1: Point, obstacles: Point[]) {
   const sy = (y0 < y1) ? 1 : -1;
 
   let diff = Δx + Δy;
+  let curPoint = p0;
 
-  while (x0 !== x1 || y0 !== y1) {
+  while (!isEqualPoint(curPoint, p1)) {
     const e2 = 2 * diff;
 
     if (e2 < Δx) {
@@ -83,9 +81,9 @@ function arePointsOnSameLine(p0: Point, p1: Point, obstacles: Point[]) {
       diff += Δy;
       x0 += sx;
     }
-    const curPoint = new Point(x0, y0);
+    curPoint = new Point(x0, y0);
 
-    if (obstacles.some((e) => isEqualPoint(curPoint, e))) {
+    if (!pb[x0][y0]?.isGround && !isEqualPoint(curPoint, p1)) {
       return false;
     }
   }
@@ -103,14 +101,14 @@ export function basicBfs(pb: PlayBoard, root: Point, depth: number): Point[] {
   queue.push(root);
 
   while (queue.length > 0) {
-    const current = queue.pop()!;
+    const current = queue.shift()!;
 
     if (isGroundCell(current, pb)) {
       const neighbors = getDirectionsForPoint(current)
         .filter((e) => doesPointExist(e, pb))
         .filter((e) => !explored.some((c) => isEqualPoint(c, e)))
         .filter((e) => getDistance(e, root) <= depth)
-        .filter((e) => arePointsOnSameLine(root, e, obstacles));
+        .filter((e) => arePointsOnSameLine(root, e, pb));
 
       queue.unshift(...neighbors);
     } else {
