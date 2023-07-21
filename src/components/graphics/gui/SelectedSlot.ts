@@ -22,6 +22,12 @@ export class SelectedSlot {
     this.vaultGui.previewItem(this.selected.itemSprite!);
   }
 
+  public static clear() {
+    if (this.selected) {
+      this.selected.filters = [];
+    }
+  }
+
   public static update() {
     if (this.selected) {
       this.vaultGui.previewItem(this.selected.itemSprite);

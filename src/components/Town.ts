@@ -1,5 +1,6 @@
 import { enterDungeon } from '@dungeon/Dungeon';
 import { Gui } from '@gui/Gui';
+import { SelectedSlot } from '@gui/SelectedSlot';
 import { Point } from '@pixi/core';
 import { Container } from '@pixi/display';
 
@@ -24,6 +25,10 @@ export function enterTown(camera: Container) {
 
   toEquipment.on('click', () => {
     Gui.vault.toggle();
+
+    // Clear item preview
+    Gui.vault.previewItem(null);
+    SelectedSlot.clear();
     Gui.equipment.toggle();
   });
 

@@ -23,7 +23,9 @@ import {
 import { spawnActor } from '../Actors';
 import { centerCameraOn } from '../Camera';
 import { texturePlayer } from '../graphics/Graphics';
-import { addItem, stashToVault } from '../Inventory';
+import {
+  addToBackpack, loseItemsOnDeath, stashToVault,
+} from '../Inventory';
 import { rollItem } from '../ItemGeneration';
 import { state } from '../State';
 import { enterTown } from '../Town';
@@ -59,7 +61,7 @@ function processCombatResult(combatResult: CombatResult, enemy: Actor | null): b
 
     const newItem = rollItem(state.meta.worldLevel, 1);
 
-    addItem(newItem);
+    addToBackpack(newItem);
   }
 
   return false;
@@ -177,10 +179,7 @@ export async function enterDungeon(level: number): Promise<void> {
     enterDungeon(state.meta.worldLevel += 1);
   }
   if (floorResult === DungeonResult.PlayerDeath) {
-    // Lose half the backpack on death
-    const backpackHalf = state.inventory.backpack.slice(0, Math.floor(state.inventory.backpack.length / 2));
-
-    state.inventory.backpack = backpackHalf;
+    loseItemsOnDeath(state.inventory.backpack);
     stashToVault();
     state.player.currentHealth = state.player.maxHealth;
     enterTown(state.camera);

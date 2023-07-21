@@ -11,13 +11,23 @@ module.exports = {
     'airbnb-base',
     'airbnb-typescript/base',
   ],
+
+  overrides: [{
+    files: ['src/**/*'],
+
+    parserOptions: {
+      project: ['./tsconfig.app.json'],
+    },
+  }],
+
   parserOptions: {
     ecmaVersion: 'latest',
     ecmaFeatures: {
       useStrict: true,
     },
-    project: ['./tsconfig.app.json'],
+    project: ['./tsconfig.node.json'],
   },
+
   plugins: [
     '@typescript-eslint',
   ],
