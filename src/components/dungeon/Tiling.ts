@@ -2,11 +2,10 @@ import { EntityType } from '@data/enums/EntityType';
 import { Point } from '@pixi/core';
 import { Sprite } from '@pixi/sprite';
 import { get2dArray } from '@utils/get2dArray';
-import { getDistance } from '@utils/getDistance';
 import { isEqualPoint } from '@utils/isEqualPoint';
 
 import { basicBfs } from './movement/MovementAlgorithm';
-import { TILE_SIZE } from '../../constants';
+import { DEBUG_VISIBILITY, TILE_SIZE } from '../../constants';
 import { textureTile, textureWall } from '../graphics/Graphics';
 
 import type { Actor } from '@type/Actor';
@@ -73,7 +72,6 @@ export function tileBoard(world: WorldContainer) {
       newTile.x = x * TILE_SIZE;
       newTile.y = y * TILE_SIZE;
 
-      newTile.eventMode = 'none';
       newTile.visible = false;
       cell.sprite = newTile;
     }
@@ -85,25 +83,18 @@ export function isPointVisible(point: Point) {
 }
 
 // Update tiles visibility
-// TODO: Factor in walls
 export function updateTilesVisibility(player: Actor, playBoard: PlayBoard): PlayBoard {
-  visibleTiles = basicBfs(playBoard, player.position, player.sightRange);
+  if (DEBUG_VISIBILITY) {
+    visibleTiles = playBoard.flat().map((e) => e.position);
+  } else {
+    visibleTiles = basicBfs(playBoard, player.position, player.sightRange);
+  }
 
   return playBoard.map((e) => e.map((cell) => {
-    const dist = getDistance(player.position, cell.position);
-
     if (isPointVisible(cell.position)) {
       cell.wasSeen = true;
       cell.sprite.visible = true;
       cell.sprite.alpha = 1;
-
-      if (dist === 1 && cell.isGround) {
-        cell.sprite.tint = 0xffff88;
-        cell.sprite.eventMode = 'static';
-      } else {
-        cell.sprite.tint = 0xffffff;
-        cell.sprite.eventMode = 'none';
-      }
     } else if (cell.wasSeen) {
       cell.sprite.alpha = 0.5;
     } else {
