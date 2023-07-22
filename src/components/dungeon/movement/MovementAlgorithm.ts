@@ -83,7 +83,7 @@ function arePointsOnSameLine(p0: Point, p1: Point, pb: PlayBoard) {
     }
     curPoint = new Point(x0, y0);
 
-    if (!pb[x0][y0]?.isGround && !isEqualPoint(curPoint, p1)) {
+    if (!isGroundCell(curPoint, pb) && !isEqualPoint(curPoint, p1)) {
       return false;
     }
   }
