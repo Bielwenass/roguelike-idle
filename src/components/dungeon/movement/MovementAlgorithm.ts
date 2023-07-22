@@ -96,7 +96,6 @@ function arePointsOnSameLine(p0: Point, p1: Point, pb: PlayBoard) {
 export function basicBfs(pb: PlayBoard, root: Point, depth: number): Point[] {
   const queue: Point[] = [];
   const explored: Point[] = [];
-  const obstacles: Point[] = [];
 
   queue.push(root);
 
@@ -111,8 +110,6 @@ export function basicBfs(pb: PlayBoard, root: Point, depth: number): Point[] {
         .filter((e) => arePointsOnSameLine(root, e, pb));
 
       queue.unshift(...neighbors);
-    } else {
-      obstacles.push(current);
     }
     explored.push(current);
   }
