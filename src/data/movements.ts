@@ -9,12 +9,10 @@ import { ActorType } from './enums/ActorType';
 import { EntityType } from './enums/EntityType';
 import { MovementStrategy } from './enums/MovementStrategy';
 
-import type { Movement } from '@type/Actor';
+import type { MovementAction, MovementName } from '@type/Actor';
 import type { Cell } from '@type/Cell';
 
-type MovementStrategyData = {
-  [key: number]: (cell: Cell) => boolean
-};
+type MovementStrategyData = Record<MovementStrategy, (cell: Cell) => boolean>;
 
 const strats: MovementStrategyData = {
   [MovementStrategy.Wandering]: (cell) => cell.isGround,
@@ -25,7 +23,7 @@ const strats: MovementStrategyData = {
   [MovementStrategy.Player]: (cell) => cell.actor?.type === ActorType.Player,
 };
 
-export const movements: Record<string, Movement> = {
+export const movements: Record<MovementName, MovementAction> = {
   random: (self, playBoard) => {
     // Try to find any possible direction
     const availableDirections = basicDirections

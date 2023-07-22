@@ -6,8 +6,11 @@ import type { ActorType } from '@data/enums/ActorType';
 import type { CombatAction } from '@data/enums/CombatAction';
 import type { Texture, Point } from '@pixi/core';
 
-export type Strategy = (self: Actor, opponent: Actor) => CombatAction;
-export type Movement = (self: Actor, playBoard: PlayBoard) => Point;
+export type StrategyName = 'dummy';
+export type StrategyAction = (self: Actor, opponent: Actor) => CombatAction;
+
+export type MovementName = 'random' | 'exploring' | 'exit' | 'treasure' | 'enemy' | 'player';
+export type MovementAction = (self: Actor, playBoard: PlayBoard) => Point;
 
 export type ChasingGoal = {
   goal: Point,
@@ -29,8 +32,8 @@ export interface ActorBase {
 export interface Actor extends ActorBase, Entity {
   currentHealth: number,
   hpBar: HpBar,
-  strategy: Strategy,
-  movements: Movement[],
+  strategy: StrategyAction,
+  movements: MovementAction[],
   lastCells: Cell[],
   chasingModel: ChasingGoal,
   lastActionTime: number,
