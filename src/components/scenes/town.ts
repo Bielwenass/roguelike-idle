@@ -2,14 +2,13 @@ import { enterDungeon } from '@dungeon/Dungeon';
 import { Gui } from '@gui/Gui';
 import { SelectedSlot } from '@gui/SelectedSlot';
 import { Point } from '@pixi/core';
-import { Container } from '@pixi/display';
 
 import { GameScene } from '../scene/game';
 import { type State } from '../State';
 import { drawText } from '../Text';
 
 export class TownScene extends GameScene {
-  public constructor(private save: () => void, private readonly meta: State['meta'], private readonly screen = new Container()) {
+  public constructor(private save: () => void, private readonly meta: State['meta']) {
     super();
   }
 
