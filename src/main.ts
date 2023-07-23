@@ -32,7 +32,7 @@ async function setup() {
     }
   }));
 
-  enterTown(state.camera);
+  enterTown();
 }
 
 setup();
