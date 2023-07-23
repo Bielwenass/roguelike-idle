@@ -196,11 +196,11 @@ export async function enterDungeon(level: number): Promise<void> {
     loseItemsOnDeath(state.inventory.backpack);
     stashToVault();
     state.player.currentHealth = state.player.maxHealth;
-    enterTown(state.camera);
+    enterTown();
   }
   if (floorResult === DungeonResult.ExitToTown) {
     stashToVault();
     state.player.currentHealth = state.player.maxHealth;
-    enterTown(state.camera);
+    enterTown();
   }
 }

@@ -4,10 +4,11 @@ import { SelectedSlot } from '@gui/SelectedSlot';
 import { Point } from '@pixi/core';
 import { Container } from '@pixi/display';
 
+import { saveState } from './SaveManagement';
 import { state } from './State';
 import { drawText } from './Text';
 
-export function enterTown(camera: Container) {
+export function enterTown() {
   const mainScreen = new Container();
 
   const toDungeon = mainScreen.addChild(drawText('Go to Dungeon', 'menu', new Point(100, 100), true));
@@ -22,6 +23,9 @@ export function enterTown(camera: Container) {
     mainScreen.destroy();
     Gui.vault.toggle(false);
     Gui.equipment.toggle(false);
+
+    saveState(state);
+    mainScreen.destroy();
     enterDungeon(state.meta.worldLevel);
   });
 
@@ -34,5 +38,10 @@ export function enterTown(camera: Container) {
     Gui.equipment.toggle();
   });
 
-  camera.addChild(mainScreen);
+  // Updating GUI in case we just loaded
+  Gui.equipment.updateSlots();
+  Gui.vault.updateSlots();
+
+  saveState(state);
+  state.root.addChild(mainScreen);
 }

@@ -8,11 +8,24 @@ import { Container } from '@pixi/display';
 import { Sprite } from '@pixi/sprite';
 
 import { createHpBar } from './graphics/Graphics';
+import { loadState } from './SaveManagement';
 
 import type { Actor } from '@type/Actor';
 import type { CombatContainer } from '@type/CombatContainer';
 import type { Item } from '@type/Item';
 import type { WorldContainer } from '@type/WorldContainer';
+
+type Inventory = {
+  vault: Item[],
+  backpack: Item[],
+  equipped: (Item | null)[],
+  gold: number,
+};
+
+type MetaInfo = {
+  lastItemId: number,
+  worldLevel: number,
+};
 
 export interface State {
   app: Application<HTMLCanvasElement>,
@@ -21,20 +34,11 @@ export interface State {
   world: WorldContainer,
   combat: CombatContainer,
   player: Actor,
-  inventory: {
-    vault: Item[],
-    backpack: Item[],
-    equipped: (Item | null)[],
-    gold: number,
-  },
-  meta: {
-    lastItemId: number,
-    worldLevel: number,
-  }
+  inventory: Inventory,
+  meta: MetaInfo
 }
 
-// Initial state
-export const state: State = {
+export const initialState: State = {
   app: new Application(),
   root: new Container(),
   camera: new Container(),
@@ -62,3 +66,5 @@ export const state: State = {
     worldLevel: 1,
   },
 };
+
+export const state = loadState(initialState);
