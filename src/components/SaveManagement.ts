@@ -1,3 +1,5 @@
+import { calculateStats } from './Player';
+
 import type { State } from './State';
 
 export function saveState(currentState: State) {
@@ -16,6 +18,7 @@ export function loadState(currentState: State): State {
 
   return {
     ...currentState,
+    player: calculateStats(currentState.player, save.inventory.equipped),
     inventory: save.inventory,
     meta: save.meta,
   };
