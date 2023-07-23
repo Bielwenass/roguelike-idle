@@ -8,7 +8,7 @@ import { type State } from '../State';
 import { drawText } from '../Text';
 
 export class TownScene extends GameScene {
-  public constructor(private save: () => void, private readonly meta: State['meta']) {
+  public constructor(private readonly save: () => void, private readonly meta: State['meta']) {
     super();
   }
 
