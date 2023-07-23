@@ -43,5 +43,5 @@ export function enterTown() {
   Gui.vault.updateSlots();
 
   saveState(state);
-  state.root.addChild(mainScreen);
+  state.root.addChildAt(mainScreen, 0);
 }
