@@ -9,6 +9,8 @@ import { Sprite } from '@pixi/sprite';
 
 import { createHpBar } from './graphics/Graphics';
 import { loadState } from './SaveManagement';
+import { SceneNavigator } from './scene/navigation';
+import { drawText } from './Text';
 
 import type { Actor } from '@type/Actor';
 import type { CombatContainer } from '@type/CombatContainer';
@@ -33,6 +35,7 @@ export interface State {
   camera: Container,
   world: WorldContainer,
   combat: CombatContainer,
+  scene: SceneNavigator,
   player: Actor,
   inventory: Inventory,
   meta: MetaInfo
@@ -68,3 +71,4 @@ export const initialState: State = {
 };
 
 export const state = loadState(initialState);
+state.scene = new SceneNavigator(state);

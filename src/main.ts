@@ -6,7 +6,6 @@ import { loadFonts } from '@utils/awaitFonts';
 
 import { initCamera } from './components/Camera';
 import { state } from './components/State';
-import { enterTown } from './components/Town';
 import { enableResize } from './components/WindowResize';
 
 async function setup() {
@@ -26,13 +25,16 @@ async function setup() {
   // GUI setup
   state.root.addChild(Gui.getInstance());
 
+  state.root.addChild(state.scene);
+  state.scene.addChild(state.scene.manager);
+
   document.body.addEventListener('keydown', ((event: KeyboardEvent) => {
     if (event.key === 'i') {
       Gui.backpack.toggle();
     }
   }));
 
-  enterTown();
+  await state.scene.gotoTown();
 }
 
-setup();
+await setup();
