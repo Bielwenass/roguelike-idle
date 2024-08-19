@@ -75,11 +75,6 @@ export async function enterCombat(attacker: Actor, defender: Actor): Promise<Act
   // Show hp bars
   attacker.hpBar.visible = true;
   defender.hpBar.visible = true;
-  combat.sortableChildren = true;
-  attacker.sprite.sortableChildren = true;
-  defender.sprite.sortableChildren = true;
-  attacker.hpBar.zIndex = 10;
-  defender.hpBar.zIndex = 10;
 
   // TODO: Move sprite logic elsewhere
   // Move actors to their combat positions

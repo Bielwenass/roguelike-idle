@@ -19,7 +19,6 @@ export function spawnActor(
   const hpBar = createHpBar();
 
   hpBar.visible = false;
-  actorEntity.sprite.sortableChildren = true;
   actorEntity.sprite.addChild(hpBar);
 
   return {
