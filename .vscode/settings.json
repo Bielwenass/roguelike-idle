@@ -1,21 +1,11 @@
 {
   // ESLint: https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint
 
-  // ESLint handles JS/TS
-  "eslint.validate": [
-    "javascript",
-    "typescript",
-  ],
-
   // LF line endings
   "files.eol": "\n",
 
   // Lint on save
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true,
+    "source.fixAll.eslint": "explicit"
   },
-
-  "[typescript]": {
-    "editor.defaultFormatter": "vscode.typescript",
-  }
 }
