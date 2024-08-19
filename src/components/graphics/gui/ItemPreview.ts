@@ -1,7 +1,6 @@
 import { itemFrameTint } from '@data/items/ItemFrameTint';
 import { itemStatStrings } from '@data/items/itemStatStrings';
-import { Point } from '@pixi/core';
-import { Container } from '@pixi/display';
+import { Container, Point } from 'pixi.js';
 
 import { InventorySlot } from './InventorySlot';
 import {

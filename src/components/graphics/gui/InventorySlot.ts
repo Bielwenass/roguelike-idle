@@ -1,9 +1,8 @@
 import { itemFrameTint } from '@data/items/ItemFrameTint';
-import { Sprite } from '@pixi/sprite';
+import { Sprite, type Point } from 'pixi.js';
 
 import { getItemIcon, textureUiInventoryBorder } from '../Graphics';
 
-import type { Point } from '@pixi/core';
 import type { Item } from '@type/Item';
 import type { ItemSprite } from '@type/ItemSprite';
 

@@ -1,8 +1,7 @@
 import { EntityType } from '@data/enums/EntityType';
-import { Point } from '@pixi/core';
-import { Sprite } from '@pixi/sprite';
 import { get2dArray } from '@utils/get2dArray';
 import { isEqualPoint } from '@utils/isEqualPoint';
+import { Point, Sprite } from 'pixi.js';
 
 import { basicBfs } from './movement/MovementAlgorithm';
 import { DEBUG_VISIBILITY, TILE_SIZE } from '../../constants';
@@ -36,7 +35,7 @@ function addBorderToProtoBoard(protoBoard: number[][]): number[][] {
     e.push(0);
   });
 
-  const height = protoBoard[0].length;
+  const height = protoBoard[0]?.length ?? 0;
 
   protoBoard.push(Array(height).fill(0));
   protoBoard.unshift(Array(height).fill(0));
@@ -48,14 +47,14 @@ function addBorderToProtoBoard(protoBoard: number[][]): number[][] {
 export function convertToBoard(rawProtoBoard: number[][]): PlayBoard {
   const protoBoard = addBorderToProtoBoard(rawProtoBoard);
 
-  const height = protoBoard[0].length;
+  const height = protoBoard[0]?.length ?? 0;
   const width = protoBoard.length;
 
   const resultBoard = get2dArray(width, height, {}) as PlayBoard;
 
   for (let x = 0; x < width; x += 1) {
     for (let y = 0; y < height; y += 1) {
-      resultBoard[x][y] = getEmptyCell(x, y, protoBoard[x][y] !== 0);
+      resultBoard[x]![y] = getEmptyCell(x, y, protoBoard[x]![y] !== 0);
     }
   }
 
@@ -66,7 +65,7 @@ export function convertToBoard(rawProtoBoard: number[][]): PlayBoard {
 
   // Select the exit tile
   const exitTilePoint = getRandomFreeTilePoint();
-  const exitTile = resultBoard[exitTilePoint.x][exitTilePoint.y];
+  const exitTile = resultBoard[exitTilePoint.x]?.[exitTilePoint.y];
 
   exitTile.entityType = EntityType.Exit;
 

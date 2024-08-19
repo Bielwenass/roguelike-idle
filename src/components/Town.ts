@@ -1,8 +1,7 @@
 import { enterDungeon } from '@dungeon/Dungeon';
 import { Gui } from '@gui/Gui';
 import { SelectedSlot } from '@gui/SelectedSlot';
-import { Point } from '@pixi/core';
-import { Container } from '@pixi/display';
+import { Container, Point } from 'pixi.js';
 
 import { saveState } from './SaveManagement';
 import { state } from './State';

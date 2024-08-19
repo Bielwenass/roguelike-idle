@@ -1,4 +1,4 @@
-import type { Point } from '@pixi/core';
+import type { Point } from 'pixi.js';
 
 export function getDistance(a: Point, b: Point) {
   const xDist = Math.abs(a.x - b.x);

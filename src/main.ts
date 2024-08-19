@@ -1,8 +1,7 @@
 import './style.css';
 
-import '@pixi/events';
 import { Gui } from '@gui/Gui';
-import { loadFonts } from '@utils/awaitFonts';
+import { Assets } from 'pixi.js';
 
 import { initCamera } from './components/Camera';
 import { state } from './components/State';
@@ -11,17 +10,18 @@ import { enableResize } from './components/WindowResize';
 
 async function setup() {
   // Create a canvas element
-  document.body.appendChild(state.app.view);
+  document.body.appendChild(state.app.canvas);
   enableResize(state.app.renderer);
+
+  // Ensure fonts are loaded
+  await Assets.load('bitmgothic.medium.ttf');
+  await Assets.load('timetwist.regular.ttf');
 
   state.root = state.app.stage;
 
   // Camera setup
   state.camera = initCamera();
   state.root.addChild(state.camera);
-
-  // Ensure fonts are loaded
-  await loadFonts();
 
   // GUI setup
   state.root.addChild(Gui.getInstance());
@@ -35,4 +35,10 @@ async function setup() {
   enterTown();
 }
 
-setup();
+(async () => {
+  await state.app.init({
+    roundPixels: true,
+  });
+
+  setup();
+})();

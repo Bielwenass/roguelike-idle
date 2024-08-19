@@ -1,7 +1,6 @@
-import { Point } from '@pixi/core';
-import { Text } from '@pixi/text';
+import { Point, Text } from 'pixi.js';
 
-import type { TextStyle } from '@pixi/text';
+import type { TextStyle } from 'pixi.js';
 
 const textStyles: Record<string, TextStyle> = {
   menu: {
@@ -34,7 +33,9 @@ export function drawText(
   position = new Point(0, 0),
   isInteractive: boolean = false,
 ): Text {
-  const text = new Text(label, textStyles[style]);
+  const text = new Text({
+    text: label, style: textStyles[style]!,
+  });
 
   text.x = position.x;
   text.y = position.y;

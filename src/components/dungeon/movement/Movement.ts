@@ -3,12 +3,11 @@ import { pointToCell } from '@utils/board/pointToCell';
 import { TILE_SIZE } from '../../../constants';
 import { centerCameraOn } from '../../Camera';
 
-import type { Point } from '@pixi/core';
-import type { Container } from '@pixi/display';
 import type { Actor } from '@type/Actor';
 import type { Cell } from '@type/Cell';
 import type { Entity } from '@type/Entity';
 import type { PlayBoard } from '@type/PlayBoard';
+import type { Container, Point } from 'pixi.js';
 
 export function moveEntity(entity: Entity, point: Point): void {
   entity.position = point;

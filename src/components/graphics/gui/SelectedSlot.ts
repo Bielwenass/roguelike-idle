@@ -1,4 +1,4 @@
-import { ColorMatrixFilter } from '@pixi/filter-color-matrix';
+import { ColorMatrixFilter } from 'pixi.js';
 
 import type { InventorySlot } from './InventorySlot';
 import type { VaultGui } from './VaultGui';

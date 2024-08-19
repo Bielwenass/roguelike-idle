@@ -1,37 +1,38 @@
 import { ItemType } from '@data/enums/ItemType';
-import { SCALE_MODES } from '@pixi/constants';
-import { BaseTexture, Texture } from '@pixi/core';
-import { Container } from '@pixi/display';
-import { Graphics } from '@pixi/graphics';
-import { settings } from '@pixi/settings';
+import {
+  Assets,
+  Container, Graphics,
+  TextureSource,
+} from 'pixi.js';
 
 import type { HpBar } from '@type/HpBar';
+import type { Texture } from 'pixi.js';
 
 // TODO: Look into TextureCache
 
 // Enable zIndex
-Container.defaultSortableChildren = true;
-// Enable sharp pixel scaling
-BaseTexture.defaultOptions.scaleMode = SCALE_MODES.NEAREST;
-settings.ROUND_PIXELS = true;
+Container.prototype.sortableChildren = true;
 
-const texturePlayer = Texture.from('images/player.png');
-const textureSkeleton = Texture.from('images/skeleton.png');
-const textureTile = Texture.from('images/tile_dungeon.png');
-const textureWall = Texture.from('images/bricks.png');
-const textureExit = Texture.from('images/hatch.png');
-const textureChest = Texture.from('images/chest.png');
-const textureUiInventoryBorder = Texture.from('images/ui/icon_border.png');
-const textureUiInventoryBg = Texture.from('images/ui/inventory_backdrop.png');
-const textureUiInventoryEquip = Texture.from('images/ui/equipment_backdrop.png');
-const textureUiVaultBg = Texture.from('images/ui/vault_backdrop.png');
-const textureIconDagger = Texture.from('images/ui/icon_dagger.png');
-const textureIconSword = Texture.from('images/ui/icon_sword.png');
-const textureIconGreatsword = Texture.from('images/ui/icon_greatsword.png');
-const textureIconHelmet = Texture.from('images/ui/icon_helmet.png');
-const textureIconChestplate = Texture.from('images/ui/icon_chestplate.png');
-const textureIconGloves = Texture.from('images/ui/icon_gloves.png');
-const textureIconBoots = Texture.from('images/ui/icon_boots.png');
+// Enable sharp pixel scaling
+TextureSource.defaultOptions.scaleMode = 'nearest';
+
+const texturePlayer = await Assets.load('images/player.png');
+const textureSkeleton = await Assets.load('images/skeleton.png');
+const textureTile = await Assets.load('images/tile_dungeon.png');
+const textureWall = await Assets.load('images/bricks.png');
+const textureExit = await Assets.load('images/hatch.png');
+const textureChest = await Assets.load('images/chest.png');
+const textureUiInventoryBorder = await Assets.load('images/ui/icon_border.png');
+const textureUiInventoryBg = await Assets.load('images/ui/inventory_backdrop.png');
+const textureUiInventoryEquip = await Assets.load('images/ui/equipment_backdrop.png');
+const textureUiVaultBg = await Assets.load('images/ui/vault_backdrop.png');
+const textureIconDagger = await Assets.load('images/ui/icon_dagger.png');
+const textureIconSword = await Assets.load('images/ui/icon_sword.png');
+const textureIconGreatsword = await Assets.load('images/ui/icon_greatsword.png');
+const textureIconHelmet = await Assets.load('images/ui/icon_helmet.png');
+const textureIconChestplate = await Assets.load('images/ui/icon_chestplate.png');
+const textureIconGloves = await Assets.load('images/ui/icon_gloves.png');
+const textureIconBoots = await Assets.load('images/ui/icon_boots.png');
 
 export {
   texturePlayer,
@@ -57,16 +58,17 @@ export function createHpBar() {
   const hpBar = new Graphics() as HpBar;
   const hpBarFill = new Graphics();
 
-  hpBar.beginFill(0x111111);
-  hpBar.lineStyle({
+  // TODO: Fix bar not being displayed
+  hpBar.rect(0, -6, 16, 1);
+  hpBar.setStrokeStyle({
     width: 1,
     color: 0x333333,
     alignment: 1,
   });
-  hpBar.drawRect(0, -6, 16, 1);
+  hpBar.fill(0x111111);
 
-  hpBarFill.beginFill(0xaa0000);
-  const fillRect = hpBarFill.drawRect(0, -6, 16, 1);
+  hpBarFill.fill(0xaa0000);
+  const fillRect = hpBarFill.rect(0, -6, 16, 1);
 
   hpBar.addChild(hpBarFill);
   hpBar.set = (percent: number) => {

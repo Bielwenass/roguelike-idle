@@ -1,5 +1,5 @@
 import { MovementAction } from '@data/enums/MovementAction';
-import { Point } from '@pixi/core';
+import { Point } from 'pixi.js';
 import { doesPointExist } from '@utils/board/doesPointExist';
 import { isGroundCell } from '@utils/board/isGroundCell';
 import { pointToCell } from '@utils/board/pointToCell';

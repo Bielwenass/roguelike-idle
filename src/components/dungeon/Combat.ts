@@ -1,6 +1,6 @@
 import { combatActionEffects } from '@data/combatActionEffects';
-import { Container } from '@pixi/display';
 import { timeout } from '@utils/timeout';
+import { Container } from 'pixi.js';
 
 import { TILE_SIZE } from '../../constants';
 import { getScreenCenterX, getScreenCenterY } from '../Camera';
@@ -75,6 +75,11 @@ export async function enterCombat(attacker: Actor, defender: Actor): Promise<Act
   // Show hp bars
   attacker.hpBar.visible = true;
   defender.hpBar.visible = true;
+  combat.sortableChildren = true;
+  attacker.sprite.sortableChildren = true;
+  defender.sprite.sortableChildren = true;
+  attacker.hpBar.zIndex = 10;
+  defender.hpBar.zIndex = 10;
 
   // TODO: Move sprite logic elsewhere
   // Move actors to their combat positions
