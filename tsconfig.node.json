@@ -1,13 +1,13 @@
 {
-  "extends": "@tsconfig/node20/tsconfig.json",
-  "include": [
-    "**.ts",
-    "**.cjs"
-  ],
+  "extends": "@tsconfig/node22/tsconfig.json",
   "compilerOptions": {
     "composite": true,
     "types": [
-      "node",
-    ],
-  }
+      "node"
+    ]
+  },
+  "include": [
+    "eslint.config.mjs",
+    "vite.config.ts"
+  ]
 }

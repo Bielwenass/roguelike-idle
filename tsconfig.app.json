@@ -1,25 +1,13 @@
 {
   "extends": "@tsconfig/strictest/tsconfig.json",
-  "include": [
-    "src/**/*",
-  ],
   "compilerOptions": {
     "composite": true,
-    "sourceMap": true,
-    "verbatimModuleSyntax": true,
-    "noEmit": true,
-    "baseUrl": ".",
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "types": [
-      "vite/client"
-    ],
     "lib": [
       "ESNext",
       "DOM",
       "DOM.iterable"
     ],
+    "baseUrl": ".",
     "paths": {
       "@utils/*": [
         "src/utils/*"
@@ -39,6 +27,13 @@
       "@type/*": [
         "src/types/*"
       ]
-    }
-  }
+    },
+    "types": [
+      "vite/client"
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts"
+  ]
 }
