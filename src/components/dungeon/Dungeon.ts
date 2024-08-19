@@ -143,6 +143,9 @@ function resetWorld(): void {
 }
 
 export async function enterDungeon(level: number): Promise<void> {
+  // TODO: need for call onSceneExit for TownScene
+  await state.scene.gotoEmpty();
+
   resetWorld();
 
   // Board setup
