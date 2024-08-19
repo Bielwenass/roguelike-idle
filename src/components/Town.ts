@@ -11,7 +11,7 @@ import { drawText } from './Text';
 export function enterTown() {
   const mainScreen = new Container();
 
-  const toDungeon = mainScreen.addChild(drawText('Go to Dungeon', 'menu', new Point(100, 100), true));
+  const toDungeon = mainScreen.addChild(drawText('Enter Dungeon', 'menu', new Point(100, 100), true));
   const toEquipment = mainScreen.addChild(drawText('Equipment', 'menu', new Point(100, 200), true));
 
   // TODO: Market
