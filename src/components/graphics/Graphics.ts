@@ -65,10 +65,11 @@ export function createHpBar() {
     color: 0x333333,
     alignment: 1,
   });
-  hpBar.fill(0x111111);
+  hpBar.fill(0x555555);
+
+  const fillRect = hpBarFill.rect(0, -6, 16, 1);
 
   hpBarFill.fill(0xaa0000);
-  const fillRect = hpBarFill.rect(0, -6, 16, 1);
 
   hpBar.addChild(hpBarFill);
   hpBar.set = (percent: number) => {
