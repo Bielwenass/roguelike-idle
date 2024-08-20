@@ -1,7 +1,6 @@
 import { itemFilter } from '@data/items/itemFilter';
 import { itemSort } from '@data/items/itemSort';
-import { Point } from '@pixi/core';
-import { Container } from '@pixi/display';
+import { Container, Point } from 'pixi.js';
 
 import { ItemPreview } from './ItemPreview';
 import { SelectedSlot } from './SelectedSlot';
@@ -9,9 +8,9 @@ import { StorageGui } from './StorageGui';
 import { drawText } from '../../Text';
 import { textureUiVaultBg } from '../Graphics';
 
-import type { Text } from '@pixi/text';
 import type { Item } from '@type/Item';
 import type { ItemSprite } from '@type/ItemSprite';
+import type { Text } from 'pixi.js';
 
 export class VaultGui extends StorageGui {
   private preview?: ItemPreview;
@@ -35,7 +34,7 @@ export class VaultGui extends StorageGui {
     const sortedContent = filteredContent.sort(this.sort);
 
     for (const [slotIdx, slot] of this.slots.entries()) {
-      slot.onClick = () => {
+      slot.onclick = () => {
         SelectedSlot.select(slot);
       };
       slot.setItem(sortedContent[slotIdx] ?? null);
@@ -62,11 +61,11 @@ export class VaultGui extends StorageGui {
       text.x += textOffset;
       text.scale = new Point(0.2, 0.2);
 
-      text.on('click', () => {
+      text.onclick = () => {
         this.sort = sortData.func;
         this.updateSlots();
         SelectedSlot.update();
-      });
+      };
 
       return text;
     });
@@ -83,11 +82,11 @@ export class VaultGui extends StorageGui {
       text.x += textOffset;
       text.scale = new Point(0.2, 0.2);
 
-      text.on('click', () => {
+      text.onclick = () => {
         this.filter = filterData.func;
         this.updateSlots();
         SelectedSlot.update();
-      });
+      };
 
       return text;
     });

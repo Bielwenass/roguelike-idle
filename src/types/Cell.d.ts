@@ -1,7 +1,6 @@
 import type { Actor } from './Actor';
 import type { EntityType } from '@data/enums/EntityType';
-import type { Point } from '@pixi/core';
-import type { Sprite } from '@pixi/sprite';
+import type { Point, Sprite } from 'pixi.js';
 
 export interface Cell {
   position: Point,

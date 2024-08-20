@@ -4,7 +4,7 @@ import type { HpBar } from './HpBar';
 import type { PlayBoard } from './PlayBoard';
 import type { ActorType } from '@data/enums/ActorType';
 import type { CombatAction } from '@data/enums/CombatAction';
-import type { Texture, Point } from '@pixi/core';
+import type { Texture, Point } from 'pixi.js';
 
 export type StrategyName = 'dummy';
 export type StrategyAction = (self: Actor, opponent: Actor) => CombatAction;

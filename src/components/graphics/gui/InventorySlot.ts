@@ -1,24 +1,29 @@
 import { itemFrameTint } from '@data/items/ItemFrameTint';
-import { Sprite } from '@pixi/sprite';
+import {
+  Container, Sprite, type Point,
+} from 'pixi.js';
 
 import { getItemIcon, textureUiInventoryBorder } from '../Graphics';
 
-import type { Point } from '@pixi/core';
 import type { Item } from '@type/Item';
 import type { ItemSprite } from '@type/ItemSprite';
 
-export class InventorySlot extends Sprite {
+export class InventorySlot extends Container {
   public itemSprite: ItemSprite | null = null;
 
-  public onClick: Function = Function.prototype;
+  private itemBorder: Sprite;
 
   constructor(position: Point, item: Item | null = null) {
     super(textureUiInventoryBorder);
 
-    this.width = 10;
-    this.height = 10;
-    this.tint = 0x666666;
+    const borderSprite = new Sprite(textureUiInventoryBorder);
+
+    borderSprite.width = 10;
+    borderSprite.height = 10;
+    borderSprite.tint = 0x666666;
+
     this.position = position;
+    this.itemBorder = this.addChild(borderSprite);
     this.setItem(item);
   }
 
@@ -31,24 +36,20 @@ export class InventorySlot extends Sprite {
 
     this.itemSprite?.destroy();
     this.itemSprite = null;
-    this.tint = 0x666666;
+    this.itemBorder.tint = 0x666666;
+    this.eventMode = 'none';
 
     if (newItem) {
       const newItemSprite = new Sprite(getItemIcon(newItem.type)) as ItemSprite;
 
       newItemSprite.x = 1;
       newItemSprite.y = 1;
-
       newItemSprite.item = newItem;
-      this.tint = itemFrameTint[newItem.rarity];
-      newItemSprite.eventMode = 'static';
 
-      newItemSprite.on('click', () => {
-        this.onClick(newItemSprite);
-      });
+      this.itemBorder.tint = itemFrameTint[newItem.rarity];
+      this.itemSprite = this.addChild(newItemSprite);
 
-      this.itemSprite = newItemSprite;
-      this.addChild(newItemSprite);
+      this.eventMode = 'static';
     }
   }
 

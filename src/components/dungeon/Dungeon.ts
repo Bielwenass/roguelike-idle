@@ -3,11 +3,11 @@ import { CombatResult } from '@data/enums/CombatResult';
 import { DungeonResult } from '@data/enums/DungeonResult';
 import { EntityType } from '@data/enums/EntityType';
 import { movements } from '@data/movements';
-import { Container } from '@pixi/display';
 import { pointToCell } from '@utils/board/pointToCell';
 import { getDistance } from '@utils/getDistance';
 import { sumPoints } from '@utils/sumPoints';
 import { timeout } from '@utils/timeout';
+import { Container } from 'pixi.js';
 
 import { enterCombat } from './Combat';
 import { spawnEnemies } from './Enemies';

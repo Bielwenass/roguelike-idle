@@ -1,4 +1,4 @@
-import { Container } from '@pixi/display';
+import { Container } from 'pixi.js';
 
 import { EquipmentGui } from './EquipmentGui';
 import { inventoryGui } from './InventoryGui';

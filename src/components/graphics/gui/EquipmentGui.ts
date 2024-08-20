@@ -1,4 +1,4 @@
-import { Point } from '@pixi/core';
+import { Point } from 'pixi.js';
 
 import { InventorySlot } from './InventorySlot';
 import { StorageGui } from './StorageGui';

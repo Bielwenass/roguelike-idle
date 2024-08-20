@@ -13,4 +13,7 @@ export default defineConfig({
       '@type': fileURLToPath(new URL('./src/types', import.meta.url)),
     },
   },
+  build: {
+    target: ['chrome89', 'firefox89', 'safari15'],
+  },
 });
