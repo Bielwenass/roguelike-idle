@@ -24,7 +24,7 @@ import {
 import { DEBUG_MOVEMENT } from '../../constants';
 import { spawnActor } from '../Actors';
 import { centerCameraOn } from '../Camera';
-import { texturePlayer } from '../graphics/Graphics';
+import { textures } from '../graphics/Graphics';
 import {
   addToBackpack, loseItemsOnDeath, stashToVault,
 } from '../Inventory';
@@ -161,7 +161,7 @@ export async function enterDungeon(level: number): Promise<void> {
     ...spawnActor(
       state.player,
       state.world,
-      texturePlayer,
+      textures.player,
       playerSpawnTile.position,
     ),
     // Preserve hp across floors

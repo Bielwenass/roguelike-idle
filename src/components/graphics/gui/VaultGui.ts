@@ -6,7 +6,7 @@ import { ItemPreview } from './ItemPreview';
 import { SelectedSlot } from './SelectedSlot';
 import { StorageGui } from './StorageGui';
 import { drawText } from '../../Text';
-import { textureUiVaultBg } from '../Graphics';
+import { textures } from '../Graphics';
 
 import type { Item } from '@type/Item';
 import type { ItemSprite } from '@type/ItemSprite';
@@ -20,7 +20,7 @@ export class VaultGui extends StorageGui {
   private filter: (e: Item) => boolean;
 
   constructor(items: Item[]) {
-    super(textureUiVaultBg, new Point(960, 540), 80, new Point(14, 16), items);
+    super(textures.uiVaultBg, new Point(960, 540), 80, new Point(14, 16), items);
     this.sort = () => 0;
     this.filter = () => true;
     this.preview = new Container();

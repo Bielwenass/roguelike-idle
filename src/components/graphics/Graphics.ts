@@ -11,45 +11,32 @@ import type { Texture } from 'pixi.js';
 // Enable sharp pixel scaling
 TextureSource.defaultOptions.scaleMode = 'nearest';
 
-// TODO: Look into TextureCache
-// TODO: Refactor this shit
-const texturePlayer = await Assets.load('images/player.png');
-const textureSkeleton = await Assets.load('images/skeleton.png');
-const textureTile = await Assets.load('images/tile_dungeon.png');
-const textureWall = await Assets.load('images/bricks.png');
-const textureExit = await Assets.load('images/hatch.png');
-const textureChest = await Assets.load('images/chest.png');
-const textureUiInventoryBorder = await Assets.load('images/ui/icon_border.png');
-const textureUiInventoryBg = await Assets.load('images/ui/inventory_backdrop.png');
-const textureUiInventoryEquip = await Assets.load('images/ui/equipment_backdrop.png');
-const textureUiVaultBg = await Assets.load('images/ui/vault_backdrop.png');
-const textureIconDagger = await Assets.load('images/ui/icon_dagger.png');
-const textureIconSword = await Assets.load('images/ui/icon_sword.png');
-const textureIconGreatsword = await Assets.load('images/ui/icon_greatsword.png');
-const textureIconHelmet = await Assets.load('images/ui/icon_helmet.png');
-const textureIconChestplate = await Assets.load('images/ui/icon_chestplate.png');
-const textureIconGloves = await Assets.load('images/ui/icon_gloves.png');
-const textureIconBoots = await Assets.load('images/ui/icon_boots.png');
-
-export {
-  texturePlayer,
-  textureSkeleton,
-  textureTile,
-  textureWall,
-  textureExit,
-  textureChest,
-  textureUiInventoryBorder,
-  textureUiInventoryBg,
-  textureUiInventoryEquip,
-  textureUiVaultBg,
-  textureIconDagger,
-  textureIconSword,
-  textureIconGreatsword,
-  textureIconHelmet,
-  textureIconChestplate,
-  textureIconGloves,
-  textureIconBoots,
+// TODO: Consider better ways to load assets
+const assetToUrl = {
+  player: 'images/player.png',
+  skeleton: 'images/skeleton.png',
+  tile: 'images/tile_dungeon.png',
+  wall: 'images/bricks.png',
+  exit: 'images/hatch.png',
+  chest: 'images/chest.png',
+  uiInventoryBorder: 'images/ui/icon_border.png',
+  uiInventoryBg: 'images/ui/inventory_backdrop.png',
+  uiInventoryEquip: 'images/ui/equipment_backdrop.png',
+  uiVaultBg: 'images/ui/vault_backdrop.png',
+  iconDagger: 'images/ui/icon_dagger.png',
+  iconSword: 'images/ui/icon_sword.png',
+  iconGreatsword: 'images/ui/icon_greatsword.png',
+  iconHelmet: 'images/ui/icon_helmet.png',
+  iconChestplate: 'images/ui/icon_chestplate.png',
+  iconGloves: 'images/ui/icon_gloves.png',
+  iconBoots: 'images/ui/icon_boots.png',
 };
+
+const assets = await Assets.load(Object.values(assetToUrl));
+
+export const textures = Object.fromEntries(
+  Object.entries(assetToUrl).map(([key, value]) => [key, assets[value]]),
+) as Record<keyof typeof assetToUrl, Texture>;
 
 export function createHpBar() {
   const hpBar = new Graphics() as HpBar;
@@ -78,13 +65,13 @@ export function createHpBar() {
 
 export function getItemIcon(type: ItemType): Texture {
   const iconByType = {
-    [ItemType.Dagger]: textureIconDagger,
-    [ItemType.Sword]: textureIconSword,
-    [ItemType.Greatsword]: textureIconGreatsword,
-    [ItemType.Helmet]: textureIconHelmet,
-    [ItemType.Chestplate]: textureIconChestplate,
-    [ItemType.Gloves]: textureIconGloves,
-    [ItemType.Boots]: textureIconBoots,
+    [ItemType.Dagger]: textures.iconDagger,
+    [ItemType.Sword]: textures.iconSword,
+    [ItemType.Greatsword]: textures.iconGreatsword,
+    [ItemType.Helmet]: textures.iconHelmet,
+    [ItemType.Chestplate]: textures.iconChestplate,
+    [ItemType.Gloves]: textures.iconGloves,
+    [ItemType.Boots]: textures.iconBoots,
   };
 
   return iconByType[type];

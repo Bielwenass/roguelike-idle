@@ -4,7 +4,7 @@ import { CreatureType } from '@data/enums/CreatureType';
 import { updateEntitiesVisibility } from './Entities';
 import { getRandomFreeTilePoint } from './Tiling';
 import { spawnActor } from '../Actors';
-import { textureSkeleton } from '../graphics/Graphics';
+import { textures } from '../graphics/Graphics';
 
 import type { ActorBase, Actor } from '@type/Actor';
 import type { WorldContainer } from '@type/WorldContainer';
@@ -25,7 +25,7 @@ export function spawnEnemies(count: number, level: number, world: WorldContainer
     const newEnemy = spawnActor(
       scaleEnemy(creaturePresets[CreatureType.Skeleton], level),
       world,
-      textureSkeleton,
+      textures.skeleton,
       selectedTile.position,
     );
 

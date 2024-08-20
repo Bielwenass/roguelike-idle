@@ -3,7 +3,7 @@ import { Point, Sprite } from 'pixi.js';
 
 import { isPointVisible } from './Tiling';
 import { TILE_SIZE } from '../../constants';
-import { textureExit, textureChest } from '../graphics/Graphics';
+import { textures } from '../graphics/Graphics';
 
 import type { Entity } from '@type/Entity';
 import type { WorldContainer } from '@type/WorldContainer';
@@ -46,10 +46,10 @@ export function spawnEntities(world: WorldContainer): Entity[] {
   for (const cellRow of world.board) {
     for (const cell of cellRow) {
       if (cell.entityType === EntityType.Exit) {
-        world.entities.push(spawnEntity(world, textureExit, cell.position, 0));
+        world.entities.push(spawnEntity(world, textures.exit, cell.position, 0));
       }
       if (cell.entityType === EntityType.Chest) {
-        world.entities.push(spawnEntity(world, textureChest, cell.position, 0));
+        world.entities.push(spawnEntity(world, textures.chest, cell.position, 0));
       }
     }
   }

@@ -5,7 +5,7 @@ import { Point, Sprite } from 'pixi.js';
 
 import { basicBfs } from './movement/MovementAlgorithm';
 import { DEBUG_VISIBILITY, TILE_SIZE } from '../../constants';
-import { textureTile, textureWall } from '../graphics/Graphics';
+import { textures } from '../graphics/Graphics';
 
 import type { Actor } from '@type/Actor';
 import type { Cell } from '@type/Cell';
@@ -78,9 +78,9 @@ export function tileBoard(world: WorldContainer) {
       let newTileSprite;
 
       if (cell.isGround) {
-        newTileSprite = new Sprite(textureTile);
+        newTileSprite = new Sprite(textures.tile);
       } else {
-        newTileSprite = new Sprite(textureWall);
+        newTileSprite = new Sprite(textures.wall);
       }
 
       newTileSprite.width = TILE_SIZE;

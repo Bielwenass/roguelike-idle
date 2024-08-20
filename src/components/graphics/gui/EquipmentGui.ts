@@ -2,13 +2,13 @@ import { Point } from 'pixi.js';
 
 import { InventorySlot } from './InventorySlot';
 import { StorageGui } from './StorageGui';
-import { textureUiInventoryEquip } from '../Graphics';
+import { textures } from '../Graphics';
 
 import type { Item } from '@type/Item';
 
 export class EquipmentGui extends StorageGui {
   constructor(items: Item[]) {
-    super(textureUiInventoryEquip, new Point(210, 210), 80, new Point(14, 16), items);
+    super(textures.uiInventoryEquip, new Point(210, 210), 80, new Point(14, 16), items);
 
     this.offset = new Point(-472, 0);
   }

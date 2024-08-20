@@ -3,7 +3,7 @@ import {
   Container, Sprite, type Point,
 } from 'pixi.js';
 
-import { getItemIcon, textureUiInventoryBorder } from '../Graphics';
+import { getItemIcon, textures } from '../Graphics';
 
 import type { Item } from '@type/Item';
 import type { ItemSprite } from '@type/ItemSprite';
@@ -14,9 +14,9 @@ export class InventorySlot extends Container {
   private itemBorder: Sprite;
 
   constructor(position: Point, item: Item | null = null) {
-    super(textureUiInventoryBorder);
+    super(textures.uiInventoryBorder);
 
-    const borderSprite = new Sprite(textureUiInventoryBorder);
+    const borderSprite = new Sprite(textures.uiInventoryBorder);
 
     borderSprite.width = 10;
     borderSprite.height = 10;
