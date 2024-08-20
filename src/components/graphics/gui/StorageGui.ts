@@ -46,7 +46,7 @@ export class StorageGui extends Sprite {
 
   public updateSlots(): void {
     for (const [slotIdx, slot] of this.slots.entries()) {
-      slot.onClick = () => {
+      slot.onclick = () => {
         SelectedSlot.select(slot);
       };
       slot.setItem(this.content[slotIdx] ?? null);

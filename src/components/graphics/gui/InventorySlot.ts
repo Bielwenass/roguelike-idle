@@ -13,8 +13,6 @@ export class InventorySlot extends Container {
 
   private itemBorder: Sprite;
 
-  public onClick: Function = Function.prototype;
-
   constructor(position: Point, item: Item | null = null) {
     super(textureUiInventoryBorder);
 
@@ -39,6 +37,7 @@ export class InventorySlot extends Container {
     this.itemSprite?.destroy();
     this.itemSprite = null;
     this.itemBorder.tint = 0x666666;
+    this.eventMode = 'none';
 
     if (newItem) {
       const newItemSprite = new Sprite(getItemIcon(newItem.type)) as ItemSprite;
@@ -48,13 +47,9 @@ export class InventorySlot extends Container {
       newItemSprite.item = newItem;
 
       this.itemBorder.tint = itemFrameTint[newItem.rarity];
+      this.itemSprite = this.addChild(newItemSprite);
 
       this.eventMode = 'static';
-      this.on('click', () => {
-        this.onClick(newItemSprite);
-      });
-
-      this.itemSprite = this.addChild(newItemSprite);
     }
   }
 

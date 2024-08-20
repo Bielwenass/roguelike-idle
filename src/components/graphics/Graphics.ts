@@ -59,7 +59,7 @@ export function createHpBar() {
   const hpBarFill = new Graphics();
 
   // TODO: Fix bar not being displayed
-  hpBar.rect(0, -6, 16, 1);
+  hpBar.rect(0, -6, 16, 1.5);
   hpBar.setStrokeStyle({
     width: 1,
     color: 0x333333,
@@ -67,7 +67,7 @@ export function createHpBar() {
   });
   hpBar.fill(0x555555);
 
-  const fillRect = hpBarFill.rect(0, -6, 16, 1);
+  const fillRect = hpBarFill.rect(0, -6, 16, 1.5);
 
   hpBarFill.fill(0xaa0000);
 

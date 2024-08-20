@@ -34,7 +34,7 @@ export class VaultGui extends StorageGui {
     const sortedContent = filteredContent.sort(this.sort);
 
     for (const [slotIdx, slot] of this.slots.entries()) {
-      slot.onClick = () => {
+      slot.onclick = () => {
         SelectedSlot.select(slot);
       };
       slot.setItem(sortedContent[slotIdx] ?? null);
@@ -61,11 +61,11 @@ export class VaultGui extends StorageGui {
       text.x += textOffset;
       text.scale = new Point(0.2, 0.2);
 
-      text.on('click', () => {
+      text.onclick = () => {
         this.sort = sortData.func;
         this.updateSlots();
         SelectedSlot.update();
-      });
+      };
 
       return text;
     });
@@ -82,11 +82,11 @@ export class VaultGui extends StorageGui {
       text.x += textOffset;
       text.scale = new Point(0.2, 0.2);
 
-      text.on('click', () => {
+      text.onclick = () => {
         this.filter = filterData.func;
         this.updateSlots();
         SelectedSlot.update();
-      });
+      };
 
       return text;
     });
