@@ -1,7 +1,6 @@
 import { itemFrameTint } from '@data/items/ItemFrameTint';
 import { itemStatStrings } from '@data/items/itemStatStrings';
-import { Point } from '@pixi/core';
-import { Container } from '@pixi/display';
+import { Container, Point } from 'pixi.js';
 
 import { InventorySlot } from './InventorySlot';
 import {
@@ -52,9 +51,9 @@ export class ItemPreview extends Container {
         true,
       ));
 
-      unequipButton.on('click', () => {
+      unequipButton.onclick = () => {
         unequipItem(itemSprite.item);
-      });
+      };
 
       unequipButton.scale = new Point(0.2, 0.2);
       this.addChild(unequipButton);
@@ -66,9 +65,9 @@ export class ItemPreview extends Container {
         true,
       ));
 
-      equipButton.on('click', () => {
+      equipButton.onclick = () => {
         equipItem(itemSprite.item);
-      });
+      };
 
       equipButton.scale = new Point(0.2, 0.2);
 
@@ -80,9 +79,9 @@ export class ItemPreview extends Container {
         true,
       ));
 
-      sellButton.on('click', () => {
+      sellButton.onclick = () => {
         sellItem(itemSprite.item);
-      });
+      };
 
       sellButton.scale = new Point(0.2, 0.2);
       this.addChild(equipButton, sellButton);

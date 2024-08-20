@@ -1,6 +1,6 @@
 import { combatActionEffects } from '@data/combatActionEffects';
-import { Container } from '@pixi/display';
 import { timeout } from '@utils/timeout';
+import { Container } from 'pixi.js';
 
 import { TILE_SIZE } from '../../constants';
 import { getScreenCenterX, getScreenCenterY } from '../Camera';

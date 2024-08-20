@@ -1,4 +1,4 @@
-import { Point } from '@pixi/core';
+import { Point } from 'pixi.js';
 
 export class ManualMovement {
   private static instance: ManualMovement;

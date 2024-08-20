@@ -1,8 +1,8 @@
 import { doesPointExist } from './doesPointExist';
 
-import type { Point } from '@pixi/core';
 import type { Cell } from '@type/Cell';
 import type { PlayBoard } from '@type/PlayBoard';
+import type { Point } from 'pixi.js';
 
 export function pointToCell(point: Point, pb: PlayBoard): Cell {
   if (doesPointExist(point, pb)) {

@@ -1,13 +1,11 @@
-import { Point } from '@pixi/core';
-import { Sprite } from '@pixi/sprite';
 import { centerOnScreen } from '@utils/centerOnScreen';
+import { Point, Sprite } from 'pixi.js';
 
 import { InventorySlot } from './InventorySlot';
 import { SelectedSlot } from './SelectedSlot';
 
-import type { Application } from '@pixi/app';
-import type { Texture } from '@pixi/core';
 import type { Item } from '@type/Item';
+import type { Texture, Application } from 'pixi.js';
 
 export class StorageGui extends Sprite {
   protected slots: ReadonlyArray<InventorySlot> = [];
@@ -48,10 +46,10 @@ export class StorageGui extends Sprite {
 
   public updateSlots(): void {
     for (const [slotIdx, slot] of this.slots.entries()) {
-      slot.onClick = () => {
+      slot.onclick = () => {
         SelectedSlot.select(slot);
       };
-      slot.setItem(this.content[slotIdx]);
+      slot.setItem(this.content[slotIdx] ?? null);
     }
   }
 

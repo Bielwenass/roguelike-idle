@@ -2,10 +2,9 @@ import { creaturePresets } from '@data/creaturePresets';
 import { CreatureType } from '@data/enums/CreatureType';
 import { movements } from '@data/movements';
 import { strategies } from '@data/strategies';
-import { Application } from '@pixi/app';
-import { Point } from '@pixi/core';
-import { Container } from '@pixi/display';
-import { Sprite } from '@pixi/sprite';
+import {
+  Application, Container, Sprite, Point,
+} from 'pixi.js';
 
 import { createHpBar } from './graphics/Graphics';
 import { loadState } from './SaveManagement';
@@ -14,6 +13,7 @@ import type { Actor } from '@type/Actor';
 import type { CombatContainer } from '@type/CombatContainer';
 import type { Item } from '@type/Item';
 import type { WorldContainer } from '@type/WorldContainer';
+import type { Renderer } from 'pixi.js';
 
 type Inventory = {
   vault: Item[],
@@ -28,7 +28,7 @@ type MetaInfo = {
 };
 
 export interface State {
-  app: Application<HTMLCanvasElement>,
+  app: Application<Renderer<HTMLCanvasElement>>,
   root: Container,
   camera: Container,
   world: WorldContainer,

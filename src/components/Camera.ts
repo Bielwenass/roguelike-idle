@@ -1,8 +1,6 @@
-import { Container } from '@pixi/display';
+import { Container, type Sprite } from 'pixi.js';
 
 import { state } from './State';
-
-import type { Sprite } from '@pixi/sprite';
 
 function onDragStart(this: any, event: { data: any }) {
   // Store a reference to the data

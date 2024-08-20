@@ -9,17 +9,7 @@
     "lint": "eslint --ignore-path .gitignore ."
   },
   "dependencies": {
-    "@pixi/app": "^7.2.4",
-    "@pixi/constants": "^7.2.4",
-    "@pixi/core": "^7.2.4",
-    "@pixi/display": "^7.2.4",
-    "@pixi/events": "^7.2.4",
-    "@pixi/filter-color-matrix": "^7.2.4",
-    "@pixi/graphics": "^7.2.4",
-    "@pixi/settings": "^7.2.4",
-    "@pixi/sprite": "^7.2.4",
-    "@pixi/text": "^7.2.4",
-    "fontfaceobserver": "^2.3.0",
+    "pixi.js": "8.3.3",
     "wavefunctioncollapse": "^2.1.0"
   },
   "devDependencies": {

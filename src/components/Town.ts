@@ -1,8 +1,7 @@
 import { enterDungeon } from '@dungeon/Dungeon';
 import { Gui } from '@gui/Gui';
 import { SelectedSlot } from '@gui/SelectedSlot';
-import { Point } from '@pixi/core';
-import { Container } from '@pixi/display';
+import { Container, Point } from 'pixi.js';
 
 import { saveState } from './SaveManagement';
 import { state } from './State';
@@ -19,7 +18,7 @@ export function enterTown() {
 
   mainScreen.addChild(drawText('Please note that this is a very early demo. We\'re still working on core mechanics and balancing.', 'inventoryPale', new Point(100, 700)));
 
-  toDungeon.on('click', () => {
+  toDungeon.onclick = () => {
     mainScreen.destroy();
     Gui.vault.toggle(false);
     Gui.equipment.toggle(false);
@@ -27,16 +26,16 @@ export function enterTown() {
     saveState(state);
     mainScreen.destroy();
     enterDungeon(state.meta.worldLevel);
-  });
+  };
 
-  toEquipment.on('click', () => {
+  toEquipment.onclick = () => {
     Gui.vault.toggle();
 
     // Clear item preview
     Gui.vault.previewItem(null);
     SelectedSlot.clear();
     Gui.equipment.toggle();
-  });
+  };
 
   // Updating GUI in case we just loaded
   Gui.equipment.updateSlots();
