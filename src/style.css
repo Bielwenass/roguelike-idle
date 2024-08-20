@@ -9,6 +9,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Font loading hack */
+.app-wrapper {
+  font-family: Bitgothic;
+}
+
 @font-face {
   font-family: 'Bitgothic';
   src: url(/bitmgothic.medium.ttf) format('truetype');
