@@ -1,21 +1,18 @@
 import { ItemType } from '@data/enums/ItemType';
 import {
   Assets,
-  Container, Graphics,
+  Graphics,
   TextureSource,
 } from 'pixi.js';
 
 import type { HpBar } from '@type/HpBar';
 import type { Texture } from 'pixi.js';
 
-// TODO: Look into TextureCache
-
-// Enable zIndex
-Container.prototype.sortableChildren = true;
-
 // Enable sharp pixel scaling
 TextureSource.defaultOptions.scaleMode = 'nearest';
 
+// TODO: Look into TextureCache
+// TODO: Refactor this shit
 const texturePlayer = await Assets.load('images/player.png');
 const textureSkeleton = await Assets.load('images/skeleton.png');
 const textureTile = await Assets.load('images/tile_dungeon.png');

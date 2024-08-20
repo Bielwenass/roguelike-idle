@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      fontfaceobserver:
-        specifier: ^2.3.0
-        version: 2.3.0
       pixi.js:
         specifier: 8.3.3
         version: 8.3.3
@@ -615,9 +612,6 @@ packages:
 
   flatted@3.2.7:
     resolution: {integrity: sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==}
-
-  fontfaceobserver@2.3.0:
-    resolution: {integrity: sha512-6FPvD/IVyT4ZlNe7Wcn5Fb/4ChigpucKYSvD6a+0iMoLn2inpo711eyIcKjmDtE5XNcgAkSH9uN/nfAeZzHEfg==}
 
   for-each@0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -1757,8 +1751,6 @@ snapshots:
       rimraf: 3.0.2
 
   flatted@3.2.7: {}
-
-  fontfaceobserver@2.3.0: {}
 
   for-each@0.3.3:
     dependencies:

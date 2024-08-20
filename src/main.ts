@@ -38,6 +38,7 @@ async function setup() {
 (async () => {
   await state.app.init({
     roundPixels: true,
+    antialias: false,
   });
 
   setup();
