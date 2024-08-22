@@ -1,6 +1,6 @@
-import { fileURLToPath, URL } from 'node:url';
+import { URL, fileURLToPath } from 'node:url'
 
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   resolve: {
